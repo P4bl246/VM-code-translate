@@ -1,7 +1,9 @@
 package VM_code_Translator;
 
 import java.io.File;
-imtport java.nio.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Parser {
     /*
@@ -12,10 +14,6 @@ public class Parser {
                                 // Constructor para el análisis sintáctico
     Files Preparation---------------------------------------------------------------------------------
     public int CleanFile(File file_In);// Clean the file of the spaces and void lines and comments(internal method)
-                                         // Limpiar el archivo de los espacios y líneas vacias y comentarios(Método interno)
-
-    public int CreateANewFile(String nameFile);// This method is used to create a new file(internal method)
-                                              // Este método se utiliza para crear un nuevo archivo(Método interno)
 
     protected int File_to_txt(File file_In);// This method is used to convert the file to txt format(internal method)
                                             // Este método se utiliza para convertir el archivo a formato txt(Método interno)
@@ -47,33 +45,25 @@ public class Parser {
 //STARTS THE PROCESS OF PREPARE FILES (INICIA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)----------------------------------------------------------------- 
 
 protected int File_to_txt(File file_In) {
-    // Create a new file, call "file.txt"
-    // Crear un nuevo archivo, llamado "file.txt"
-    int n = CreateANewFile("file.txt");
-    if (n != 0){
-        return 1; // Error case-En caso de error
+    // Open the file_In in reading and create a temporary file for writing
+    // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
+    try (FileReader fileP = new FileReader(file_In);
+         FileWriter tempFile = new FileWriter("temp.txt")) {
+        
+        int c;
+        // Read character by character from the input file and write to the temporary file
+        // Leer carácter por carácter del archivo de entrada y escribir en el archivo temporal
+        while ((c = fileP.read()) != -1) {
+            tempFile.write(c);
+        }
+        return 0; // Éxito
+    } catch (IOException e) {
+        // Manejar errores de entrada/salida
+        System.out.println("Error: " + e.getMessage());
+        return -1; // Error
     }
-    // open the new file in write mode and the file_In in read mode
-    // abrir el nuevo archivo en modo escritura y el file_In en modo lectura
-    
-    return 0;
 }
-//-----------------------------------------------------------------------------
-public int CreateANewFile(String nameFile){
-    File file = new File(nameFile);
-try {
-    if (file.createNewFile()) {
-        System.out.println("File create.\n");
-        return 0;
-    } else {
-        System.out.println("The file exist.\n");
-        return 0;
-    }
-} catch (IOException e) {
-    System.out.printf("ERROR to try to create the file: %s\n", new String(nameFile));
-    return 1;
-}
-}
+
 
 public int CleanFile(File file_In){
 }
