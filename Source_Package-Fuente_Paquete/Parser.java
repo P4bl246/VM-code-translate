@@ -1,4 +1,7 @@
-package VM_code_Transaltor;
+package VM_code_Translator;
+
+import java.io.File;
+
 
 public class Parser {
     /*
@@ -8,7 +11,7 @@ public class Parser {
     public static int parsing(char input[]);// Constructor for the parsing
                                 // Constructor para el análisis sintáctico
     Files Preparation---------------------------------------------------------------------------------
-    public int CleanFile(FILE* file_In);// Clean the file of the spaces and void lines and comments(internal method)
+    public int CleanFile( file_In);// Clean the file of the spaces and void lines and comments(internal method)
                                          // Limpiar el archivo de los espacios y líneas vacias y comentarios(Método interno)
     public int PrepareFiles();
 
