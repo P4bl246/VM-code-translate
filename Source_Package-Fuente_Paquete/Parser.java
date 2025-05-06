@@ -29,7 +29,7 @@ public class Parser {
     */
 
     public static int parseInput(char[] inputFile) {
-        System.out.println("Parsing input: %s ...", inputFile);
+        System.out.println("Parse input: %s...", inputFile);
        return 0;
     }
 //----------------------------------------------------------------------
