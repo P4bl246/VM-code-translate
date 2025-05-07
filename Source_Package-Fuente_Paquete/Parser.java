@@ -1,10 +1,13 @@
 package VM_code_Translator;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.Reader;
+import java.io.Writer;
+import java.io.*;
+import java.io.FileReader;
+import java.io.FileWriter;
 
 public class Parser {
     /*
@@ -19,13 +22,16 @@ public class Parser {
 //FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 
 *************************************************------------------------------------------------*******************************
-    public int RemoveSpaces(File ReadFile, File WritteFile);// This method is used to remove spaces from the input file(internal method)
+    public int RemoveSpaces(File Read_File_In, File Writte_File_Out);// This method is used to remove spaces from the input file(internal method)
                                                             // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
 
-    public int CleanFile(File file_In);// Clean the file of the spaces and void lines and comments,integrat the above functions(internal method)
-                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores(Método interno)
+    public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out);// This method is used to remove simple comments from the input file(internal method)
+                                                                           // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
+
+    public int CleanFile(File file_In);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
+                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
 *************************************************------------------------------------------------*******************************
-    public void NumberLine(File ReadFile, File WritteFile);// This method is used to add the line number to the input file(internal method)
+    public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
                                                             // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
     protected int File_to_txt(File file_In);// This method is used to convert the file to txt format(internal method)
@@ -43,14 +49,12 @@ public class Parser {
 protected int File_to_txt(File file_In) {
     // Open the file_In in reading and create a temporary file for writing
     // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
-    try (FileReader fileP = new FileReader(file_In);
-         FileWriter tempFile = new FileWriter("temp.txt")) {
-        
+    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter("file.txt")) {
         int c;
         // Read character by character from the input file and write to the temporary file
         // Leer carácter por carácter del archivo de entrada y escribir en el archivo temporal
         while ((c = fileP.read()) != -1) {
-            tempFile.write(c);
+            tempFile.write((char)c);
         }
         return 0; // Éxito
     } catch (IOException e) {
@@ -67,45 +71,71 @@ public int CleanFile(File file_In){
     return 0;
 }
 //--------------------------------------------------------------
-public int RemoveSpaces(File ReadFile, File WritteFile){
-    int c;
-    //While don't find EOF (End of file)
-    //Mientras no encuentre EOF (Fin de archivo)
-    while((c = ReadFile.read()) != -1){
-        if(c != ' '){
-            WritteFile.write(c);
+public int RemoveSpaces(File Read_File_In, File Writte_File_Out){
+    // Open the file for reading and the file for writing
+    // Abrir el archivo para lectura y el archivo de escritura
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter(Writte_File_Out)){ 
+            int c = ReadFile.read(); // Read the first character
+                                      // Leer el primer carácter
+
+            //While don't find EOF (End of file)
+            //Mientras no encuentre EOF (Fin de archivo)
+            while(c != -1){
+                if((char)c != ' '){
+                    writterFile.write((char)c);
+                }
+                c = ReadFile.read(); // Read the next character
+                                 // Leer el siguiente carácter
+            }
+            return 0;
         }
-      //Don't writte
-      //No hacer nada
-    }
-    close(ReadFile);
-    close(WritteFile);
-    return 0;
+        catch(IOException e){
+            System.out.println("Error: " + e.getMessage());
+            return -1; // Error
+        }
 } 
 //--------------------------------------------------------------
-public int RemoveComments(File ReadFile, File WritteFile){
+public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out){
     int actual;
-    int commentBlock = 0; // Counter for block comments
-                          // Contador de comentarios de bloque
 
     //While don't find EOF (End of file)
     //Mientras no encuentre EOF (Fin de archivo)
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter(Writer_File_Out)){
     while((actual = ReadFile.read()) != -1){
-        if(actual != '/'){
-            WritteFile.write(c);
+        if((char)actual != '/'){
+            WritteFile.write((char)actual);
         }
         else{
             //Read the next character
             //Leer el siguiente carácter
-            int actual = ReadFile.read();
-            if(actual == '/'){
+            actual = ReadFile.read();
+            if((char)actual == '/'){
                 //Read until the end of line
                 //Leer hasta el final de la línea
-                while((actual = ReadFile.read()) != '\n' && actual != -1);
-            }     
+                while(true){
+                    actual = ReadFile.read();
+                    if((char)actual == '\n' || actual == -1){
+                        break;
+                    }
+                }
+                if (actual == -1){
+                    break;
+                }
+            }
+            //if the next character not is '/', copy the above character, and the current character
+            //Si el siguiente carácter no es '/', copiar el carácter anterior y el caracter actual
+           else{
+            WritteFile.write("/"); 
+            WritteFile.write((char)actual);     
+           }
         }
-    
+    }
     return 0;
+}
+    catch(IOException e){
+        System.out.println("Error: " + e.getMessage());
+        return -1; // Error
+    }
 }
 //--------------------------------------------------------------
 public int RemoveBlockComments(File ReadFile, File WritteFile){
@@ -153,50 +183,55 @@ public int RemoveBlockComments(File ReadFile, File WritteFile){
     return 0;
 }
 //--------------------------------------------------------------
-public void NumberLines(File Read_File, File Writte_File){
-    // Open the file for reading
-    // Abrir el archivo para lectura
-    Reader ReadFile = new FileReader(Read_File);
-    // Open the file for writing
-    // Abrir el archivo para escritura
-    Writer WritteFile = new FileWriter(Writte_File);
+public int NumLines(File Read_File_in, File Writte_File_out) {
+    // Open the file for reading and the file for writing
+    // Abrir el archivo para lectura y el archivo de escritura
+    try (Reader ReadFile = new FileReader(Read_File_in);
+         Writer writterFile = new FileWriter(Writte_File_out)) {
+      
+        int c = ReadFile.read();
+        int line = 1;
+        // Read the file character by character
+        // Leer el archivo carácter por carácter
+        while (c != -1) {
+            // Escribir el número de línea
+            // Write the line number
+            writterFile.write(String.valueOf(line));
+            writterFile.write(' ');
 
-    int c;
-    int line = 1; // Counter for lines
-                  // Contador de líneas
-    //While don't find EOF (End of file)
-    //Mientras no encuentre EOF (Fin de archivo)
-    while((c = ReadFile.read()) != -1){
-        WritteFile.write(line);
-        WriteFile.write(' ');
-        if(c == '\n'){
-            line++;
+            // Escribir el contenido de la línea
+            // Write the content of the line
+            while (c != -1 && c != '\n') {
+                writterFile.write((char) c);
+                c = ReadFile.read();
+            }
+
+            // Escribir salto de línea si fue leído
+            // Write a newline if it was read
+            if (c == '\n') {
+                writterFile.write('\n');
+                c = ReadFile.read(); // Leer el siguiente carácter para la próxima línea
+                                    // Read the next character for the next line
+                line++;
+            }
         }
-        WritteFile.write(c);
+
+        return 0;
+
+    } catch (IOException e) {
+        System.out.println("Error: " + e.getMessage());
+        return -1;
     }
-    close(ReadFile);
-    close(WritteFile);
-    return 0;
 }
 //--------------------------------------------------------------
-public String obtainNumberLine(Reader fileIn) {
-
+public String obtainNumberLine(Reader fileIn) throws IOException {
     int c;
-    ArrayList<Character> line = new ArrayList<>();
-   
-    // Leer caracteres hasta encontrar un espacio
-    // Read characters until a space is found
-    while ((c = fileIn.read()) != -1 && c != ' ') {
-        line.add((char) c);
-    }
-
-    fileIn.close();
-
-    // Convertir el ArrayList a una cadena
-    // Convert the ArrayList to a string
     StringBuilder result = new StringBuilder();
-    for (char ch : line) {
-        result.append(ch);
+
+    // Leer caracteres hasta encontrar un espacio. It is assumed that the line number is separated by a space
+    // Read characters until a space is found. Se asume que el número de línea está separado por un espacio
+    while ((c = fileIn.read()) != -1 && c != ' ') {
+        result.append((char) c);
     }
 
     return result.toString();
