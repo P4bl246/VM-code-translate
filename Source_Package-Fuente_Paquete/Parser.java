@@ -161,18 +161,7 @@ public int RemoveBlockComments(File ReadFile, File WritteFile){
 
                 //Read until the end of comment
                 //Leer hasta el final del comentario
-                while((actual = ReadFile.read()) != '*' && actual != -1);
-                if(actual == '*'){
-                    actual = ReadFile.read();
-                    if(actual == '/'){
-                        continue;
-                    }
-                    else if(actual == -1){
-                        // End of file reached
-                        // Fin del archivo alcanzado
-                    System.out.printf("ERROR in the line %s\n DETAILS: The block comment is not closed\n", nLinea);
-                        break;
-                    }
+                
                 }
             }
         }
