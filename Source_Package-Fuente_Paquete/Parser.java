@@ -98,9 +98,10 @@ public int RemoveSpaces(File Read_File_In, File Writte_File_Out){
 public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out){
     int actual;
 
-    //While don't find EOF (End of file)
-    //Mientras no encuentre EOF (Fin de archivo)
+    
     try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter(Writer_File_Out)){
+     //While don't find EOF (End of file)
+    //Mientras no encuentre EOF (Fin de archivo)
     while((actual = ReadFile.read()) != -1){
         if((char)actual != '/'){
             WritteFile.write((char)actual);
@@ -138,37 +139,76 @@ public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out){
     }
 }
 //--------------------------------------------------------------
-public int RemoveBlockComments(File ReadFile, File WritteFile){
-    int actual;
-    int commentBlock = 0; // Counter for block comments
-                          // Contador de comentarios de bloque
-
+int actual5; //Global variable to store the actual character
+//This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
+//Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
+public int RemoveBlockComments(File Read_File_in, File Writte_File_Out){
+     actual5 = 0;
+    
+    // Open the file for reading and the file for writing
+    // Abrir el archivo para lectura y el archivo de escritura
+    try(Reader ReadFile = new FileReader(Read_File_in); Writer WritteFile = new FileWriter(Writte_File_Out)){
+        actual5 = ReadFile.read(); // Read the first character
+                                      // Leer el primer carácter
     //While don't find EOF (End of file)
     //Mientras no encuentre EOF (Fin de archivo)
-    while((actual = ReadFile.read()) != -1){
-        if(actual != '/'){
-            WritteFile.write(c);
+    while(actual5 != -1){
+        String nLine = obtainNumberLine(ReadFile);
+        if((char)actual5 != '/'){
+            WritteFile.write((char)actual5);
         }
         else{
             //Read the next character
             //Leer el siguiente carácter
-            int actual = ReadFile.read();
+            actual5 = ReadFile.read();
             //if the next character is a '*' is a block comment
             //Si el siguiente carácter es un '*' es un comentario de bloque
-            if(actual == '*'){
-                commentBlock++; // Increment the block comment counter
-                                // Incrementar el contador de comentarios de bloque
-
-                //Read until the end of comment
-                //Leer hasta el final del comentario
-                
-                }
+            if((char)actual5 == '*'){
+               RemoveNestedBlockComments(actual5, ReadFile, nLine);
+             }  
+            //if the next character not is '/', copy the above character, and the current character
+            //Si el siguiente carácter no es '/', copiar el carácter anterior y el caracter actual
+            else{
+                WritteFile.write("/");      
             }
+         }
         }
       //Don't writte
       //No hacer nada
     }
+  catch(IOException e){
+        System.out.println("Error: " + e.getMessage());
+        return -1; // Error
+    }
     
+    return 0;
+}
+//--------------------------------------------------------------
+public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) throws IOException{
+    //Read until the end of comment
+    //Leer hasta el final del comentario
+    while(actual != -1){
+        if(actual == -1){
+            System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
+        }
+        if((char)actual == '*'){
+            actual = ReadFile.read();
+            //if the next character is a '/', break the loop
+            //si el siguiente carácter es un '/', salir del bucle
+            if((char)actual == '/'){
+                break;
+            }
+        }
+        else if((char)actual == '/'){
+            actual = ReadFile.read();
+            //if the next character is a '*', is a nested block comment
+            //si el siguiente carácter es un '*', es un comentario de bloque anidado
+            if((char)actual == '*'){
+                if(RemoveNestedBlockComments(actual, ReadFile, nLine) != 0) return -1;
+            }
+        }
+        actual = ReadFile.read();
+    }
     return 0;
 }
 //--------------------------------------------------------------
