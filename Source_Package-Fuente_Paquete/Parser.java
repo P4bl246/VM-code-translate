@@ -216,6 +216,8 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
             }
         }
         actual = ReadFile.read();
+        // If find the end of file without closing the comment
+        // Si encuentra el final del archivo sin cerrar el comentario
         if(actual == -1){
             System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
         }
