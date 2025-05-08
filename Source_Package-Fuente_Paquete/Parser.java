@@ -147,7 +147,8 @@ public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out){
     }
 }
 //--------------------------------------------------------------
-int actual5; //Global variable to store the actual character
+private int actual5; //Global variable to store the actual character (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
+             //Variable global para almacenar el carácter actual (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
 //This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
 //Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
 public int RemoveBlockComments(File Read_File_in, File Writte_File_Out){
