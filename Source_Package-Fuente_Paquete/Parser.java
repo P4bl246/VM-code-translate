@@ -172,6 +172,9 @@ public int RemoveBlockComments(File Read_File_in, File Writte_File_Out){
             //if the next character is a '*' is a block comment
             //Si el siguiente carácter es un '*' es un comentario de bloque
             if((char)actual5 == '*'){
+                actual5 = ReadFile.read();
+                //Read until the end of comment
+                //Leer hasta el final del comentario
                RemoveNestedBlockComments(actual5, ReadFile, nLine);
              }  
             //if the next character not is '/', copy the above character, and the current character
@@ -196,16 +199,13 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
     //Read until the end of comment
     //Leer hasta el final del comentario
     while(actual != -1){
-        if(actual == -1){
-            System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
-        }
         if((char)actual == '*'){
             actual = ReadFile.read();
             //if the next character is a '/', break the loop
             //si el siguiente carácter es un '/', salir del bucle
             if((char)actual == '/'){
                 break;
-            }
+            }  
         }
         else if((char)actual == '/'){
             actual = ReadFile.read();
@@ -216,6 +216,9 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
             }
         }
         actual = ReadFile.read();
+        if(actual == -1){
+            System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
+        }
     }
     return 0;
 }
