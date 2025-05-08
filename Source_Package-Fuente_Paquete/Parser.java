@@ -27,6 +27,14 @@ public class Parser {
 
     public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out);// This method is used to remove simple comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
+    public String obtainNumberLine(Reader fileIn) throws IOException;// This method is used to obtain the line number from the input file(internal method)
+                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada(Método interno)
+
+    public int RemoveBlockComments(File Read_File_in, File Writte_File_Out);// This method is used to remove block comments from the input file(internal method)
+                                                                           // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada(Método interno)
+
+    public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
+                                                                                                        // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
 
     public int CleanFile(File file_In);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
                                          // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
