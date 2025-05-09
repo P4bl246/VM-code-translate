@@ -1,4 +1,4 @@
-package VM_code_Translator;
+package SourceCodePackage.AuxCLass.ParserC;
 
 import java.io.File;
 import java.io.IOException;
