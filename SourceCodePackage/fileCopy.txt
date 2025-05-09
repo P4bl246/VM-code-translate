@@ -1,4 +1,4 @@
-yuca 1lkjsdf
-dlkfuasldfi
-/*esto es un bomentario en blocque
-*/￿
+1 yuca 1lkjsdf
+2 dlkfuasldfi
+3 /*esto es un bomentario en blocque
+4 */￿

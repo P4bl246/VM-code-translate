@@ -343,12 +343,13 @@ public int RemoveVoidLines(String Read_File_In){
     return -1;
 }
 //--------------------------------------------------------------
-public int NumLines(File Read_File_in, File Writte_File_out) {
+public int NumLines(String Read_File_in) {
+    System.out.printf("\nADDING LINE NUMBERS TO THE FILE: '%s'...\n\n", Read_File_in);
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
     try (Reader ReadFile = new FileReader(Read_File_in);
-         Writer writterFile = new FileWriter(Writte_File_out)) {
-      
+         Writer writterFile = new FileWriter("fileWithNumLines.txt")) {
+       
         int c = ReadFile.read();
         int line = 1;
         // Read the file character by character
@@ -376,20 +377,34 @@ public int NumLines(File Read_File_in, File Writte_File_out) {
             }
         }
 
-        return 0;
-
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
         return -1;
     }
+    // Upload the input file
+    // Actualizar el archivo de entrada
+    File infile = new File(Read_File_in);  
+
+    if (infile.delete()) {
+        File temp = new File("fileWithNumLines.txt");
+        if (temp.renameTo(infile)) {
+            System.out.printf("The file 'fileWithNumLines.txt' is rename to '%s'\n", Read_File_in);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID LINES\n", Read_File_in);
+            return 0;
+        }
+        System.out.printf("Error to try rename file 'fileWithNumLines.txt' to '%s'\n", Read_File_in);
+        return -1;
+    }
+    System.out.printf("Error to try delte the file '%s'\n", Read_File_in);
+    return -1;
 }
 //--------------------------------------------------------------
 public String obtainNumberLine(Reader fileIn) throws IOException {
     int c;
     StringBuilder result = new StringBuilder();
 
-    // Leer caracteres hasta encontrar un espacio. It is assumed that the line number is separated by a space
-    // Read characters until a space is found. Se asume que el número de línea está separado por un espacio
+    // Leer caracteres hasta encontrar un espacio. Se asume que el número de línea está separado por un espacio
+    // Read characters until a space is found. It is assumed that the line number is separated by a space
     while ((c = fileIn.read()) != -1 && c != ' ') {
         result.append((char) c);
     }
