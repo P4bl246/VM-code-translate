@@ -196,8 +196,8 @@ private int actual5; //Global variable to store the actual character (utlized ju
 //This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
 //Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
 
-public int RemoveBlockComments(String Read_File_In){
-    System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
+public int RemoveBlockComments(String Read_File_in){
+    System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
     //Variable to store the actual character
     //Variable para almacenar el carácter actual
      actual5 = 0;
@@ -242,18 +242,18 @@ public int RemoveBlockComments(String Read_File_In){
     }
     //Upload the input file
     //Actualizar el archivo de entrada
-    File infile = new File(Read_File_In);
+    File infile = new File(Read_File_in);
     if(infile.delete()){
         File temp = new File("tempWithoutBlockComments.txt");
         if(temp.renameTo(infile)){
-            System.out.printf("The file 'tempWithoutBlockComments.txt' is rename to '%s'\n", Read_File_In);
-            System.out.printf("\nTHE FILE '%s' IS CLEAN OF BLOCK COMMENTS\n", Read_File_In);
+            System.out.printf("The file 'tempWithoutBlockComments.txt' is rename to '%s'\n", Read_File_in);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN OF BLOCK COMMENTS\n", Read_File_in);
             return 0;
         }
-        System.out.printf("Error to try rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_In);
+        System.out.printf("Error to try rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_in);
         return -1;
     }
-    System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
+    System.out.printf("Error to try delte the file '%s'\n", Read_File_in);
     return -1;
 }
 //--------------------------------------------------------------
