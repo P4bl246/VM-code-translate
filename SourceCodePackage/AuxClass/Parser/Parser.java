@@ -3,7 +3,6 @@ package AuxClass.Parser;
 
 //import java.io.File; 
 //import java.io.IOException;
-import java.util.ArrayList;
 //import java.io.Reader;
 //import java.io.Writer;
 import java.io.*;
