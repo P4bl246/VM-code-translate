@@ -1,13 +1,14 @@
 package AuxClass.Parser;
+//****Call classes individuals are not necesary because we call java.io.*, this import all classes from this package
 
-import java.io.File;
-import java.io.IOException;
+//import java.io.File; 
+//import java.io.IOException;
 import java.util.ArrayList;
-import java.io.Reader;
-import java.io.Writer;
+//import java.io.Reader;
+//import java.io.Writer;
 import java.io.*;
-import java.io.FileReader;
-import java.io.FileWriter;
+//import java.io.FileReader;
+//import java.io.FileWriter;
 
 public class Parser {
     /*
