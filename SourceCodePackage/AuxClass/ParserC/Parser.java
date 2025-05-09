@@ -1,4 +1,4 @@
-package SourceCodePackage.AuxCLass.ParserC;
+package SourceCodePackage.AuxClass.ParserC;
 
 import java.io.File;
 import java.io.IOException;
