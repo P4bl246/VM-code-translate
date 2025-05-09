@@ -1,5 +1,5 @@
 package SourceCodePackage.MainClass;
-import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.ParserC package
+import AuxClass.Parser.*; // Import the Parser class from the AuxCLass.ParserC package
 
 public class executable {
 
