@@ -82,7 +82,7 @@ public int CleanFile(File file_In){
 }
 //--------------------------------------------------------------
 public int RemoveSpaces(String Read_File_In){
-    System.out.printf("REMOVING SPACES FROM THE FILE: '%s'...\n", Read_File_In);
+    System.out.printf("\nREMOVING SPACES FROM THE FILE: '%s'...\n\n", Read_File_In);
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
     try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter("tempWithoutSpaces.txt")){ 
@@ -110,7 +110,7 @@ public int RemoveSpaces(String Read_File_In){
                 File temp = new File("Temp.txt");
                 if(temp.renameTo(inFile)){
                     System.out.printf("The file 'Temp.txt' is rename to '%s'\n", Read_File_In);
-                    System.out.printf("THE FILE '%s' IS CLEAN OF SPACES\n", Read_File_In);
+                    System.out.printf("\nTHE FILE '%s' IS CLEAN OF SPACES\n", Read_File_In);
                     return 0;
                 }
                 System.out.printf("Error to try rename file 'TempWithoutSpaces.txt' to '%s'\n", Read_File_In);
@@ -123,7 +123,7 @@ public int RemoveSpaces(String Read_File_In){
 //--------------------------------------------------------------
 public int RemoveSimpleComments(String Read_File_In){
     int actual;
-    System.out.printf("REMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n", Read_File_In);
+    System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
     
     try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")){
      //While don't find EOF (End of file)
@@ -172,7 +172,7 @@ public int RemoveSimpleComments(String Read_File_In){
                                                               //No es necesario cerrar los archivos, porque no están abiertos, solo obtenemos los archivos
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempwithoutSimpleComments.txt' is rename to '%s'\n", Read_File_In);
-            System.out.printf("THE FILE '%s' IS CLEAN OF SIMPLE COMMENTS\n", Read_File_In);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN OF SIMPLE COMMENTS\n", Read_File_In);
             return 0;
         }
         System.out.printf("Error to try rename file 'tempwithoutSimpleComments.txt' to '%s'\n", Read_File_In);
@@ -261,6 +261,10 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
             System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
         }
     }
+    return 0;
+}
+//--------------------------------------------------------------
+public int RemoveVoidLines(String Read_File_In){
     return 0;
 }
 //--------------------------------------------------------------
