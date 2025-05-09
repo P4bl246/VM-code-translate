@@ -1,0 +1,6 @@
+yuca 1lkjsdf
+
+dlkfuasldfi//esto es eun comentario
+/*esto es un bomentario en blocque
+
+*/

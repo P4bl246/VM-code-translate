@@ -1,4 +1,4 @@
-package SourceCodePackage.AuxClass.Parser;
+package AuxClass.Parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +22,12 @@ public class Parser {
 //FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 
 *************************************************------------------------------------------------*******************************
-    public int RemoveSpaces(File Read_File_In, File Writte_File_Out);// This method is used to remove spaces from the input file(internal method)
+    public int RemoveSpaces(String Read_File_In);// This method is used to remove spaces from the input file(internal method)
                                                             // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
 
-    public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out);// This method is used to remove simple comments from the input file(internal method)
+    public int RemoveSimpleComments(String Read_File_In);// This method is used to remove simple comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
+
     public String obtainNumberLine(Reader fileIn) throws IOException;// This method is used to obtain the line number from the input file(internal method)
                                                             // Este método se utiliza para obtener el número de línea del archivo de entrada(Método interno)
 
@@ -42,7 +43,7 @@ public class Parser {
     public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
                                                             // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
-    protected int File_to_txt(File file_In);// This method is used to convert the file to txt format(internal method)
+    public int File_to_txt(String file_In);// This method is used to convert the file to txt format(internal method)
                                              // Este método se utiliza para convertir el archivo a formato txt(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
     public int PrepareFiles();
@@ -54,10 +55,11 @@ public class Parser {
 
 //STARTS THE PROCESS OF PREPARE FILES (INICIA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)----------------------------------------------------------------- 
 
-protected int File_to_txt(File file_In) {
+public int File_to_txt(String file_In) {
+    
     // Open the file_In in reading and create a temporary file for writing
     // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
-    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter("file.txt")) {
+    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter("fileCopy.txt")) {
         int c;
         // Read character by character from the input file and write to the temporary file
         // Leer carácter por carácter del archivo de entrada y escribir en el archivo temporal
@@ -79,10 +81,10 @@ public int CleanFile(File file_In){
     return 0;
 }
 //--------------------------------------------------------------
-public int RemoveSpaces(File Read_File_In, File Writte_File_Out){
+public int RemoveSpaces(String Read_File_In){
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
-    try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter(Writte_File_Out)){ 
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter("tempWithoutSpaces.txt")){ 
             int c = ReadFile.read(); // Read the first character
                                       // Leer el primer carácter
 
@@ -95,19 +97,33 @@ public int RemoveSpaces(File Read_File_In, File Writte_File_Out){
                 c = ReadFile.read(); // Read the next character
                                  // Leer el siguiente carácter
             }
-            return 0;
         }
         catch(IOException e){
             System.out.println("Error: " + e.getMessage());
             return -1; // Error
         }
+        //Upload the change to input file rename it
+        //Subir los cambios de el archivo de entrada renombrandolo 
+        File inFile = new File(Read_File_In);
+            if(inFile.delete()){
+                File temp = new File("Temp.txt");
+                if(temp.renameTo(inFile)){
+                    System.out.printf("The file 'Temp.txt' is rename to '%s'\n", Read_File_In);
+                    return 0;
+                }
+                System.out.printf("Error to try rename file 'TempWithoutSpaces.txt' to '%s'\n", Read_File_In);
+                return -1;
+            }
+            System.out.printf("Error to try eliminated the file '%s'\n", Read_File_In);
+            
+            return -1;
 } 
 //--------------------------------------------------------------
-public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out){
+public int RemoveSimpleComments(String Read_File_In){
     int actual;
 
     
-    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter(Writer_File_Out)){
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")){
      //While don't find EOF (End of file)
     //Mientras no encuentre EOF (Fin de archivo)
     while((actual = ReadFile.read()) != -1){
@@ -140,17 +156,37 @@ public int RemoveSimpleComments(File Read_File_In, File Writer_File_Out){
         }
     }
     return 0;
-}
+  }
     catch(IOException e){
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
     }
+    
+    //Upload the input file
+    //Actualizar el archivo de entrada
+    File infile = new File(Read_File_In);
+    
+    if(infile.delete()){
+        File temp = new File("tempwithoutSimpleComments.txt");//Don't need close the files, because there are not opened, we just obtanin the files
+                                                              //No es necesario cerrar los archivos, porque no están abiertos, solo obtenemos los archivos
+        if(temp.renameTo(infile)){
+            System.out.printf("The file 'tempwithoutSimpleComments.txt' is rename to '%s'\n", Read_File_In);
+            return 0;
+        }
+        System.out.printf("Error to try rename file 'tempwithoutSimpleComments.txt' to '%s'\n", Read_File_In);
+        
+        return -1;
+    }
+    System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
+    
+    return -1;
 }
 //--------------------------------------------------------------
 private int actual5; //Global variable to store the actual character (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
              //Variable global para almacenar el carácter actual (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
 //This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
 //Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
+
 public int RemoveBlockComments(File Read_File_in, File Writte_File_Out){
      actual5 = 0;
     
