@@ -36,6 +36,9 @@ public class Parser {
 
     public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
                                                                                                         // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
+    
+    public int RemoveVoidLines(String Read_File_In);// This method is used to remove void lines from the input file(internal method)
+                                                        // Este método se utiliza para eliminar líneas vacías del archivo de entrada(Método interno)
 
     public int CleanFile(File file_In);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
                                          // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
@@ -142,6 +145,9 @@ public int RemoveSimpleComments(String Read_File_In){
                 while(true){
                     actual = ReadFile.read();
                     if((char)actual == '\n' || actual == -1){
+                        if(actual == '\n'){
+                            WritteFile.write('\n');
+                        }
                         break;
                     }
                 }
@@ -265,7 +271,59 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
 }
 //--------------------------------------------------------------
 public int RemoveVoidLines(String Read_File_In){
-    return 0;
+    System.out.printf("\nREMOVING VOID LINES FROM THE FILE: '%s'...\n\n", Read_File_In);
+    // Open the file for reading
+    // Abrir el archivo para lectura y el archivo de escritura
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter("tempWithoutVoidLines.txt")){
+        int c = ReadFile.read(); // Read the first character
+                                  // Leer el primer carácter
+        //While don't find EOF (End of file)
+        //Mientras no encuentre EOF (Fin de archivo)
+        while(c != -1){
+            while(c != -1 && (char)c != '\n' && (char)c != '\0'){
+                WritteFile.write((char)c);
+                c = ReadFile.read(); // Read the next character
+                                     // Leer el siguiente carácter
+                if(c == -1){
+                    break;
+                }
+                else if((char)c == '\n'){
+                    WritteFile.write('\n');
+                    c = ReadFile.read(); // Read the next character
+                                         // Leer el siguiente carácter
+                }
+                //ignore it
+                //ignóralo
+                else if((char)c == '\0'){
+                    c = ReadFile.read(); // Read the next character
+                                         // Leer el siguiente carácter
+                }
+            }
+            //if the next character is a '\n' or '\0', ginore it
+            //Si el siguiente carácter es un '\n' o '\0', ignorarlo
+            c = ReadFile.read(); // Read the next character
+                                 // Leer el siguiente carácter
+        }
+    }
+    catch(IOException e){
+        System.out.println("Error: " + e.getMessage());
+        return -1; // Error
+    }
+    //Upload the input file
+    //Actualizar el archivo de entrada
+    File infile = new File(Read_File_In);
+    if(infile.delete()){
+        File temp = new File("tempWithoutVoidLines.txt");
+        if(temp.renameTo(infile)){
+            System.out.printf("The file 'tempWithoutVoidLines.txt' is rename to '%s'\n", Read_File_In);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID LINES\n", Read_File_In);
+            return 0;
+        }
+        System.out.printf("Error to try rename file 'tempWithoutVoidLines.txt' to '%s'\n", Read_File_In);
+        return -1;
+    }
+    System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
+    return -1;
 }
 //--------------------------------------------------------------
 public int NumLines(File Read_File_in, File Writte_File_out) {

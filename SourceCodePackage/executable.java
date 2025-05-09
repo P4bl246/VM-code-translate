@@ -12,6 +12,8 @@ public class executable {
          if(n != 0) return;
          n = parseF.RemoveSimpleComments("fileCopy.txt");
          if(n != 0) return;
+         n = parseF.RemoveVoidLines("fileCopy.txt");
+            if(n != 0) return;
          return;        
     }
 }
