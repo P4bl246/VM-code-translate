@@ -1,4 +1,3 @@
-
 import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
 
 public class executable {
@@ -14,6 +13,8 @@ public class executable {
          if(n != 0) return;
          n = parseF.RemoveVoidLines("fileCopy.txt");
             if(n != 0) return;
+         
+         n = parserF.RemoveBlockComments("fileCopy.txt");
          return;        
     }
 }

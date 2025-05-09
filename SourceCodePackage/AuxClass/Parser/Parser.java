@@ -32,7 +32,7 @@ public class Parser {
     public String obtainNumberLine(Reader fileIn) throws IOException;// This method is used to obtain the line number from the input file(internal method)
                                                             // Este método se utiliza para obtener el número de línea del archivo de entrada(Método interno)
 
-    public int RemoveBlockComments(File Read_File_in, File Writte_File_Out);// This method is used to remove block comments from the input file(internal method)
+    public int RemoveBlockComments(String Read_File_In);// This method is used to remove block comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada(Método interno)
 
     public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
@@ -196,12 +196,15 @@ private int actual5; //Global variable to store the actual character (utlized ju
 //This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
 //Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
 
-public int RemoveBlockComments(File Read_File_in, File Writte_File_Out){
+public int RemoveBlockComments(String Read_File_In){
+    System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
+    //Variable to store the actual character
+    //Variable para almacenar el carácter actual
      actual5 = 0;
     
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
-    try(Reader ReadFile = new FileReader(Read_File_in); Writer WritteFile = new FileWriter(Writte_File_Out)){
+    try(Reader ReadFile = new FileReader(Read_File_in); Writer WritteFile = new FileWriter("tempWithoutBlockComments.txt")){
         actual5 = ReadFile.read(); // Read the first character
                                       // Leer el primer carácter
     //While don't find EOF (End of file)
@@ -237,8 +240,21 @@ public int RemoveBlockComments(File Read_File_in, File Writte_File_Out){
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
     }
-    
-    return 0;
+    //Upload the input file
+    //Actualizar el archivo de entrada
+    File infile = new File(Read_File_In);
+    if(infile.delete()){
+        File temp = new File("tempWithoutBlockComments.txt");
+        if(temp.renameTo(infile)){
+            System.out.printf("The file 'tempWithoutBlockComments.txt' is rename to '%s'\n", Read_File_In);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN OF BLOCK COMMENTS\n", Read_File_In);
+            return 0;
+        }
+        System.out.printf("Error to try rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_In);
+        return -1;
+    }
+    System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
+    return -1;
 }
 //--------------------------------------------------------------
 public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) throws IOException{
