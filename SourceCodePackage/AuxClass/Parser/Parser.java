@@ -232,8 +232,6 @@ public int RemoveBlockComments(String Read_File_in){
             }
          }
         }
-      //Don't writte
-      //No hacer nada
     }
   catch(IOException e){
         System.out.println("Error: " + e.getMessage());
