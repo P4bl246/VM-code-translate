@@ -489,9 +489,13 @@ public int RemoveNLine(String file_in){
     return -1;
 }
 //--------------------------------------------------------------
+//END THE PROCCES TO PREPARE FILES(TERMINA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)--------------------------------------------------------------
+
+
+//STARTS THE PROCESS OF PARSING SINTAX (INICIA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
+
 // This class is used to parse the file and check the syntax
 // Esta clase se utiliza para analizar el archivo y verificar la sintaxis
-// Add your parsing logic here
 public class sintaxis_Parsing{
 /* 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
@@ -502,5 +506,6 @@ public class sintaxis_Parsing{
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
    */
 }
+//END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
 }
