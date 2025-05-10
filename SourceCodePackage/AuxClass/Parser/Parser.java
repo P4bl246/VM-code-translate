@@ -11,15 +11,7 @@ import java.io.*;
 //import java.io.FileWriter;
 
 public class Parser {
-    /*
-
-//FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-
-    public static int parsing(char input[]);// This method is used to parse the input file(internal method)
-                                                // Este método se utiliza para analizar el archivo de entrada(Método interno)
-                                                
-//END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
-
+/*
 //FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 
 *************************************************------------------------------------------------*******************************-------------------------------
@@ -497,5 +489,19 @@ public int RemoveNLine(String file_in){
     return -1;
 }
 //--------------------------------------------------------------
+
+public class sintaxis_Parsing{
+// This class is used to parse the file and check the syntax
+// Esta clase se utiliza para analizar el archivo y verificar la sintaxis
+// Add your parsing logic here
+/* 
+//FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
+
+    public static int parsing(char input[]);// This method is used to parse the input file(internal method)
+                                                // Este método se utiliza para analizar el archivo de entrada(Método interno)
+                                                
+//END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
+   */
+}
 
 }
