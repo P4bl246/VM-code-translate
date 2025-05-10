@@ -79,8 +79,24 @@ public int File_to_txt(String file_In) {
 }
 
 //--------------------------------------------------------------
-public int CleanFile(File file_In){
+public int CleanFile(String file_in){
+    System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
+    int n;
+    n = RemoveSpaces(file_in);
+    if(n != 0) return n;
     
+    n = RemoveSimpleComments(file_in);
+    if(n != 0) return n;
+
+    n = RemoveVoidLines(file_in);
+    if(n != 0) return n;
+    
+    n = NumLines(file_in);
+    if(n != 0) return n;
+
+    n = RemoveBlockComments(file_in);
+    if(n != 0) return n;
+    System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_in);
     return 0;
 }
 //--------------------------------------------------------------
@@ -200,7 +216,7 @@ public int RemoveBlockComments(String Read_File_in) {
             actual5 = ReadFile.read(); // Leer el primer carácter
         // Leer el archivo línea por línea
         // Read the file line by line
-        
+
             // Leer hasta el final de la línea
             // Read until the end of the line
              while((char)actual5 != '/' && actual5 != -1){
