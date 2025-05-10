@@ -124,69 +124,55 @@ public int RemoveSpaces(String Read_File_In){
             return -1;
 } 
 //--------------------------------------------------------------
-public int RemoveSimpleComments(String Read_File_In){
+public int RemoveSimpleComments(String Read_File_In) {
     int actual;
     System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
-    
-    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")){
-     //While don't find EOF (End of file)
-    //Mientras no encuentre EOF (Fin de archivo)
-    while((actual = ReadFile.read()) != -1){
-        if((char)actual != '/'){
-            WritteFile.write((char)actual);
-        }
-        else{
-            //Read the next character
-            //Leer el siguiente carácter
-            actual = ReadFile.read();
-            if((char)actual == '/'){
-                //Read until the end of line
-                //Leer hasta el final de la línea
-                while(true){
-                    actual = ReadFile.read();
-                    if((char)actual == '\n' || actual == -1){
-                        if(actual == '\n'){
-                            WritteFile.write('\n');
-                        }
-                        break;
-                    }
-                }
-                if (actual == -1){
+
+    try (Reader ReadFile = new FileReader(Read_File_In);
+         Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")) {
+
+        while ((actual = ReadFile.read()) != -1) { // Leer el primer carácter
+            if ((char) actual == '/') {
+                int next = ReadFile.read(); // Leer el siguiente carácter
+                if (next == -1) {
+                    WritteFile.write((char) actual); // Escribir el '/' si es el último carácter
                     break;
                 }
+                if ((char) next == '/') {
+                    // Leer hasta el final de la línea
+                    while ((actual = ReadFile.read()) != -1 && (char) actual != '\n') {
+                        // Ignorar caracteres hasta el final de la línea
+                    }
+                    if (actual == '\n') {
+                        WritteFile.write('\n'); // Escribir el salto de línea
+                    }
+                } else {
+                    WritteFile.write((char) actual); // Escribir el '/'
+                    WritteFile.write((char) next);   // Escribir el siguiente carácter
+                }
+            } else {
+                WritteFile.write((char) actual); // Escribir el carácter actual
             }
-            //if the next character not is '/', copy the above character, and the current character
-            //Si el siguiente carácter no es '/', copiar el carácter anterior y el caracter actual
-           else{
-            WritteFile.write("/"); 
-            WritteFile.write((char)actual);     
-           }
         }
-    }
-  }
-    catch(IOException e){
+
+    } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
     }
-    
-    //Upload the input file
-    //Actualizar el archivo de entrada
+
+    // Actualizar el archivo de entrada
     File infile = new File(Read_File_In);
-    
-    if(infile.delete()){
-        File temp = new File("tempwithoutSimpleComments.txt");//Don't need close the files, because there are not opened, we just obtanin the files
-                                                              //No es necesario cerrar los archivos, porque no están abiertos, solo obtenemos los archivos
-        if(temp.renameTo(infile)){
-            System.out.printf("The file 'tempwithoutSimpleComments.txt' is rename to '%s'\n", Read_File_In);
+    if (infile.delete()) {
+        File temp = new File("tempwithoutSimpleComments.txt");
+        if (temp.renameTo(infile)) {
+            System.out.printf("The file 'tempwithoutSimpleComments.txt' is renamed to '%s'\n", Read_File_In);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF SIMPLE COMMENTS\n", Read_File_In);
             return 0;
         }
-        System.out.printf("Error to try rename file 'tempwithoutSimpleComments.txt' to '%s'\n", Read_File_In);
-        
+        System.out.printf("Error trying to rename file 'tempwithoutSimpleComments.txt' to '%s'\n", Read_File_In);
         return -1;
     }
-    System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
-    
+    System.out.printf("Error trying to delete the file '%s'\n", Read_File_In);
     return -1;
 }
 //--------------------------------------------------------------
@@ -195,64 +181,60 @@ private int actual5; //Global variable to store the actual character (utlized ju
 //This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
 //Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
 
-public int RemoveBlockComments(String Read_File_in){
+public int RemoveBlockComments(String Read_File_in) {
     System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
-    //Variable to store the actual character
-    //Variable para almacenar el carácter actual
-     actual5 = 0;
-    
-    // Open the file for reading and the file for writing
-    // Abrir el archivo para lectura y el archivo de escritura
-    try(Reader ReadFile = new FileReader(Read_File_in); Writer WritteFile = new FileWriter("tempWithoutBlockComments.txt")){
-        actual5 = ReadFile.read(); // Read the first character
-                                      // Leer el primer carácter
-    //While don't find EOF (End of file)
-    //Mientras no encuentre EOF (Fin de archivo)
-    while(actual5 != -1){
-        String nLine = obtainNumberLine(ReadFile);
-        if((char)actual5 != '/'){
-            WritteFile.write((char)actual5);
-            actual5 = ReadFile.read(); // Read the next character
-                                         // Leer el siguiente carácter
-        }
-        else{
-            //Read the next character
-            //Leer el siguiente carácter
-            actual5 = ReadFile.read();
-            //if the next character is a '*' is a block comment
-            //Si el siguiente carácter es un '*' es un comentario de bloque
-            if((char)actual5 == '*'){
-                actual5 = ReadFile.read();
-                //Read until the end of comment
-                //Leer hasta el final del comentario
-               RemoveNestedBlockComments(actual5, ReadFile, nLine);
-             }  
-            //if the next character not is '/', copy the above character, and the current character
-            //Si el siguiente carácter no es '/', copiar el carácter anterior y el caracter actual
-            else{
-                WritteFile.write("/");      
+    actual5 = 0; // Inicializar la variable global
+
+    try (Reader ReadFile = new FileReader(Read_File_in);
+         Writer WritteFile = new FileWriter("tempWithoutBlockComments.txt")) {
+
+        actual5 = ReadFile.read(); // Leer el primer carácter
+
+        while (actual5 != -1) { // Mientras no se alcance el EOF
+            String nLine = obtainNumberLine(ReadFile); // Obtener el número de línea
+            WritteFile.write(nLine);
+            WritteFile.write(' ');
+
+            // Detectar "/*"
+            if ((char) actual5 == '/') {
+                int next = ReadFile.read(); // Leer el siguiente carácter
+                if (next == '*') { // Si encuentra "/*"
+                    actual5 = ReadFile.read(); // Leer el siguiente carácter después de "/*"
+                    if (RemoveNestedBlockComments(actual5, ReadFile, nLine) != 0) {
+                        return -1; // Error al procesar comentarios anidados
+                    }
+                    actual5 = ReadFile.read(); // Continuar después del comentario
+                } else {
+                    // Si no es '*', escribir '/' y el siguiente carácter
+                    WritteFile.write((char) actual5);
+                    WritteFile.write((char) next);
+                    actual5 = ReadFile.read(); // Leer el siguiente carácter
+                }
+            } else {
+                // Escribir el carácter actual si no es parte de un comentario
+                WritteFile.write((char) actual5);
+                actual5 = ReadFile.read(); // Leer el siguiente carácter
             }
-         }
         }
-    }
-  catch(IOException e){
+
+    } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
     }
-    //Upload the input file
-    //Actualizar el archivo de entrada
+
+    // Actualizar el archivo de entrada
     File infile = new File(Read_File_in);
-    if(infile.delete()){
+    if (infile.delete()) {
         File temp = new File("tempWithoutBlockComments.txt");
-        if(temp.renameTo(infile)){
-            System.out.printf("The file 'tempWithoutBlockComments.txt' is rename to '%s'\n", Read_File_in);
+        if (temp.renameTo(infile)) {
+            System.out.printf("The file 'tempWithoutBlockComments.txt' is renamed to '%s'\n", Read_File_in);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF BLOCK COMMENTS\n", Read_File_in);
             return 0;
         }
-        System.out.printf("Error to try rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_in);
+        System.out.printf("Error trying to rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_in);
         return -1;
     }
-    System.out.printf("Error to try delte the file '%s'\n", Read_File_in);
+    System.out.printf("Error trying to delete the file '%s'\n", Read_File_in);
     return -1;
 }
 //--------------------------------------------------------------
@@ -276,6 +258,8 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
                 if(RemoveNestedBlockComments(actual, ReadFile, nLine) != 0) return -1;
             }
         }
+        //Continue reading the file
+        //Continuar leyendo el archivo
         actual = ReadFile.read();
         // If find the end of file without closing the comment
         // Si encuentra el final del archivo sin cerrar el comentario

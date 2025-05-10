@@ -9,17 +9,17 @@ public class executable {
          int n;
          n= parseF.File_to_txt("Archivo.vm"); 
          if(n != 0) return;
-         
+
          n = parseF.RemoveSimpleComments("fileCopy.txt");
          if(n != 0) return;
 
          n = parseF.RemoveVoidLines("fileCopy.txt");
             if(n != 0) return;
 
-         n = parseF.NumLines("fileCopy.txt");
+           n = parseF.NumLines("fileCopy.txt");
          if(n != 0) return;
 
-         n = parseF.RemoveBlockComments("fileCopy.txt");
+           n = parseF.RemoveBlockComments("fileCopy.txt");
          if(n != 0) return;
          return;        
     }
