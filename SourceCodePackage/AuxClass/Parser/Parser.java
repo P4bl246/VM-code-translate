@@ -40,7 +40,7 @@ public class Parser {
     public int RemoveVoidLines(String Read_File_In);// This method is used to remove void lines from the input file(internal method)
                                                         // Este método se utiliza para eliminar líneas vacías del archivo de entrada(Método interno)
 
-    public int CleanFile(File file_In);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
+    public int CleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
                                          // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
 *************************************************------------------------------------------------*******************************
     public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
