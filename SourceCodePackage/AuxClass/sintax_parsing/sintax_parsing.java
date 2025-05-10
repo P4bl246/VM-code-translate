@@ -25,20 +25,30 @@ public  int parsing(String input) {
 //----------------------------------------------------
 //Espcial constructor for hasshing table similar to the Factory object
 // Constructor especial para la tabla de hash similar al objeto de fábrica
-public void Hashing (ArrayList<String> list) {
-    // Recorrer el arreglo de cadenas
-    // Iterate through the array of strings
-    for(String elemento : list){
-        hash(elemento);
+public hashTable(int size){
+    this.size = size;
+    this.table = new ArrayList[size];
+    for (int i = 0; i < size; i++) {
+        table[i] = new ArrayList<>();
     }
 }
-public int hash(String key) {
-    return 0;
+public void Hashing (String list, int sizeofTable) {
+
+       int  hash_key = hash(list, sizeofTable);
+
+    
+}
+public int hash(String key, int n) {
+    int h = Integer.parseInt(key);
+    h = h % n;
+    return h;
 }
 public int SearchinHash(String key) {
+    
     return 0;
 }
-public int InsertinHash(String key) {
+public int InsertinHash(String key, int newSizeofTable) {
+    Hashing(key, newSizeofTable);
     return 0;
 }
 
