@@ -212,6 +212,8 @@ public int RemoveBlockComments(String Read_File_in){
         String nLine = obtainNumberLine(ReadFile);
         if((char)actual5 != '/'){
             WritteFile.write((char)actual5);
+            actual5 = ReadFile.read(); // Read the next character
+                                         // Leer el siguiente carácter
         }
         else{
             //Read the next character
