@@ -12,7 +12,7 @@ public class sintax_parsing {
     
     public int Arthmetic_Expression(String input);// This method is used to parse the arithmetic expression
                                                 // Este método se utiliza para analizar las expresión aritmética
-                                                
+
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
@@ -20,6 +20,12 @@ public  int parsing(String input) {
         return 0;
     }
 //-----------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------
+//Espcial constructor for hasshing table
+// Constructor especial para la tabla de hash
+public Hashing (arrayList<String> list) {
+    
+}
 public int Arthmetic_Expression(String input) {
     
     return 0;
