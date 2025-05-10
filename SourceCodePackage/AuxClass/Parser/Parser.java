@@ -14,7 +14,7 @@ public class Parser {
 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
 
-         public static int parsing(char input[]);// This method is used to parse the input file(internal method)
+    public static int parsing(char input[]);// This method is used to parse the input file(internal method)
                                                 // Este método se utiliza para analizar el archivo de entrada(Método interno)
                                                 
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
@@ -28,7 +28,7 @@ public class Parser {
     public int RemoveSimpleComments(String Read_File_In);// This method is used to remove simple comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
 
-    public String obtainNumberLine(Reader fileIn) throws IOException;// This method is used to obtain the line number from the input file(internal method)
+    public String getNumberLine(Reader fileIn) throws IOException;// This method is used to obtain the line number from the input file(internal method)
                                                             // Este método se utiliza para obtener el número de línea del archivo de entrada(Método interno)
 
     public int RemoveBlockComments(String Read_File_In);// This method is used to remove block comments from the input file(internal method)
@@ -39,6 +39,9 @@ public class Parser {
     
     public int RemoveVoidLines(String Read_File_In);// This method is used to remove void lines from the input file(internal method)
                                                         // Este método se utiliza para eliminar líneas vacías del archivo de entrada(Método interno)
+
+    public int RemoveNLine(String file_in);// This method is used to remove the number line from the input file(internal method)
+                                                // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)
 
     public int CleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
                                          // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
@@ -96,6 +99,13 @@ public int CleanFile(String file_in){
 
     n = RemoveBlockComments(file_in);
     if(n != 0) return n;
+
+    n = RemoveNLine(file_in);
+    if(n != 0) return n;
+    
+    n = RemoveVoidLines(file_in);
+    if(n != 0) return n;
+
     System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_in);
     return 0;
 }
@@ -210,7 +220,7 @@ public int RemoveBlockComments(String Read_File_in) {
             if(actual5 == -1) break; // Si se alcanza el EOF, salir del bucle
                                     // If EOF is reached, exit the loop
 
-            String nLine = obtainNumberLine(ReadFile); // Obtener el número de línea
+            String nLine = getNumberLine(ReadFile); // Obtener el número de línea
             WritteFile.write(nLine);
             WritteFile.write(" ");
             actual5 = ReadFile.read(); // Leer el primer carácter
@@ -313,7 +323,7 @@ public int RemoveVoidLines(String Read_File_In){
         //While don't find EOF (End of file)
         //Mientras no encuentre EOF (Fin de archivo)
         while(c != -1){
-            while(c != -1 && (char)c != '\n' && (char)c != '\0'){
+            while(c != -1 && (char)c != '\n' && (char)c != '\0' && (char)c != ' '){
                 WritteFile.write((char)c);
                 c = ReadFile.read(); // Read the next character
                                      // Leer el siguiente carácter
@@ -415,7 +425,7 @@ public int NumLines(String Read_File_in) {
     return -1;
 }
 //--------------------------------------------------------------
-public String obtainNumberLine(Reader fileIn) throws IOException {
+public String getNumberLine(Reader fileIn) throws IOException {
     int c;
     StringBuilder result = new StringBuilder();
 
@@ -426,5 +436,61 @@ public String obtainNumberLine(Reader fileIn) throws IOException {
     }
     
     return result.toString();
+}
+//--------------------------------------------------------------
+public int RemoveNLine(String file_in){
+    System.out.printf("\nFINAL CLEANING THE FILE: '%s'...\n\n", file_in);
+    // open the file for reading and the file for writing
+    // Abrir el archivo para lectura y el archivo de escritura
+    try(Reader readFile = new FileReader(file_in); Writer WrtterFile = new FileWriter("tempFinalClean.txt")){
+        int c = 0;
+        while(c != -1){
+            //Get the number line and ignore it
+            //Obtener el número de línea y ignorarlo
+            getNumberLine(readFile);
+            c = readFile.read(); // Read the next character
+                                    // Leer el siguiente carácter
+           if(c == -1) break;
+           if((char)c == '\n' || (char)c == '\0' || (char)c == ' '){
+            WrtterFile.write('\n');
+            while(c != -1 && (char)c != '\n'){
+                c = readFile.read(); // Read the next character
+                                    // Leer el siguiente carácter
+            }
+            continue;
+           }
+           //if find a character after the number line, write the line without the number line
+           //si encuentra un carácter después del número de línea, escriba la línea sin el número de línea
+           else{
+            while(c != -1 && (char)c != '\n'){
+                WrtterFile.write((char)c);
+                c = readFile.read(); // Read the next character
+                                    // Leer el siguiente carácter
+             }
+             if(c == -1) break;
+            WrtterFile.write('\n');
+           }
+
+       } 
+    }
+    catch(IOException e){
+        System.out.println("Error: " + e.getMessage());
+        return -1; // Error
+    }
+    //Upload the input file
+    //Actualizar el archivo de entrada
+    File infile = new File(file_in);
+    if(infile.delete()){
+        File temp = new File("tempFinalClean.txt");
+        if(temp.renameTo(infile)){
+            System.out.printf("The file 'tempFinalClean.txt' is rename to '%s'\n", file_in);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN TO THE VOID LINES AND NUMBER LINE\n", file_in);
+            return 0;
+        }
+        System.out.printf("Error to try rename file 'tempFinalClean.txt' to '%s'\n", file_in);
+        return -1;
+    }
+    System.out.printf("Error to try delte the file '%s'\n", file_in);
+    return -1;
 }
 }
