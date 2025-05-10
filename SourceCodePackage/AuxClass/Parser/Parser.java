@@ -84,7 +84,7 @@ public int CleanFile(String file_in){
     int n;
     n = RemoveSpaces(file_in);
     if(n != 0) return n;
-    
+
     n = RemoveSimpleComments(file_in);
     if(n != 0) return n;
 
@@ -126,13 +126,13 @@ public int RemoveSpaces(String Read_File_In){
         //Subir los cambios de el archivo de entrada renombrandolo 
         File inFile = new File(Read_File_In);
             if(inFile.delete()){
-                File temp = new File("Temp.txt");
+                File temp = new File("tempWithoutSpaces.txt");
                 if(temp.renameTo(inFile)){
                     System.out.printf("The file 'Temp.txt' is rename to '%s'\n", Read_File_In);
                     System.out.printf("\nTHE FILE '%s' IS CLEAN OF SPACES\n", Read_File_In);
                     return 0;
                 }
-                System.out.printf("Error to try rename file 'TempWithoutSpaces.txt' to '%s'\n", Read_File_In);
+                System.out.printf("Error to try rename file 'tempWithoutSpaces.txt' to '%s'\n", Read_File_In);
                 return -1;
             }
             System.out.printf("Error to try eliminated the file '%s'\n", Read_File_In);
