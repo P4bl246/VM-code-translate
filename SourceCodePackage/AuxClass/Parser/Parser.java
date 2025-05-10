@@ -489,11 +489,10 @@ public int RemoveNLine(String file_in){
     return -1;
 }
 //--------------------------------------------------------------
-
-public class sintaxis_Parsing{
 // This class is used to parse the file and check the syntax
 // Esta clase se utiliza para analizar el archivo y verificar la sintaxis
 // Add your parsing logic here
+public class sintaxis_Parsing{
 /* 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
 
