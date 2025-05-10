@@ -7,17 +7,23 @@ public class sintax_parsing {
 /* 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
 
-    public static int parsing(String input);// This method is used to parse the input file
+    public int parsing(String input);// This method is used to parse the input file
                                                 // Este método se utiliza para analizar el archivo de entrada
+    
+    public int Arthmetic_Expression(String input);// This method is used to parse the arithmetic expression
+                                                // Este método se utiliza para analizar las expresión aritmética
                                                 
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-public static int parsing(String input) {
+public  int parsing(String input) {
         return 0;
     }
 //-----------------------------------------------------------------------------------------------------------------------------------
-pu
+public int Arthmetic_Expression(String input) {
+    
+    return 0;
+}
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
 }
