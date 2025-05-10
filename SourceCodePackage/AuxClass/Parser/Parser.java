@@ -21,7 +21,8 @@ public class Parser {
 
 //FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 
-*************************************************------------------------------------------------*******************************
+*************************************************------------------------------------------------*******************************-------------------------------
+
     public int RemoveSpaces(String Read_File_In);// This method is used to remove spaces from the input file(internal method)
                                                             // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
 
@@ -45,7 +46,8 @@ public class Parser {
 
     public int CleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
                                          // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
-*************************************************------------------------------------------------*******************************
+
+*************************************************------------------------------------------------*******************************------------------------------
     public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
                                                             // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
