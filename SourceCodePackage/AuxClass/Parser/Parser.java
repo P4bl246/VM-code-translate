@@ -186,35 +186,52 @@ public int RemoveBlockComments(String Read_File_in) {
     actual5 = 0; // Inicializar la variable global
 
     try (Reader ReadFile = new FileReader(Read_File_in);
-         Writer WritteFile = new FileWriter("tempWithoutBlockComments.txt")) {
+         Writer WritteFile = new FileWriter("tempWithoutBlockComments.txt");
+         BufferedReader bufferedReader = new BufferedReader(ReadFile)) {
 
-        actual5 = ReadFile.read(); // Leer el primer carácter
+        
+        while (true)  { // Mientras no se alcance el EOF
+            if(actual5 == -1) break; // Si se alcanza el EOF, salir del bucle
+                                    // If EOF is reached, exit the loop
 
-        while (actual5 != -1) { // Mientras no se alcance el EOF
             String nLine = obtainNumberLine(ReadFile); // Obtener el número de línea
             WritteFile.write(nLine);
-            WritteFile.write(' ');
-
-            // Detectar "/*"
-            if ((char) actual5 == '/') {
-                int next = ReadFile.read(); // Leer el siguiente carácter
-                if (next == '*') { // Si encuentra "/*"
-                    actual5 = ReadFile.read(); // Leer el siguiente carácter después de "/*"
-                    if (RemoveNestedBlockComments(actual5, ReadFile, nLine) != 0) {
-                        return -1; // Error al procesar comentarios anidados
-                    }
-                    actual5 = ReadFile.read(); // Continuar después del comentario
-                } else {
-                    // Si no es '*', escribir '/' y el siguiente carácter
-                    WritteFile.write((char) actual5);
-                    WritteFile.write((char) next);
-                    actual5 = ReadFile.read(); // Leer el siguiente carácter
-                }
-            } else {
-                // Escribir el carácter actual si no es parte de un comentario
-                WritteFile.write((char) actual5);
+            WritteFile.write(" ");
+            actual5 = ReadFile.read(); // Leer el primer carácter
+        // Leer el archivo línea por línea
+        // Read the file line by line
+        
+            // Leer hasta el final de la línea
+            // Read until the end of the line
+             while((char)actual5 != '/' && actual5 != -1){
+                WritteFile.write((char)actual5);
                 actual5 = ReadFile.read(); // Leer el siguiente carácter
+                                           // Read the next charactera
             }
+            if(actual5 == -1) break;
+
+            else if((char)actual5 == '/'){
+                actual5 = ReadFile.read(); // Leer el siguiente carácter
+                                           // Read the next character
+                if(actual5 == -1){
+                    WritteFile.write('/');
+                    break;
+                } 
+                if((char)actual5 == '*'){
+                    actual5 = ReadFile.read(); // Leer el siguiente carácter
+                                                   // Read the next character
+
+                    // Si se encuentra un comentario de bloque, eliminarlo
+                    // If a block comment is found, remove it
+                    int nr = RemoveNestedBlockComments(actual5, ReadFile, nLine);
+                    if(nr != 0) return -1;
+                }
+                else{
+                    WritteFile.write('/');
+                    continue;
+                }
+            }
+        
         }
 
     } catch (IOException e) {
@@ -391,7 +408,7 @@ public String obtainNumberLine(Reader fileIn) throws IOException {
     while ((c = fileIn.read()) != -1 && c != ' ') {
         result.append((char) c);
     }
-
+    
     return result.toString();
 }
 }
