@@ -1,5 +1,6 @@
 package AuxClass.Parser;
-//****Call classes individuals are not necesary because we call java.io.*, this import all classes from this package
+//****Call classes individuals not is necesary because we call java.io.*, this import all classes from this package
+//****Llamadas a clases individuales no son necesarias porque llamamos a java.io.*, esto importa todas las clases de este paquete
 
 //import java.io.File; 
 //import java.io.IOException;
@@ -495,4 +496,6 @@ public int RemoveNLine(String file_in){
     System.out.printf("Error to try delte the file '%s'\n", file_in);
     return -1;
 }
+//--------------------------------------------------------------
+
 }
