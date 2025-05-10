@@ -12,11 +12,11 @@ public class sintax_parsing {
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-
-    public static int parsing(String input) {
+public static int parsing(String input) {
         return 0;
     }
-
+//-----------------------------------------------------------------------------------------------------------------------------------
+pu
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
 }
