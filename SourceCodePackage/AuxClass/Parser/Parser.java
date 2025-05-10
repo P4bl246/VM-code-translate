@@ -1,4 +1,7 @@
 package AuxClass.Parser;
+import AuxClass.sintax_parsing.sintax_parsing; // Import the sintax_parsing class from the AuxClass.sintax_parsing package
+                                               // importar la clase sintax_parsing del paquete AuxClass.sintax_parsing
+                                               
 //****Call classes individuals not is necesary because we call java.io.*, this import all classes from this package
 //****Llamadas a clases individuales no son necesarias porque llamamos a java.io.*, esto importa todas las clases de este paquete
 

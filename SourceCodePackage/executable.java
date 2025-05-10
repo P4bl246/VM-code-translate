@@ -1,5 +1,5 @@
 import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
-
+                               // Importar la clase Parser del paquete AuxCLass.Parser
 public class executable {
 
     public static void main (String[] args) {
@@ -12,7 +12,7 @@ public class executable {
 
          n = parseF.CleanFile("fileCopy.txt");
          if(n != 0) return;
-         
+
          return;        
     }
 }
