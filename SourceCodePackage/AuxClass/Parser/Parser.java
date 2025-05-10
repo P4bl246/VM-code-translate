@@ -1,7 +1,7 @@
 package AuxClass.Parser;
 import AuxClass.sintax_parsing.sintax_parsing; // Import the sintax_parsing class from the AuxClass.sintax_parsing package
                                                // importar la clase sintax_parsing del paquete AuxClass.sintax_parsing
-                                               
+
 //****Call classes individuals not is necesary because we call java.io.*, this import all classes from this package
 //****Llamadas a clases individuales no son necesarias porque llamamos a java.io.*, esto importa todas las clases de este paquete
 
@@ -40,8 +40,8 @@ public class Parser {
     public int RemoveNLine(String file_in);// This method is used to remove the number line from the input file(internal method)
                                                 // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)
 
-    public int CleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'(internal method)
-                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'(Método interno)
+    public int CleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines')
+                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'
 
 *************************************************------------------------------------------------*******************************------------------------------
     public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
