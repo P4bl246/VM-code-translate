@@ -500,7 +500,7 @@ public class sintaxis_Parsing{
 /* 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
 
-    public static int parsing(char input[]);// This method is used to parse the input file(internal method)
+    public static int parsing(String input);// This method is used to parse the input file(internal method)
                                                 // Este método se utiliza para analizar el archivo de entrada(Método interno)
                                                 
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
