@@ -2,6 +2,7 @@ package AuxClass.sintax_parsing;
 import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
 import AuxClass.Parser.Parser.Readmode;
+import AuxClass.sintax_parsing.sintax_parsing.TableHash;
 
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
@@ -57,7 +58,7 @@ public int parser_Sintaxis(String File_in) {
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans);
-          if (n!= 0)
+          if (n != 0) CompareCommandsWithArg(line, nLine, null, TableHash.POP_PUSH);
         }
      }
     return 0;
