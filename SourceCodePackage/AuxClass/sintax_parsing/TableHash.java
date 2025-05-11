@@ -143,7 +143,7 @@ public int Booleans_Expression(String input, String nLine, HashMap<String, Integ
             return 0;
         }
         else{
-            element = GetNchars(input, 2);
+            element = GetNchars(input, 2)
             if(hashTable.containsKey(element)) {
                 // Verificar que no haya caracteres inesperados después del tercer carácter
                 // Check that there are no unexpected characters after the third character
