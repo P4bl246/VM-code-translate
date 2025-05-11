@@ -13,13 +13,13 @@ public class sintax_parsing {
 // Esta clase se utiliza para analizar el archivo y verificar la sintaxis
 /* 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-
-    
+public void HashTablePreDet();// This method is used to create a hash table with the pre-determined elements
+                                // Este método se utiliza para crear una tabla hash con los elementos predefinidos
 //-----------------------------------****************--------------------------******   
     public int Arthmetic_Expression(String input);// This method is used to parse the arithmetic expression
                                                 // Este método se utiliza para analizar las expresión aritmética
 
-    public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable);// This method is used to create a hash table
+    public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable,int AddToPreDefined);// This method is used to create a hash table
 //-----------------------------------****************--------------------------******                                                                                                                                    // Este método se utiliza para crear una tabla hash
 
     public String GetNchars(String input, int n);// This method is used to get the first n characters of the input string
@@ -60,7 +60,6 @@ public  int parser_Sintaxis(String File_in) {
 private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a hash table to store the elements
 //constructor for create the PreDeteerminate hash table
 // constructor para crear la tabla hash predefinida
-
   public void HashTablePreDet(){
     ArrayList<String> preDet = new ArrayList<>();
     preDet.add("add");
@@ -72,9 +71,10 @@ private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a has
     preDet.add("eq");
     preDet.add("lt");
     preDet.add("gt");
-    CreateHashTable(null, 1, preDet, hashTablePre);
+    CreateHashTable(null, 1, preDet, null, 1);
   }
-public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
+
+  public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
     if(input != null) {
         String element = GetNchars(input, 3);
         if (hashTable.containsKey(element)) {
@@ -90,7 +90,7 @@ public int Arthmetic_Expression(String input, String nLine, HashMap<String, Inte
     }
 }
 //------------------------------------------------------
-public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable) {
+public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, int AddToPreDefined) {
     int hash;
     // If SimpleOrMultiples is not 0, create a hash table for multiple elements
     // Si SimpleOrMultiples no es 0, crea una tabla hash para múltiples elementos
@@ -103,6 +103,9 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
                 hash += element2.charAt(i);
             }
             hashTable.put(element2, hash);
+            if(AddToPreDefined != 0) {
+                hashTablePre.put(element2, hash);
+            }
         }
     }
     // If SimpleOrMultiples is 0, create a hash table for a single element
@@ -113,6 +116,9 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
             hash += element.charAt(i);
         }
         hashTable.put(element, hash);
+        if(AddToPreDefined != 0) {
+            hashTablePre.put(element, hash);
+        }
     }
     return;
 }
