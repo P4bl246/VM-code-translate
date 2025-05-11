@@ -259,8 +259,49 @@ public String GetNchars(String input, int n) {
     return result;
 }
 //-------------------------------------------------------
-public int CompareWithHashTable(String line, String nLine, HashMap<String, Integer> hashTable, int CharsNumToCompareSRING_MORE_LONG, TableHash CompareWithPreDefined) {
-   
+public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined) {
+   if(line != null){
+    // Get the first three characters of the input string
+        // Obtener los primeros tres caracteres de la cadena de entrada
+        String element = GetNchars(line, CharsNumToCompare_SRING_MORE_LONG);
+        if (hashTableForCompare.containsKey(element)) {
+            // Verificar que no haya caracteres inesperados después del tercer carácter
+            // Check that there are no unexpected characters after the third character
+            String remaining = line.substring(CharsNumToCompare_SRING_MORE_LONG); // Tomamos lo que sigue //Take the rest of line 
+            if (!remaining.isEmpty()) {
+                System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after instruction\n", nLine);
+                return -1;
+            }
+            return 0;
+        }
+        else{
+            int i = 1;
+            int sub;
+            //Iterater until found a conincidence 
+            //
+            while(hashTableForCompare.containsKey(element) && i<CharsNumToCompare_SRING_MORE_LONG){
+                 sub= CharsNumToCompare_SRING_MORE_LONG-i;
+                element = GetNchars(element, sub);             
+                i++;
+            }
+            // Check if the string is a invalid expression (not found in the table)
+           // Verificar si la cadena es una expresión no válida (no encontrada en la tabla)
+            if(i == CharsNumToCompare_SRING_MORE_LONG){
+                System.err.printf("Error in the line %s\nDETAILS: Invalid Expression\n");
+                return -1;
+            }
+            return 0;
+        }
+    }
+    // If the input string is null, print an error message
+    // Si la cadena de entrada es nula, imprime un mensaje de error
+     else {
+        System.out.printf("Error in the line %s\nDETAILS: Input is null\n", nLine);
+        //especial value of -2 to indicate that the input is null
+        // valor especial de -2 para indicar que la entrada es nula
+        return -2;
+    }
+}
     return 0;
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
