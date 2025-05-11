@@ -43,7 +43,7 @@ public  int parser_Sintaxis(String File_in) {
                          // Omitir la cadena de número de línea y el espacio
         line = parser.get(readFilein, Readmode.CompletelyLine, '0');
 
-        n = Arthmetic_Expression(line, nLine);
+        n = Arthmetic_Expression(line, nLine, hashTablePre);
         if (n != 0) return -1;
      }
     return 0;
@@ -57,15 +57,24 @@ public  int parser_Sintaxis(String File_in) {
     }
 }
 //------------------------------------------------------
-public int Arthmetic_Expression(String input, String nLine) {
+private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a hash table to store the elements
+//constructor for create the PreDeteerminate hash table
+// constructor para crear la tabla hash predefinida
+
+  public void HashTablePreDet(){
     ArrayList<String> preDet = new ArrayList<>();
     preDet.add("add");
     preDet.add("sub");
     preDet.add("neg");
-    
-    HashMap<String, Integer> hashTable = new HashMap<>();
-    CreateHashTable(null, 1, preDet, hashTable);
-    
+    preDet.add("and");
+    preDet.add("or");
+    preDet.add("not");
+    preDet.add("eq");
+    preDet.add("lt");
+    preDet.add("gt");
+    CreateHashTable(null, 1, preDet, hashTablePre);
+  }
+public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
     if(input != null) {
         String element = GetNchars(input, 3);
         if (hashTable.containsKey(element)) {
@@ -110,6 +119,10 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
 //-------------------------------------------------------
 public String GetNchars(String input, int n) {
     String result = "";
+    if(n > input.length()) {
+        System.out.println("The number of characters to get is greater than the length of the input string\nThe code will be executed with the length of the input string\n");
+        n = input.length();
+    }
     for (int i = 0; i < n; i++) {
         result += input.charAt(i);
     }
