@@ -218,7 +218,7 @@ public int RemoveBlockComments(String Read_File_in) {
             if(actual5 == -1) break; // Si se alcanza el EOF, salir del bucle
                                     // If EOF is reached, exit the loop
 
-            String nLine = get(ReadFile, 0, ' '); // Obtener el número de línea
+            String nLine = get(ReadFile, Readmode.NumberLine, ' '); // Obtener el número de línea
             WritteFile.write(nLine);
             WritteFile.write(" ");
             actual5 = ReadFile.read(); // Leer el primer carácter
@@ -442,7 +442,7 @@ public String get(Reader fileIn, Readmode mode,char forNumberLine_Delimiter) thr
      }
      return result.toString();
     }
-    else if(mode == Readmode.CompletelyLine)){
+    else if(mode == Readmode.CompletelyLine){
         while ((c = fileIn.read()) != -1 && c != '\n') {
             result.append((char) c);
         }
@@ -462,7 +462,7 @@ public int RemoveNLine(String file_in){
         while(c != -1){
             //Get the number line and ignore it
             //Obtener el número de línea y ignorarlo
-            get(readFile, 0, ' ');
+            get(readFile, Readmode.NumberLine, ' '); 
             c = readFile.read(); // Read the next character
                                     // Leer el siguiente carácter
            if(c == -1) break;
