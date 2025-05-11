@@ -1,9 +1,12 @@
 package AuxClass.sintax_parsing;
 import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
+
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
-import java.util.HashMap;
-                            // Importar la clase ArrayList del paquete java.util
+                           // Importar la clase ArrayList del paquete java.util
+import java.util.HashMap; 
+import java.io.*;
+
 public class sintax_parsing {
 // This class is used to parse the file and check the syntax
 // Esta clase se utiliza para analizar el archivo y verificar la sintaxis
@@ -24,11 +27,36 @@ public class sintax_parsing {
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-public  int parsing(String input) {
-        return 0;
+public  int parsing(String File_in) {
+    int n;
+    Parser parser = new Parser();
+    parser.NumLines(File_in);
+    try(Reader readFilein = new FileReader(File_in); BufferedReader readFile = new BufferedReader(readFilein)) {
+    String line;
+    String nLine;
+    while((line = readFile.readLine()) != null){
+        nLine = parser.getNumberLine(readFilein);
+        readFilein.read();// Skip the number line String and the space
+                         // Omitir la cadena de número de línea y el espacio
+         line = readFile.readLine();                
+
+        n = Arthemtic_Expression(line, nLine);
+        if (n!= 0) return -1;
     }
+    n = Arthmetic_Expression();
+    if (n != 0) return -1;
+    return 0;
+    }
+    catch (FileNotFoundException e) {
+        System.out.println("File not found: " + File_in);
+        return -1;
+    } catch (IOException e) {
+        System.out.println("Error reading file: " + File_in);
+        return -1;
+    }
+}
 //------------------------------------------------------
-public int Arthmetic_Expression(String input) {
+public int Arthmetic_Expression(String input, String nLine) {
     ArrayList<String> preDet = new ArrayList<>();
     preDet.add("add");
     preDet.add("sub");
@@ -41,18 +69,15 @@ public int Arthmetic_Expression(String input) {
         String element = GetNchars(input, 3);
         if (hashTable.containsKey(element)) {
             
-            return 1;
+            return 0;
         } else {
-            System.out.println("Error: Invalid arithmetic expression");
+            System.out.printf("Error in the line %s\nDETAILS: Invalid arithmetic expression\n", nLine);
             return -1;
         }
     } else {
-        System.out.println("Error: Input is null");
+        System.out.printf("Error int he line %s\nDETAILS: Input is null\n", nLine);
         return -1;
     }
-    // If the input is null, return -1
-    // Si la entrada es nula, devuelve -1
-    return 0;
 }
 
 //------------------------------------------------------
