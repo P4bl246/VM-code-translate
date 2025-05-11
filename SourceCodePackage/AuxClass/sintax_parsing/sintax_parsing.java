@@ -18,11 +18,18 @@ public void HashTablePreDet();// This method is used to create a hash table with
                                 // Este método se utiliza para crear una tabla hash con los elementos predefinidos
 
 //-----------------------------------****************--------------------------******   
-    public int Arthmetic_Expression(String input);// This method is used to parse the arithmetic expression
-                                                // Este método se utiliza para analizar las expresión aritmética
+//-------------------------------------------------------------
+    public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare);//Implmentación for the next function(just commands don't recive arguments)
+                                                                                                                                                     //Implementación para la siguiente función(Solo para comandos que no reciben argumentos)
 
+    public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined);
+
+    //This method is used to compare the Command with the command table(Hash table), integrated the function CompareTableImplement
+                                                                                                                                                                                      
+    //Este método se utiliza para comparar el comando con la tabla de comandos (tabla hash), integra la función CompareTableImplement
+//-----------------------------------
     public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable,int AddToPreDefined);// This method is used to create a hash table
-//-----------------------------------****************--------------------------******                                                                                                                                    // Este método se utiliza para crear una tabla hash
+//-----------------------------------****************--------------------------******                                                                           // Este método se utiliza para crear una tabla hash
 
     public String GetNchars(String input, int n);// This method is used to get the first n characters of the input string
                                                 // Este método se utiliza para obtener los primeros n caracteres de la cadena de entrada
@@ -171,9 +178,7 @@ public int Booleans_Expression(String input, String nLine, HashMap<String, Integ
     }
 }
 */
-//------------------------------------------------------
-//------------------------------------------------------
-//------------------------------------------------------
+
 // This method is used to create a hash table with the pre-determined elements
 // Este método se utiliza para crear una tabla hash con los elementos predefinidos
 public enum TableHash{
@@ -259,7 +264,6 @@ public String GetNchars(String input, int n) {
     return result;
 }
 //-------------------------------------------------------
-
 public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined) {
     //if 
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
@@ -319,6 +323,7 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
     return -3;//especial value, this never must be the out
              //Valor especial, esto nunca deberia salir
 }
+//-------------------------------------------------------
 public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare){
     if(line != null){
     // Get the first three characters of the input string
