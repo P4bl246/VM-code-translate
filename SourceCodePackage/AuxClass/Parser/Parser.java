@@ -440,11 +440,6 @@ public String get(Reader fileIn, Readmode mode,char forNumberLine_Delimiter) thr
         while ((c = fileIn.read()) != -1 && c != forNumberLine_Delimiter) {
         result.append((char) c);
      }
-     //Consume the space
-     //Consumir el espacio
-     if((char)c == forNumberLine_Delimiter){
-        c = fileIn.read(); // Leer el siguiente carácter
-     }
      return result.toString();
     }
     else if(mode == Readmode.CompletelyLine)){
