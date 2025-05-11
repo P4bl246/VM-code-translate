@@ -24,27 +24,27 @@ public class sintax_parsing {
     public String GetNchars(String input, int n);// This method is used to get the first n characters of the input string
                                                 // Este método se utiliza para obtener los primeros n caracteres de la cadena de entrada
 
+    public int parser_Sintaxis(String File_in);// This method is used to parse the syntax of the file
+                                                // Este método se utiliza para analizar la sintaxis del archivo
+
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-public  int parsing(String File_in) {
+public  int parser_Sintaxis(String File_in) {
     int n;
     Parser parser = new Parser();
     parser.NumLines(File_in);
-    try(Reader readFilein = new FileReader(File_in); BufferedReader readFile = new BufferedReader(readFilein)) {
+    try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
-    while((line = readFile.readLine()) != null){
-        nLine = parser.getNumberLine(readFilein);
+    while((nLine = parser.get(readFilein, 1, 0)) != null){
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
-         line = readFile.readLine();                
+        line = parser.get(readFilein, 0, 1);
 
-        n = Arthemtic_Expression(line, nLine);
+        n = Arthmetic_Expression(line, nLine);
         if (n!= 0) return -1;
-    }
-    n = Arthmetic_Expression();
-    if (n != 0) return -1;
+     }
     return 0;
     }
     catch (FileNotFoundException e) {

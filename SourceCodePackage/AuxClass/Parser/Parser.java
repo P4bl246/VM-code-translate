@@ -25,7 +25,7 @@ public class Parser {
     public int RemoveSimpleComments(String Read_File_In);// This method is used to remove simple comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
 
-    public String getNumberLine(Reader fileIn) throws IOException;// This method is used to obtain the line number from the input file(internal method)
+    public String get(Reader fileIn, int NumberLine, int CompletelyLine) throws IOException;// This method is used to obtain the line number from the input file(internal method)
                                                             // Este método se utiliza para obtener el número de línea del archivo de entrada(Método interno)
 
     public int RemoveBlockComments(String Read_File_In);// This method is used to remove block comments from the input file(internal method)
@@ -218,7 +218,7 @@ public int RemoveBlockComments(String Read_File_in) {
             if(actual5 == -1) break; // Si se alcanza el EOF, salir del bucle
                                     // If EOF is reached, exit the loop
 
-            String nLine = getNumberLine(ReadFile); // Obtener el número de línea
+            String nLine = get(ReadFile, 1, 0); // Obtener el número de línea
             WritteFile.write(nLine);
             WritteFile.write(" ");
             actual5 = ReadFile.read(); // Leer el primer carácter
@@ -423,17 +423,33 @@ public int NumLines(String Read_File_in) {
     return -1;
 }
 //--------------------------------------------------------------
-public String getNumberLine(Reader fileIn) throws IOException {
-    int c;
-    StringBuilder result = new StringBuilder();
+public String get(Reader fileIn, int NumberLine, int CompletelyLine) throws IOException {
 
-    // Leer caracteres hasta encontrar un espacio. Se asume que el número de línea está separado por un espacio
-    // Read characters until a space is found. It is assumed that the line number is separated by a space
-    while ((c = fileIn.read()) != -1 && c != ' ') {
-        result.append((char) c);
+     if(NumberLine != 0 && CompletelyLine != 0) {
+        System.out.println("Error: Can't get the complete line and the number line at the same time\n");
+        return null;
     }
     
-    return result.toString();
+    int c;
+    StringBuilder result = new StringBuilder();
+    
+    // Leer caracteres hasta encontrar un espacio. Se asume que el número de línea está separado por un espacio
+    // Read characters until a space is found. It is assumed that the line number is separated by a space
+     if(NumberLine != 0){
+        while ((c = fileIn.read()) != -1 && c != ' ') {
+        result.append((char) c);
+     }
+     return result.toString();
+    }
+    else if(CompletelyLine != 0){
+        while ((c = fileIn.read()) != -1 && c != '\n') {
+            result.append((char) c);
+        }
+        return result.toString();
+    }
+    // Si no se especifica el número de línea ni la línea completa, se devuelve null
+    // If neither the line number nor the complete line is specified, return null
+    return null;
 }
 //--------------------------------------------------------------
 public int RemoveNLine(String file_in){
@@ -445,7 +461,7 @@ public int RemoveNLine(String file_in){
         while(c != -1){
             //Get the number line and ignore it
             //Obtener el número de línea y ignorarlo
-            getNumberLine(readFile);
+            get(readFile, 1, 0);
             c = readFile.read(); // Read the next character
                                     // Leer el siguiente carácter
            if(c == -1) break;
