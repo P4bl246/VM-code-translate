@@ -259,8 +259,63 @@ public String GetNchars(String input, int n) {
     return result;
 }
 //-------------------------------------------------------
+
 public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined) {
-   if(line != null){
+    if(CharsNumToCompare_SRING_MORE_LONG <= 0){
+        System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
+        return -1;
+    }
+    if(hashTableForCompare == null && CompareWithPreDefined == null){
+        System.err.println("Error\nDETAILS: Exepected a table hash to compare");
+        return -1;
+    }
+    else if(hashTableForCompare == null && CompareWithPreDefined != null){
+        int n;
+        switch (CompareWithPreDefined) {
+            case TableHash.POP_PUSH:
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH );
+                break;
+            case TableHash.Arithmetics:
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith);
+                break;
+            case TableHash.Booleans:
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool);
+        
+            default:
+            n = -1;
+                break;
+        }
+        if(n != 0) return -1;
+    }
+    else if(hashTableForCompare != null && CompareWithPreDefined == null){
+       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare);
+       if(n != 0) return -1;
+    }
+    else{
+        int n;
+        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare);
+        if(n != 0){
+            switch (CompareWithPreDefined) {
+            case TableHash.POP_PUSH:
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH );
+                break;
+            case TableHash.Arithmetics:
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith);
+                break;
+            case TableHash.Booleans:
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool);
+        
+            default:
+            n = -1;
+                break;
+        }
+        if(n != 0) return -1;
+        }
+    }
+
+}
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare){
+    if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
         String element = GetNchars(line, CharsNumToCompare_SRING_MORE_LONG);
@@ -278,8 +333,8 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
             int i = 1;
             int sub;
             //Iterater until found a conincidence 
-            //
-            while(hashTableForCompare.containsKey(element) && i<CharsNumToCompare_SRING_MORE_LONG){
+            //Iterar hasta encontrar una conincidencia
+            while(!(hashTableForCompare.containsKey(element)) && i<CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
                 i++;
@@ -301,8 +356,6 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         // valor especial de -2 para indicar que la entrada es nula
         return -2;
     }
-}
-    return 0;
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
