@@ -67,7 +67,7 @@ private HashMap<String, Integer> hashTableArith = new HashMap<>(); // Create a h
 private HashMap<String, Integer> hashTableBool = new HashMap<>(); // Create a hash table for boolean operations
                                                                       //Crear una tabla hash para operaciones booleanas
 
-private HashMap<String, Integer> hashTableFunc = new HashMap<>(); // Create a hash table for functions
+private HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a hash table for functions
                                                                     // Crear una tabla hash para funciones
 //constructor for create the PreDeterminate hash tables
 // constructor para crear las tablas hash predefinidas
@@ -90,13 +90,14 @@ private HashMap<String, Integer> hashTableFunc = new HashMap<>(); // Create a ha
     NewElements.add("gt");
     CreateHashTable(null, 1, NewElements, null, TableHash.Booleans);
     NewElements.clear();
-    //Functions
-    // Funciones
+    //POP and PUSH comands
+    // comandos POP y PUSH
     NewElements.add("pop");
     NewElements.add("push");
-    CreateHashTable(null, 1, NewElements, null, TableHash.Functions);
+    CreateHashTable(null, 1, NewElements, null, TableHash.POP_PUSH);
   }
 //------------------------------------------------------
+/* 
 public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
     if (input != null) {
         // Get the first three characters of the input string
@@ -147,7 +148,7 @@ public int Booleans_Expression(String input, String nLine, HashMap<String, Integ
             if(hashTable.containsKey(element)) {
                 // Verificar que no haya caracteres inesperados después del tercer carácter
                 // Check that there are no unexpected characters after the third character
-                String remaining = input.substring(3); // Tomamos lo que sigue 
+                String remaining = input.substring(2); // Tomamos lo que sigue 
                 if (!remaining.isEmpty()) {
                     System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after boolean instruction\n", nLine);
                     return -1;
@@ -164,9 +165,12 @@ public int Booleans_Expression(String input, String nLine, HashMap<String, Integ
     // Si la cadena de entrada es nula, imprime un mensaje de error
      else {
         System.out.printf("Error in the line %s\nDETAILS: Input is null\n", nLine);
-        return -1;
+        //especial value of -2 to indicate that the input is null
+        // valor especial de -2 para indicar que la entrada es nula
+        return -2;
     }
 }
+*/
 //------------------------------------------------------
 //------------------------------------------------------
 //------------------------------------------------------
@@ -175,8 +179,9 @@ public int Booleans_Expression(String input, String nLine, HashMap<String, Integ
 public enum TableHash{
     Arithmetics,
     Booleans,
-    Functions
+    POP_PUSH
 }
+
 public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, TableHash AddToPreDefined) {
     if(hashTable == null) {
         System.err.println("Error: Hash table is null and AddToPreDefined is 0");
@@ -208,10 +213,10 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
                 // Agregar a la tabla hash booleana
                 hashTableBool.put(element2, hash);
             }
-            else if(AddToPreDefined == TableHash.Functions) {
+            else if(AddToPreDefined == TableHash.POP_PUSH) {
                 // Add to the functions hash table
                 // Agregar a la tabla hash de funciones
-                hashTableFunc.put(element2, hash);
+                hashTablePOP_PUSH.put(element2, hash);
             }
         }
     }
@@ -233,10 +238,10 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
                 // Agregar a la tabla hash booleana
                 hashTableBool.put(element, hash);
             }
-            else if(AddToPreDefined == TableHash.Functions) {
+            else if(AddToPreDefined == TableHash.POP_PUSH) {
                 // Add to the functions hash table
                 // Agregar a la tabla hash de funciones
-                hashTableFunc.put(element, hash);
+                hashTablePOP_PUSH.put(element, hash);
             }
     }
     return;
@@ -254,14 +259,9 @@ public String GetNchars(String input, int n) {
     return result;
 }
 //-------------------------------------------------------
-public int CompareWithHashTable(String element, HashMap<String, Integer> hashTable, String nLine) {
-    if (hashTable.containsKey(element)) {
-        return 0;
-    }
-    else {
-        System.out.println("Error in the line %s: Element not found in hash table", nLine);
-        return -1;
-    }
+public int CompareWithHashTable(String line, String nLine, HashMap<String, Integer> hashTable, int CharsNumToCompareSRING_MORE_LONG, TableHash CompareWithPreDefined) {
+   
+    return 0;
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
