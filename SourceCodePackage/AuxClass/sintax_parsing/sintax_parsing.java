@@ -302,12 +302,11 @@ public int CompareCommandsWithArg(String line, String nLine, ArrayList<CommandAr
         
 return 0;
 }
-public void identifyTheFormat(String FormatExample){
+public int identifyTheFormat(String FormatExample){
 //Iterate in the String
 //Recorrer la cadena
 for (int i = 0; i < FormatExample.length(); i++) {
     char caracter = FormatExample.charAt(i);
-    System.out.println("Carácter en posición " + i + ": " + caracter);
 }
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
