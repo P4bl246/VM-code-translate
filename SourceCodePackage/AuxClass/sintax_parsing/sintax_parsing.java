@@ -13,8 +13,10 @@ public class sintax_parsing {
 // Esta clase se utiliza para analizar el archivo y verificar la sintaxis
 /* 
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
+
 public void HashTablePreDet();// This method is used to create a hash table with the pre-determined elements
                                 // Este método se utiliza para crear una tabla hash con los elementos predefinidos
+
 //-----------------------------------****************--------------------------******   
     public int Arthmetic_Expression(String input);// This method is used to parse the arithmetic expression
                                                 // Este método se utiliza para analizar las expresión aritmética
@@ -31,13 +33,15 @@ public void HashTablePreDet();// This method is used to create a hash table with
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
-public  int parser_Sintaxis(String File_in) {
+public int parser_Sintaxis(String File_in) {
     int n;
     Parser parser = new Parser();
     parser.NumLines(File_in);
     try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
+    HashTablePreDet(); // Create the hash table with the pre-determined elements
+                       // Crear la tabla hash con los elementos predefinidos
     while((nLine = parser.get(readFilein, Readmode.NumberLine, ' ')) != null) {
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
@@ -57,7 +61,8 @@ public  int parser_Sintaxis(String File_in) {
     }
 }
 //------------------------------------------------------
-private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a hash table to store the elements
+private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a hash table to store the elements, this is used to store the pre-defined elements of the syntax
+// Crear una tabla hash para almacenar los elementos, esta se usa para almacenar los elementos predefinidos de la sintaxis
 //constructor for create the PreDeteerminate hash table
 // constructor para crear la tabla hash predefinida
   public void HashTablePreDet(){
@@ -73,7 +78,7 @@ private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a has
     preDet.add("gt");
     CreateHashTable(null, 1, preDet, null, 1);
   }
-
+//------------------------------------------------------
   public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
     if(input != null) {
         String element = GetNchars(input, 3);
@@ -91,6 +96,14 @@ private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a has
 }
 //------------------------------------------------------
 public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, int AddToPreDefined) {
+    if(hashTable == null && AddToPreDefined == 0) {
+        System.err.println("Error: Hash table is null and AddToPreDefined is 0");
+        return;
+    }
+    else if(element == null && NewElements == null) {
+        System.err.println("Error: Element and NewElements are null");
+        return;
+    }
     int hash;
     // If SimpleOrMultiples is not 0, create a hash table for multiple elements
     // Si SimpleOrMultiples no es 0, crea una tabla hash para múltiples elementos
