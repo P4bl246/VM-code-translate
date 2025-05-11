@@ -47,7 +47,7 @@ public int parser_Sintaxis(String File_in) {
                          // Omitir la cadena de número de línea y el espacio
         line = parser.get(readFilein, Readmode.CompletelyLine, '0');
 
-        n = Arthmetic_Expression(line, nLine, hashTablePre);
+        n = Arthmetic_Expression(line, nLine, hashTableArith);
         if (n != 0) return -1;
      }
     return 0;
