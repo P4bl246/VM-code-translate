@@ -298,16 +298,71 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, ArrayList<CommandArgRule> ArgsInputRules ){
+public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules,  ArrayList<Character> DelimitersInTheFormatPattern, int SensibleToMayus){
         
 return 0;
 }
-public int identifyTheFormat(String FormatExample){
-//Iterate in the String
+//-------------------------------------------------------
+public int identifyTheFormat(String FormatExample, ArrayList<Character> Delimiters, int SensibletoMayus){
+    char actual2 = '\0';
+  int j = 0;
+  int firstPart = 0;
+  char Delimiter = '\0';
+    for(char Delimiter2 : Delimiters){
+    //Read only the first Delimiter
+    //Leer solo el primer Delimitador
+    if(j == 0){
+        Delimiter = Delimiter2;
+     j++;
+     break;
+    }
+}
+if(Delimiter == '\0'){
+    System.err.println("Error\nDETAILS: Expected a Delimiter\n");
+    return -1;
+}
+StringBuilder result = new StringBuilder();
+    //Iterate in the String
 //Recorrer la cadena
 for (int i = 0; i < FormatExample.length(); i++) {
     char caracter = FormatExample.charAt(i);
+    result.append(caracter);
+    if(caracter == Delimiter){
+       break;
+    }
 }
+ String result2 = result.toString();
+ for(int i = 0; i < result2.length(); i++){
+    actual2 = result2.charAt(i);
+    firstPart += identifyTypeIntOrChar(actual2, SensibletoMayus);
+ }
+ return 0;
+}
+//-------------------------------------------------------
+public int identifyTypeIntOrChar(char actual, int SensibleToMayus){
+    //If character actual is a number
+    //Si el caracter actual es un número
+    if(actual >= '0' && actual <= '9'){
+        return 1;
+    }
+    //else if character actual is a letter and not is sensible to mayus
+    //Si el caracter actual es una letra y no es sensible a las mayusculas
+    else if((actual >= 'a' && actual <='z' || actual >= 'A' && actual <= 'Z') && SensibleToMayus == 0){
+     return 2;
+    }
+    //else if character actual is a letter and is sensible to mayus
+    //si es sensible a mayusculas y es una letra
+    else if(SensibleToMayus != 0 && actual >= 'a' && actual <= 'z'){
+        return 3;
+    }
+    else if(SensibleToMayus != 0 && actual >= 'A' && actual <= 'Z'){
+        return 4;
+    }
+    //If the character is other reutrn de UNICODE integer
+    //Si no es ninguno de los anteriores devolver el entero de el UNICODE
+    else{
+        return (int)actual;
+    }
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
