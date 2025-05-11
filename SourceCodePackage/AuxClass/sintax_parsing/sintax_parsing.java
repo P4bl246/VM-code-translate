@@ -261,6 +261,7 @@ public String GetNchars(String input, int n) {
 //-------------------------------------------------------
 
 public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined) {
+    //if 
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
         System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
         return -1;
@@ -280,16 +281,18 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
                 break;
             case TableHash.Booleans:
                 n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool);
-        
+               break;
             default:
             n = -1;
                 break;
         }
         if(n != 0) return -1;
+        else return 0;
     }
     else if(hashTableForCompare != null && CompareWithPreDefined == null){
        int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare);
        if(n != 0) return -1;
+       else return 0;
     }
     else{
         int n;
@@ -304,15 +307,17 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
                 break;
             case TableHash.Booleans:
                 n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool);
-        
+               break;
             default:
             n = -1;
                 break;
         }
         if(n != 0) return -1;
+        else return 0;
         }
     }
-
+   return -1; //This never must be the out
+             //Esto nunca deberia salir
 }
 public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare){
     if(line != null){
