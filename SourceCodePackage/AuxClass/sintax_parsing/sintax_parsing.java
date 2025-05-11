@@ -40,10 +40,7 @@ public int Arthmetic_Expression(String input) {
     if(input != null) {
         String element = GetNchars(input, 3);
         if (hashTable.containsKey(element)) {
-            Parser parser = new Parser();
-            parser.setInput(input);
-            parser.setHashTable(hashTable);
-            parser.parse();
+            
             return 1;
         } else {
             System.out.println("Error: Invalid arithmetic expression");
