@@ -316,8 +316,8 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         else return 0;
         }
     }
-   return -1; //This never must be the out
-             //Esto nunca deberia salir
+    return -3;//especial value, this never must be the out
+             //Valor especial, esto nunca deberia salir
 }
 public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare){
     if(line != null){
