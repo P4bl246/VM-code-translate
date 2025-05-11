@@ -301,6 +301,9 @@ public int CompareCommandsWithArg(String line, String nLine, int CharNumToComman
 
 return 0;
 }
+public void identifyTheFormat(String FormatExample){
+    
+}
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
 }
