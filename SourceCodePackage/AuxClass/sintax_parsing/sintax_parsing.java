@@ -37,7 +37,7 @@ public  int parser_Sintaxis(String File_in) {
     try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
-    while((nLine = parser.get(readFilein, 1, ' ', 0)) != null){
+    while((nLine = parser.get(readFilein, parser., ' ') != null){
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
         line = parser.get(readFilein, 0, '0', 1);
@@ -79,9 +79,7 @@ public int Arthmetic_Expression(String input, String nLine) {
         return -1;
     }
 }
-
 //------------------------------------------------------
-
 public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable) {
     int hash;
     // If SimpleOrMultiples is not 0, create a hash table for multiple elements

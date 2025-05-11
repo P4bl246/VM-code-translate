@@ -425,7 +425,7 @@ public int NumLines(String Read_File_in) {
 //--------------------------------------------------------------
 //This enum is used to define the read mode of the file for the method get
 //Este enum se utiliza para definir el modo de lectura del archivo para el método get
-private enum Readmode{
+public enum Readmode{
     NumberLine,
     CompletelyLine
 }
