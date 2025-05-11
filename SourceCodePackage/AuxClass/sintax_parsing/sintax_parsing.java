@@ -61,22 +61,33 @@ public int parser_Sintaxis(String File_in) {
     }
 }
 //------------------------------------------------------
-private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a hash table to store the elements, this is used to store the pre-defined elements of the syntax
-// Crear una tabla hash para almacenar los elementos, esta se usa para almacenar los elementos predefinidos de la sintaxis
-//constructor for create the PreDeteerminate hash table
-// constructor para crear la tabla hash predefinida
+private HashMap<String, Integer> hashTableArith = new HashMap<>(); // Create a hash table for arithmetic operations
+                                                                  // Crear una tabla hash para operaciones aritméticas
+
+private HashMap<String, Integer> hashTableBool = new HashMap<>(); // Create a hash table for boolean operations
+                                                                      //Crear una tabla hash para operaciones booleanas
+private HashMap<String, Integer> hashTableFunc = new HashMap<>(); // Create a hash table for functions
+                                                                    // Crear una tabla hash para funciones
+//constructor for create the PreDeterminate hash tables
+// constructor para crear las tablas hash predefinidas
   public void HashTablePreDet(){
-    ArrayList<String> preDet = new ArrayList<>();
-    preDet.add("add");
-    preDet.add("sub");
-    preDet.add("neg");
-    preDet.add("and");
-    preDet.add("or");
-    preDet.add("not");
-    preDet.add("eq");
-    preDet.add("lt");
-    preDet.add("gt");
-    CreateHashTable(null, 1, preDet, null, 1);
+    ArrayList<String> NewElements = new ArrayList<>();
+    NewElements.add("add");
+    NewElements.add("sub"); 
+    NewElements.add("neg");
+    CreateHashTable(null, 1, NewElements, null, TableHash.Arithmetics);
+    NewElements.clear();
+    NewElements.add("or");
+    NewElements.add("and");
+    NewElements.add("not");
+    NewElements.add("eq");
+    NewElements.add("lt");
+    NewElements.add("gt");
+    CreateHashTable(null, 1, NewElements, null, TableHash.Booleans);
+    NewElements.clear();
+    NewElements.add("pop");
+    NewElements.add("push");
+    CreateHashTable(null, 1, NewElements, null, TableHash.Functions);
   }
 //------------------------------------------------------
 public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
@@ -109,8 +120,15 @@ public int Arthmetic_Expression(String input, String nLine, HashMap<String, Inte
     }
 }
 //------------------------------------------------------
-public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, int AddToPreDefined) {
-    if(hashTable == null && AddToPreDefined == 0) {
+// This method is used to create a hash table with the pre-determined elements
+// Este método se utiliza para crear una tabla hash con los elementos predefinidos
+public enum TableHash{
+    Arithmetics,
+    Booleans,
+    Functions
+}
+public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, TableHash AddToPreDefined) {
+    if(hashTable == null) {
         System.err.println("Error: Hash table is null and AddToPreDefined is 0");
         return;
     }
@@ -130,8 +148,20 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
                 hash += element2.charAt(i);
             }
             hashTable.put(element2, hash);
-            if(AddToPreDefined != 0) {
-                hashTablePre.put(element2, hash);
+            if(AddToPreDefined == TableHash.Arithmetics) {
+                // Add to the arithmetic hash table
+                // Agregar a la tabla hash aritmética
+                hashTableArith.put(element2, hash);
+            }
+            else if(AddToPreDefined == TableHash.Booleans) {
+                // Add to the boolean hash table
+                // Agregar a la tabla hash booleana
+                hashTableBool.put(element2, hash);
+            }
+            else if(AddToPreDefined == TableHash.Functions) {
+                // Add to the functions hash table
+                // Agregar a la tabla hash de funciones
+                hashTableFunc.put(element2, hash);
             }
         }
     }
@@ -143,9 +173,21 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
             hash += element.charAt(i);
         }
         hashTable.put(element, hash);
-        if(AddToPreDefined != 0) {
-            hashTablePre.put(element, hash);
-        }
+        if(AddToPreDefined == TableHash.Arithmetics) {
+                // Add to the arithmetic hash table
+                // Agregar a la tabla hash aritmética
+                hashTableArith.put(element, hash);
+            }
+            else if(AddToPreDefined == TableHash.Booleans) {
+                // Add to the boolean hash table
+                // Agregar a la tabla hash booleana
+                hashTableBool.put(element, hash);
+            }
+            else if(AddToPreDefined == TableHash.Functions) {
+                // Add to the functions hash table
+                // Agregar a la tabla hash de funciones
+                hashTableFunc.put(element, hash);
+            }
     }
     return;
 }
@@ -161,6 +203,7 @@ public String GetNchars(String input, int n) {
     }
     return result;
 }
+//-------------------------------------------------------
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
 }
