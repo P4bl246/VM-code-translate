@@ -1,6 +1,7 @@
 package AuxClass.sintax_parsing;
 import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
+import AuxClass.Parser.Parser.Readmode;
 
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
@@ -37,10 +38,10 @@ public  int parser_Sintaxis(String File_in) {
     try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
-    while((nLine = parser.get(readFilein, parser., ' ') != null){
+    while((nLine = parser.get(readFilein, Readmode.NumberLine, ' ')) != null) {
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
-        line = parser.get(readFilein, 0, '0', 1);
+        line = parser.get(readFilein, Readmode.CompletelyLine, '0');
 
         n = Arthmetic_Expression(line, nLine);
         if (n != 0) return -1;
