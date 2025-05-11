@@ -37,10 +37,10 @@ public  int parser_Sintaxis(String File_in) {
     try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
-    while((nLine = parser.get(readFilein, 1, 0)) != null){
+    while((nLine = parser.get(readFilein, 1, ' ', 0)) != null){
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
-        line = parser.get(readFilein, 0, 1);
+        line = parser.get(readFilein, 0, '0', 1);
 
         n = Arthmetic_Expression(line, nLine);
         if (n != 0) return -1;
