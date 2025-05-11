@@ -2,6 +2,7 @@ package AuxClass.sintax_parsing;
 import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
 import AuxClass.Parser.Parser.Readmode;
+import AuxClass.sintax_parsing.VarArgumentsConstructor.CommandArgRule;
 import AuxClass.sintax_parsing.sintax_parsing.TableHash;
 
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
@@ -297,12 +298,17 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, int CharNumToCommand_STRING_MORE_LONG, HashMap<String, Integer> hashTableForCompareCommand, HashMap<String, Integer> hashTableForCompareArg, int LongOfArg, String Patron_OR_Format_ForTheCommandArgExample){
-
+public int CompareCommandsWithArg(String line, String nLine, ArrayList<CommandArgRule> ArgsInputRules ){
+        
 return 0;
 }
 public void identifyTheFormat(String FormatExample){
-    
+//Iterate in the String
+//Recorrer la cadena
+for (int i = 0; i < FormatExample.length(); i++) {
+    char caracter = FormatExample.charAt(i);
+    System.out.println("Carácter en posición " + i + ": " + caracter);
+}
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
