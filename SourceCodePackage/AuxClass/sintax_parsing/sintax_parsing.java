@@ -79,18 +79,32 @@ private HashMap<String, Integer> hashTablePre = new HashMap<>(); // Create a has
     CreateHashTable(null, 1, preDet, null, 1);
   }
 //------------------------------------------------------
-  public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
-    if(input != null) {
+public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
+    if (input != null) {
+        // Get the first three characters of the input string
+        // Obtener los primeros tres caracteres de la cadena de entrada
         String element = GetNchars(input, 3);
         if (hashTable.containsKey(element)) {
-            
+            // Verificar que no haya caracteres inesperados después del tercer carácter
+            // Check that there are no unexpected characters after the third character
+            String remaining = input.substring(3); // Tomamos lo que sigue 
+            if (!remaining.isEmpty()) {
+                System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after arithmetic instruction\n", nLine);
+                return -1;
+            }
             return 0;
-        } else {
+        }
+        // Check if the string is a valid arithmetic expression
+        // Verificar si la cadena es una expresión aritmética válida
+        else {
             System.out.printf("Error in the line %s\nDETAILS: Invalid arithmetic expression\n", nLine);
             return -1;
         }
-    } else {
-        System.out.printf("Error int he line %s\nDETAILS: Input is null\n", nLine);
+    }
+    // If the input string is null, print an error message
+    // Si la cadena de entrada es nula, imprime un mensaje de error
+     else {
+        System.out.printf("Error in the line %s\nDETAILS: Input is null\n", nLine);
         return -1;
     }
 }
