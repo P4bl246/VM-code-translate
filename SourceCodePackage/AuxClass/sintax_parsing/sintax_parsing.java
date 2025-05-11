@@ -18,12 +18,8 @@ public class sintax_parsing {
     public String GetNchars(String input, int n);// This method is used to get the first n characters of the input string
                                                 // Este método se utiliza para obtener los primeros n caracteres de la cadena de entrada
 
-    public void addToHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable);// This method is used to add elements to the hash table
+    public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable);// This method is used to add elements to the hash table
                                                                                                                                     // Este método se utiliza para agregar elementos a la tabla hash
-
-    public void makeHashTablePreDet(ArrayList<String> arrayString);// This method is used to create a hash table with the pre-determined elements
-                                                                    // Este método se utiliza para crear una tabla hash con los elementos predeterminados
-
 //END OF FUNCTIONS FOR PARSING SINTAX (FIN DE LAS FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)--------------------------------------------------------------
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
@@ -32,52 +28,46 @@ public  int parsing(String input) {
     }
 //------------------------------------------------------
 public int Arthmetic_Expression(String input) {
+    ArrayList<String> preDet = new ArrayList<>();
+    preDet.add("add");
+    preDet.add("sub");
+    preDet.add("neg");
+    preDet.add("eq");
+    preDet.add("gt");
+    preDet.add("lt");
+    preDet.add("and");
+    preDet.add("or");
+    preDet.add("not");
+
+    HashMap<String, Integer> hashTable = new HashMap<>();
+    CreateHashTable(null, 1, preDet, hashTable);
+
+    // Ejemplo: buscar el valor hash de una palabra
+    System.out.println("Hash de 'add': " + hashTable.get("add"));
+
     return 0;
 }
+
 //------------------------------------------------------
-public void makeHashTablePreDet(ArrayList<String> arrayString, HashMap<String, Integer> hashTable) {
-    // This method is used to create a hash table with the pre-determined elements
-    // Este método se utiliza para crear una tabla hash con los elementos predeterminados
-  hashTable = new HashMap<>(); // Create a hash table
-                                                        // Crear una tabla hash
-   int hash;
-   for(String element : ArrayString){
-    hash = 0;
-    for(int i = 0; i < element.length(); i++){
-       hash += element.charAt(i);
-    }
-    hasTable.put(element, hash); // Add the element to the hash table
-                                 // Agregar el elemento a la tabla hash
-    
-    }
-}
-public void addToHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable){
-    hashTable = new HashMap<>(); // Acceded to the hash table
-                                 // Acceder a la tabla hash
-                
+
+public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable) {
     int hash;
-    if(SimpleOrMultiples != 0){
-        for(String element2 : NewElements){
+    if (SimpleOrMultiples != 0) {
+        for (String element2 : NewElements) {
             hash = 0;
-            for(int i = 0; i < element2.length(); i++){
+            for (int i = 0; i < element2.length(); i++) {
                 hash += element2.charAt(i);
             }
-            hashTable.put(element2, hash); // Add the element to the hash table
-                                 // Agregar el elemento a la tabla hash
-        return;
-    }
- }
-    else{
+            hashTable.put(element2, hash);
+        }
+    } else {
         hash = 0;
-        for(int i = 0; i < element.length(); i++){
+        for (int i = 0; i < element.length(); i++) {
             hash += element.charAt(i);
         }
-        hashTable.put(element, hash); // Add the element to the hash table
-                                 // Agregar el elemento a la tabla hash
-        return;
+        hashTable.put(element, hash);
     }
 }
-
 //-------------------------------------------------------
 public String GetNchars(String input, int n) {
     String result = "";
