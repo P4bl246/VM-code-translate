@@ -43,7 +43,7 @@ public  int parser_Sintaxis(String File_in) {
         line = parser.get(readFilein, 0, 1);
 
         n = Arthmetic_Expression(line, nLine);
-        if (n!= 0) return -1;
+        if (n != 0) return -1;
      }
     return 0;
     }
