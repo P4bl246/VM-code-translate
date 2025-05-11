@@ -108,81 +108,6 @@ private HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create 
     CreateHashTable(null, 1, NewElements, null, TableHash.POP_PUSH);
   }
 //------------------------------------------------------
-/* 
-public int Arthmetic_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
-    if (input != null) {
-        // Get the first three characters of the input string
-        // Obtener los primeros tres caracteres de la cadena de entrada
-        String element = GetNchars(input, 3);
-        if (hashTable.containsKey(element)) {
-            // Verificar que no haya caracteres inesperados después del tercer carácter
-            // Check that there are no unexpected characters after the third character
-            String remaining = input.substring(3); // Tomamos lo que sigue 
-            if (!remaining.isEmpty()) {
-                System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after arithmetic instruction\n", nLine);
-                return -1;
-            }
-            return 0;
-        }
-        // Check if the string is a valid arithmetic expression
-        // Verificar si la cadena es una expresión aritmética válida
-        else {
-            System.out.printf("Error in the line %s\nDETAILS: Invalid arithmetic expression\n", nLine);
-            return -1;
-        }
-    }
-    // If the input string is null, print an error message
-    // Si la cadena de entrada es nula, imprime un mensaje de error
-     else {
-        System.out.printf("Error in the line %s\nDETAILS: Input is null\n", nLine);
-        return -1;
-    }
-}
-//------------------------------------------------------
-public int Booleans_Expression(String input, String nLine, HashMap<String, Integer> hashTable) {
-    if (input != null) {
-        // Get the first three characters of the input string
-        // Obtener los primeros tres caracteres de la cadena de entrada
-        String element = GetNchars(input, 3);
-        if (hashTable.containsKey(element)) {
-            // Verificar que no haya caracteres inesperados después del tercer carácter
-            // Check that there are no unexpected characters after the third character
-            String remaining = input.substring(3); // Tomamos lo que sigue 
-            if (!remaining.isEmpty()) {
-                System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after boolean instruction\n", nLine);
-                return -1;
-            }
-            return 0;
-        }
-        else{
-            element = GetNchars(input, 2);
-            if(hashTable.containsKey(element)) {
-                // Verificar que no haya caracteres inesperados después del tercer carácter
-                // Check that there are no unexpected characters after the third character
-                String remaining = input.substring(2); // Tomamos lo que sigue 
-                if (!remaining.isEmpty()) {
-                    System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after boolean instruction\n", nLine);
-                    return -1;
-                }
-                return 0;
-            }
-        }
-        // Check if the string is a valid boolean expression
-        // Verificar si la cadena es una expresión booleana válida
-            System.out.printf("Error in the line %s\nDETAILS: Invalid boolean expression\n", nLine);
-            return -1;
-    }
-    // If the input string is null, print an error message
-    // Si la cadena de entrada es nula, imprime un mensaje de error
-     else {
-        System.out.printf("Error in the line %s\nDETAILS: Input is null\n", nLine);
-        //especial value of -2 to indicate that the input is null
-        // valor especial de -2 para indicar que la entrada es nula
-        return -2;
-    }
-}
-*/
-
 // This method is used to create a hash table with the pre-determined elements
 // Este método se utiliza para crear una tabla hash con los elementos predefinidos
 public enum TableHash{
@@ -370,6 +295,11 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
         // valor especial de -2 para indicar que la entrada es nula
         return -2;
     }
+}
+//-------------------------------------------------------
+public int CompareCommandsWithArg(String line, String nLine, int CharNumToCommand_STRING_MORE_LONG, HashMap<String, Integer> hashTableForCompareCommand, HashMap<String, Integer> hashTableForCompareArg, int LongOfArg, String Patron_OR_Format_ForTheCommandArgExample){
+
+return 0;
 }
 //END THE PROCESS OF PARSING SINTAX (TERMINA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 
