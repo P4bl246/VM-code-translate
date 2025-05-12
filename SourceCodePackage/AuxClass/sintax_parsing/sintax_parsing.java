@@ -303,8 +303,8 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
 }
 //-------------------------------------------------------
 public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus){
-        
-return 0;
+  
+ return 0;
 }
 //-------------------------------------------------------
 public int identifyTheFormat(String FormatExample, int SensibletoMayus){
