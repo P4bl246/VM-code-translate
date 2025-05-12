@@ -79,8 +79,17 @@ public int parser_Sintaxis(String File_in) {
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans);
-          if (n != 0) CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
+          if (n != 0) {
+          n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
+          }
+          continue;
+          if (n != 0){
+            System.err.println("Error in the line %s\nDETAILS: Wrong Sintaxis\n");
+             return -1;
+            }
+            continue;
         }
+        continue;
      }
     return 0;
     }
