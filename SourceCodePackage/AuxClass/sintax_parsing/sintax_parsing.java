@@ -53,17 +53,18 @@ public int parser_Sintaxis(String File_in) {
     try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
+    CommandArgRule argsCommands = new CommandArgRule()
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while((nLine = parser.get(readFilein, Readmode.NumberLine, ' ')) != null) {
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
         line = parser.get(readFilein, Readmode.CompletelyLine, '0');
-
+        
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans);
-          if (n != 0) CompareCommandsWithArg(line, nLine, );
+          if (n != 0) CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
         }
      }
     return 0;
@@ -304,59 +305,69 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus, ArrayList<Character>Delimiters){
-  if(ArgsInputRules.MultipleFormatPatter != null && ArgsInputRules.formatPattern != null){
-    System.err.println("Error\nDETAILS: Just can selection one of them parametres 'MultipleFormatPattern or formatPattern'\n");
-    return -1;
-  }
-    int n, h; 
-  bool conincidence = false;
-if(ArgsInputRules.MultipleFormatPattern != null){
-    for(int i = 0; i < ArgsInputRules.MultipleFormatPattern.lenght(); i++){
-
-        if(n == (h = identifyTheFormat(line, SensibleToMayus))){
-            conicidence = true;
-           break;
-      }
+public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus, ArrayList<Character> Delimiters) {
+    // Check for conflicting parameters (MultipleFormatPattern and formatPattern cannot be both set)
+    if (ArgsInputRules.MultipleFormatPattern != null && ArgsInputRules.formatPattern != null) {
+        System.err.println("Error\nDETAILS: You can only select one of them: 'MultipleFormatPattern' or 'formatPattern'\n");
+        return -1;
     }
-   if(!coincidence){
-    System.err.printf("Error in the line %s\nDETAILS: The Format for the line is invalid the format will be: '%s'\n", nline, ArgsInputRules.MultipleFormatPatter);
-    return -1; 
-   }
-}
-  n = identifyTheFormat(ArgsInputRules.formatPattern, SensibleToMayus);
-if((n != (h = identifyTheFormat(line, SensibleToMayus))) && conincidence == false){
-    System.err.printf("Error in the line %s\nDETAILS: The Format for the line is invalid the format is: '%s'\n", nline, ArgsInputRules.formatPattern);
-    return -1;
-}
-StringBuilder WithoutDel = new StringBuilder();
 
-//Remove the delimiter for the String for avoid problems
-//Elminar los delimitadores de la cadena para evitar problemas
-for (int i = 0; i < remainingLine.length(); i++) {
-        char character = remainingLine.charAt(i);
-        
-        // Verifica si el carácter no es un delimitador
-        //Veified if the character not is a delimiter
+    int n = 0,  h = 0;
+    boolean coincidence = false;
+
+    // Check if multiple formats are provided
+    //Revisar si se dieron multiples formatos
+
+    if (ArgsInputRules.MultipleFormatPattern != null) {
+        for (String pattern : ArgsInputRules.MultipleFormatPattern) {
+            if ((n = identifyTheFormat(pattern, SensibleToMayus)) == ( h = identifyTheFormat(line, SensibleToMayus))) {
+                coincidence = true;
+                break;
+            }
+        }
+
+        if (!coincidence) {
+            System.err.printf("Error in the line %s\nDETAILS: The format for the line is invalid. The format should be: '%s'\n", nLine, ArgsInputRules.MultipleFormatPattern);
+            return -1;
+        }
+    }
+
+    // Check if the single format pattern is valid
+    //Revisar si solo se dio un formatodo
+
+    n = identifyTheFormat(ArgsInputRules.formatPattern, SensibleToMayus);
+    if ((n != (h = identifyTheFormat(line, SensibleToMayus))) && !coincidence) {
+        System.err.printf("Error in the line %s\nDETAILS: The format for the line is invalid. The format is: '%s'\n", nLine, ArgsInputRules.formatPattern);
+        return -1;
+    }
+
+    // Remove delimiters from the line
+    //Eliminaro los delimitadores de la line
+    StringBuilder WithoutDel = new StringBuilder();
+    for (int i = 0; i < line.length(); i++) {
+        char character = line.charAt(i);
         if (!Delimiters.contains(character)) {
-            WithoutDel.append(character);  // Agregar el carácter a la nueva cadena
-                                          //add character to new String
-     }
+            WithoutDel.append(character);  // Add character to new string
+        }
+    }
+    String newLine = WithoutDel.toString();
+
+    // Compare with the command table
+    //comparar con la tabla de comandos el comando
+    int LengthOfCommand = 0;
+    if ((n = CompareTableImplement(newLine, nLine, ArgsInputRules.commandLength, ArgsInputRules.commandTable, LengthOfCommand)) != 0) {
+        return -1;
     }
 
-String newLine = WithoutDel.toString();
-int LenghtOfCommand = 0;
-//compare the command with the given Hash Table 
-//comparar el comando con la tabla Hash dada
-if((n = CompareTableImplement(newLine, nLine, ArgsInputRules.commandLength, ArgsInputRules.commandTable, LenghtOfCommand)) != 0) return -1;
+    // Ignore the command part and compare the arguments
+    //Ignorar el comando y comparar los argumentos
 
-//Ignore the character from the part of command
-//Ignorar los caracteres de la parte de comando
-String remainingnewLine = newLine.substring(LenghtOfCommand);        
+    String remainingNewLine = newLine.substring(LengthOfCommand);
+    if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRules.argLength, ArgsInputRules.argTable, LengthOfCommand)) != 0) {
+        return -1;
+    }
 
-if((n = CompareTableImplement(remainingnewLine, nLine, ArgsInputRules.argLength, ArgsInputRules.argTable, LenghtOfCommand)) != 0) return -1;
-
-return 0;
+    return 0;
 }
 //-------------------------------------------------------
 public int identifyTheFormat(String FormatExample, int SensibletoMayus){
