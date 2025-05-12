@@ -302,7 +302,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules,  ArrayList<Character> DelimitersInTheFormatPattern, int SensibleToMayus){
+public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus){
         
 return 0;
 }
