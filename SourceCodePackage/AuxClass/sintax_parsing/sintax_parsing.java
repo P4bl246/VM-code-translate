@@ -25,11 +25,15 @@ public void HashTablePreDet();// This method is used to create a hash table with
                                                                                                                                                      //Implementación para la siguiente función(Solo para comandos que no reciben argumentos)
 
     public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined);
-
-    //This method is used to compare the Command with the command table(Hash table), integrated the function CompareTableImplement
-                                                                                                                                                                                      
+    //This method is used to compare the Command with the command table(Hash table), integrated the function CompareTableImplement                                                                                                                                                                               
     //Este método se utiliza para comparar el comando con la tabla de comandos (tabla hash), integra la función CompareTableImplement
-//-----------------------------------
+//-------------------------------------------------------------           
+    public int identifyTypeIntOrChar(char actual, int SensibleToMayus); //This method is used to find and identify the character and return his value like an integer
+                                                                        //Ese método se utiliza para encontrar y indentificar el carácter y retornar su valor como entero
+
+    public int identifyTheFormat(String FormatExample, int SensibletoMayus);//This method is used to get and identify the pattern of a format in a line, use the above function
+                                                                            //Este método se utiliza para obtener y identificar el patrón de un formato en una linea, utiliza la función anterior    
+//-------------------------------------------------------------
     public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable,int AddToPreDefined);// This method is used to create a hash table
 //-----------------------------------****************--------------------------******                                                                           // Este método se utiliza para crear una tabla hash
 
@@ -303,17 +307,17 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 return 0;
 }
 //-------------------------------------------------------
-public int identifyTheFormat(String FormatExample, ArrayList<Character> Delimiters, int SensibletoMayus){
-int numDel = Delimiters.size();
-int n = 0;
-if(numDel > 0){
-    StringBuilder del = new StringBuilder();
-    for(char delimiter : Delimiters){
-          if()
+public int identifyTheFormat(String FormatExample, int SensibletoMayus){
+int n = 0; //Get the format in a integer number
+            //Obtener el formato en un número entero
+
+//iterate until the end of the FormatExample
+//Recorrer la cadena FromatExample
+        for (int i = 0; i < FormatExample.length(); i++) {
+        char actualChar = FormatExample.charAt(i);
+        n += identifyTypeIntOrChar(actualChar, SensibletoMayus);
     }
-     n += identifyTypeIntOrChar(actual, SensibletoMayus);
-}
- return 0;
+ return n;
 }
 //-------------------------------------------------------
 public int identifyTypeIntOrChar(char actual, int SensibleToMayus){
