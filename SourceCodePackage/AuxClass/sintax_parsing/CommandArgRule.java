@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 //this is a special class thinking for a function from the 'sintax_parsing' class, call 'CompareCommandsWithArgs'
 //Esta es una clase especial pensada para una función de la clase 'sintax_parsing', llamada 'CompareCommandsWithArgs'
-public class VarArgumentsConstructor{
     //format of the arguments
     //Formato de los argumentos
      public class CommandArgRule {
@@ -26,5 +25,4 @@ public class VarArgumentsConstructor{
         this.formatPattern = formatPattern;
         this.MultipleFormatPattern = MultipleFormatPattern2;
     }
-}
 }
