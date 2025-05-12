@@ -1,4 +1,4 @@
-package AuxClass.sintax_parsing;
+package sintax_parsing;
 import java.util.ArrayList; 
 import java.util.HashMap;
 
