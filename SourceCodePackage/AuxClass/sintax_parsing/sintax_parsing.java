@@ -304,38 +304,15 @@ return 0;
 }
 //-------------------------------------------------------
 public int identifyTheFormat(String FormatExample, ArrayList<Character> Delimiters, int SensibletoMayus){
-    char actual2 = '\0';
-  int j = 0;
-  int firstPart = 0;
-  char Delimiter = '\0';
-    for(char Delimiter2 : Delimiters){
-    //Read only the first Delimiter
-    //Leer solo el primer Delimitador
-    if(j == 0){
-        Delimiter = Delimiter2;
-     j++;
-     break;
+int numDel = Delimiters.size();
+int n = 0;
+if(numDel > 0){
+    StringBuilder del = new StringBuilder();
+    for(char delimiter : Delimiters){
+          if()
     }
+     n += identifyTypeIntOrChar(actual, SensibletoMayus);
 }
-if(Delimiter == '\0'){
-    System.err.println("Error\nDETAILS: Expected a Delimiter\n");
-    return -1;
-}
-StringBuilder result = new StringBuilder();
-    //Iterate in the String
-//Recorrer la cadena
-for (int i = 0; i < FormatExample.length(); i++) {
-    char caracter = FormatExample.charAt(i);
-    result.append(caracter);
-    if(caracter == Delimiter){
-       break;
-    }
-}
- String result2 = result.toString();
- for(int i = 0; i < result2.length(); i++){
-    actual2 = result2.charAt(i);
-    firstPart += identifyTypeIntOrChar(actual2, SensibletoMayus);
- }
  return 0;
 }
 //-------------------------------------------------------
