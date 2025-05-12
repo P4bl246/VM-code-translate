@@ -63,7 +63,7 @@ public int parser_Sintaxis(String File_in) {
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans);
-          if (n != 0) CompareCommandsWithArg(line, nLine, null, TableHash.POP_PUSH);
+          if (n != 0) CompareCommandsWithArg(line, nLine, );
         }
      }
     return 0;
@@ -209,16 +209,16 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         return -1;
     }
     else if(hashTableForCompare == null && CompareWithPreDefined != null){
-        int n;
+        int n, i;
         switch (CompareWithPreDefined) {
             case TableHash.POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH );
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i);
                 break;
             case TableHash.Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i);
                 break;
             case TableHash.Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i);
                break;
             default:
             n = -1;
@@ -228,23 +228,23 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         else return 0;
     }
     else if(hashTableForCompare != null && CompareWithPreDefined == null){
-       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare);
+       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i);
        if(n != 0) return -1;
        else return 0;
     }
     else{
         int n;
-        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare);
+        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i);
         if(n != 0){
             switch (CompareWithPreDefined) {
             case TableHash.POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH );
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i);
                 break;
             case TableHash.Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i);
                 break;
             case TableHash.Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i);
                break;
             default:
             n = -1;
@@ -258,7 +258,7 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare){
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int iEspecial){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
@@ -274,6 +274,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             return 0;
         }
         else{
+             iEspecial = 1;
             int i = 1;
             int sub;
             //Iterater until found a conincidence 
@@ -281,6 +282,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             while(!(hashTableForCompare.containsKey(element)) && i<CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
+                iEspecial++;
                 i++;
             }
             // Check if the string is a invalid expression (not found in the table)
@@ -302,9 +304,59 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus){
-  
- return 0;
+public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus, ArrayList<Character>Delimiters){
+  if(ArgsInputRules.MultipleFormatPatter != null && ArgsInputRules.formatPattern != null){
+    System.err.println("Error\nDETAILS: Just can selection one of them parametres 'MultipleFormatPattern or formatPattern'\n");
+    return -1;
+  }
+    int n, h; 
+  bool conincidence = false;
+if(ArgsInputRules.MultipleFormatPattern != null){
+    for(int i = 0; i < ArgsInputRules.MultipleFormatPattern.lenght(); i++){
+
+        if(n == (h = identifyTheFormat(line, SensibleToMayus))){
+            conicidence = true;
+           break;
+      }
+    }
+   if(!coincidence){
+    System.err.printf("Error in the line %s\nDETAILS: The Format for the line is invalid the format will be: '%s'\n", nline, ArgsInputRules.MultipleFormatPatter);
+    return -1; 
+   }
+}
+  n = identifyTheFormat(ArgsInputRules.formatPattern, SensibleToMayus);
+if((n != (h = identifyTheFormat(line, SensibleToMayus))) && conincidence == false){
+    System.err.printf("Error in the line %s\nDETAILS: The Format for the line is invalid the format is: '%s'\n", nline, ArgsInputRules.formatPattern);
+    return -1;
+}
+StringBuilder WithoutDel = new StringBuilder();
+
+//Remove the delimiter for the String for avoid problems
+//Elminar los delimitadores de la cadena para evitar problemas
+for (int i = 0; i < remainingLine.length(); i++) {
+        char character = remainingLine.charAt(i);
+        
+        // Verifica si el carácter no es un delimitador
+        //Veified if the character not is a delimiter
+        if (!Delimiters.contains(character)) {
+            WithoutDel.append(character);  // Agregar el carácter a la nueva cadena
+                                          //add character to new String
+     }
+    }
+
+String newLine = WithoutDel.toString();
+int LenghtOfCommand = 0;
+//compare the command with the given Hash Table 
+//comparar el comando con la tabla Hash dada
+if((n = CompareTableImplement(newLine, nLine, ArgsInputRules.commandLength, ArgsInputRules.commandTable, LenghtOfCommand)) != 0) return -1;
+
+//Ignore the character from the part of command
+//Ignorar los caracteres de la parte de comando
+String remainingnewLine = newLine.substring(LenghtOfCommand);        
+
+if((n = CompareTableImplement(remainingnewLine, nLine, ArgsInputRules.argLength, ArgsInputRules.argTable, LenghtOfCommand)) != 0) return -1;
+
+return 0;
 }
 //-------------------------------------------------------
 public int identifyTheFormat(String FormatExample, int SensibletoMayus){
