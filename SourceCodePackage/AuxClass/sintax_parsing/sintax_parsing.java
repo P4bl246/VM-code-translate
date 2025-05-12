@@ -33,6 +33,9 @@ public void HashTablePreDet();// This method is used to create a hash table with
 
     public int identifyTheFormat(String FormatExample, int SensibletoMayus);//This method is used to get and identify the pattern of a format in a line, use the above function
                                                                             //Este método se utiliza para obtener y identificar el patrón de un formato en una linea, utiliza la función anterior    
+
+    public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRules, int SensibleToMayus, ArrayList<Character> Delimiters); //This method is used to compare commands with arguments like POP and PUSH in this VM code(integrated the above functions)
+                                                                                                                                                       //Este método se utiliza para comparar comandos con argumentos como POP y PUSH en este codigo VM(integra las funciones anteriores)
 //-------------------------------------------------------------
     public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable,int AddToPreDefined);// This method is used to create a hash table
 //-----------------------------------****************--------------------------******                                                                           // Este método se utiliza para crear una tabla hash
@@ -55,7 +58,7 @@ public int parser_Sintaxis(String File_in) {
     String nLine;
     //Create the table for arguments for this vm translator
     //Crear la tabla de argumentos para esta traductor vm
-    ArrayList<String>args;
+    ArrayList<String>args = new ArrayList();
     args.add("constant");
     args.add("local");
     args.add("argument");
@@ -66,6 +69,8 @@ public int parser_Sintaxis(String File_in) {
     args.add("pointer");
     HashMap<String, Integer>argsTable = new HashMap<>();
     CreateHashTable(null, 1, args, argsTable, null);
+    //Starts the sintx parsing
+    //Empieza el analisisi sintactico
     CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "popconstatn1", null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
