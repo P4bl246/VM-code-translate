@@ -53,7 +53,20 @@ public int parser_Sintaxis(String File_in) {
     try(Reader readFilein = new FileReader(File_in)) {
     String line;
     String nLine;
-    CommandArgRule argsCommands = new CommandArgRule()
+    //Create the table for arguments for this vm translator
+    //Crear la tabla de argumentos para esta traductor vm
+    ArrayList<String>args;
+    args.add("constant");
+    args.add("local");
+    args.add("argument");
+    args.add("static");
+    args.add("this");
+    args.add("that");
+    args.add("temp");
+    args.add("pointer");
+    HashMap<String, Integer>argsTable = new HashMap<>();
+    CreateHashTable(null, 1, args, argsTable, null);
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "popconstatn1", null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while((nLine = parser.get(readFilein, Readmode.NumberLine, ' ')) != null) {
