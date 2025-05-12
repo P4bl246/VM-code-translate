@@ -1,7 +1,7 @@
 package AuxClass.sintax_parsing;
 import Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
-import Parser.Parser.*;
+import Parser.Parser.Readmode;
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
 import java.util.HashMap; 
