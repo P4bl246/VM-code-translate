@@ -82,7 +82,7 @@ public int parser_Sintaxis(String File_in) {
           if (n != 0) {
           n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
           if (n != 0){
-            System.err.println("Error in the line %s\nDETAILS: Wrong Sintaxis\n");
+            System.err.println("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
             }
             continue;
