@@ -64,7 +64,7 @@ public int parser_Sintaxis(String File_in) {
     args.add("that");
     args.add("temp");
     args.add("pointer");
-    HashMap<String, Integer>argsTable = new HashMap<>();
+    public HashMap<String, Integer>argsTable = new HashMap<>();
     CreateHashTable(null, 1, args, argsTable, null);
     //Starts the sintx parsing
     //Empieza el analisisi sintactico
