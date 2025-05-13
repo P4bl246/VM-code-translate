@@ -352,6 +352,25 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
         System.err.println("Error\nDETAILS: You can only select one of them: 'MultipleFormatPattern' or 'formatPattern'\n");
         return -1;
     }
+      //Check the map has the format mostLong and Lesslong
+      //Revisar que el mapa tenga su formato mas largo y mas corto
+  else if(ArgsInputRule.MultiplesFormatsPatterns != null){
+    String Lesslong = '0';
+    String mostLong = '0';
+    for (Map.Entry<String, String> entry : ArgsInputRule.MultiplesFormatsPatterns.entrySet()) {
+            if ((Lesslong = entry.getKey) == null || (mostLong =entry.getKey) == null) {
+                System.err.println("Error in the format pattern:"+"format pattern most long: "+mostlong+"fomat pattern less long: "+Lesslong+"\nDETAILS: All formats need to has a less long format en most long format (can't be equal 'null')(If you want make 0 in any of these, put a number)\n"); 
+              return -1;
+        }
+  }
+    else if(ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null){
+      System.err.println("Error in the format pattern:\n"+"format pattern most long: "+ArgsInputRule.formatPatternMostLong+"fomat pattern less long: "+ArgsInputRule.formatPatternLessLong+"\nDETAILS: All formats need to has a less long format en most long format (can't be equal 'null')(If you want make 0 in any of these, put a number)\n"); 
+     return -1;
+  }
+  else if(ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null){
+      System.err.println("Error in the format pattern:\n"+"format pattern most long: "+ArgsInputRule.formatPatternMostLong+"fomat pattern less long: "+ArgsInputRule.formatPatternLessLong+"\nDETAILS: All formats need to has a less long format en most long format (can't be equal 'null')(If you want make 0 in any of these, put a number)\n"); 
+     return -1;
+  }
 
     int n = 0, r = 0, n2 = 0;
     boolean coincidence = false;
@@ -361,8 +380,8 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 
     if (ArgsInputRule.MultiplesFormatsPatterns != null) {
         r = identifyTheFormat(line, SensibleToMayus);
-          for (String patternMost, String patternless : ArgsInputRule.MultipleFormatPattern) {
-            if ((r >=(n2 = identifyTheFormat(patternless, SensibleToMayus)) && (r <= (n = identifyTheFormat(patternMost, SensibleToMayus)))) {
+          for (Map.Entry<String, String> entry : ArgsInputRule.MultiplesFormatsPatterns.entrySet()) {
+            if ((r >=(n = identifyTheFormat(entry.getKey, SensibleToMayus)) && (r <= (n2 = identifyTheFormat(entry.getValue, SensibleToMayus)))) {
                 coincidence = true;
                 break;
             }
@@ -379,7 +398,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
   
     n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
     n2 = identifyTheFormat(ArgsInputRule.foramtPatterLessLong, SensibleToMayus);
-    if ((n != (r = identifyTheFormat(line, SensibleToMayus))) && !coincidence) {
+    if (!((n >= (r = identifyTheFormat(line, SensibleToMayus))) && (n2 <= (r = identifyTheFormat(line, SensibleToMayus)))) && !coincidence) {
         System.err.printf("Error in the line %s\nDETAILS: The format for the line is invalid. The format is: '%s'\n", nLine, ArgsInputRule.formatPattern);
         return -1;
     }
