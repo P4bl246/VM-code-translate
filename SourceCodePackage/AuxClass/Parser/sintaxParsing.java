@@ -71,23 +71,23 @@ public int parser_Sintaxis(String File_in) {
     CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "popconstatn1", null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
-    while((nLine = parserf.get(readFilein, Readmode.NumberLine, ' ')) != null) {
+    while((nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ')) != null) {
         readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
-        line = parserf.get(readFilein, Readmode.CompletelyLine, '0');
+        line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0');
         
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans);
           if (n != 0) {
           n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
-          }
-          continue;
           if (n != 0){
             System.err.println("Error in the line %s\nDETAILS: Wrong Sintaxis\n");
              return -1;
             }
             continue;
+          }
+          continue;
         }
         continue;
      }
