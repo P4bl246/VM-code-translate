@@ -72,7 +72,7 @@ public int parser_Sintaxis(String File_in) {
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while((nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ')) != null) {
-        readFilein.read();// Skip the number line String and the space
+       readFilein.read();// Skip the number line String and the space
                          // Omitir la cadena de número de línea y el espacio
         line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0');
         
