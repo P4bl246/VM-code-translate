@@ -309,7 +309,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             int sub;
             //Iterater until found a conincidence 
             //Iterar hasta encontrar una conincidencia
-            while(!(hashTableForCompare.containsKey(element)) && i < CharsNumToCompare_SRING_MORE_LONG){
+            while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
                 iEspecial = sub;
@@ -317,8 +317,8 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             }
             // Check if the string is a invalid expression (not found in the table)
            // Verificar si la cadena es una expresión no válida (no encontrada en la tabla)
-            if(i == CharsNumToCompare_SRING_MORE_LONG){
-                System.err.printf("Error in the line %s\nDETAILS: Invalid Expression\n");
+            if(i > CharsNumToCompare_SRING_MORE_LONG){
+                System.err.printf("Error in the line %s\nDETAILS: Invalid Expression, not found in the Hash Table\n", nLine);
                 return -1;
             }
             return 0;
