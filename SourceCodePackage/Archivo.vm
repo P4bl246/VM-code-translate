@@ -1,7 +1,3 @@
-yuca 1lkjsdf
-//esto en otro
-dlkfuasldfi//esto es eun comentario
-/*esto es un bomentario en blocque
-
-*/
-/*Esto es un comentario/*anidado/*anidado dentro de el anidado*/*/*/
+push constant 10
+add
+pop local 0

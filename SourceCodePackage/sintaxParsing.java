@@ -1,5 +1,5 @@
-package AuxClass.Parser;
-//import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
+
+import AuxClass.Parser.*; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
 
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
@@ -55,7 +55,7 @@ public int parser_Sintaxis(String File_in) {
     String nLine;
     //Create the table for arguments for this vm translator
     //Crear la tabla de argumentos para esta traductor vm
-    ArrayList<String>args = new ArrayList();
+    ArrayList<String> args = new ArrayList<>();
     args.add("constant");
     args.add("local");
     args.add("argument");
