@@ -312,7 +312,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             while(!(hashTableForCompare.containsKey(element)) && i < CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
-                iEspecial++;
+                iEspecial = sub;
                 i++;
             }
             // Check if the string is a invalid expression (not found in the table)
