@@ -345,85 +345,83 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-  //coregir esta función porque haora multiplesFormatsPattesn es <String, String>
 public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters) {
-    // Check for conflicting parameters (MultipleFormatPattern and formatPattern cannot be both set)
-    if (ArgsInputRule.MultiplesFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null) {
-        System.err.println("Error\nDETAILS: You can only select one of them: 'MultipleFormatPattern' or 'formatPattern'\n");
+
+    // Verifica que no se usen ambos tipos de formato al mismo tiempo
+    if (ArgsInputRule.multipleFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null || (ArgsInputRule.multipleFormatsPatterns == null && ArgsInputRule.formatPatternMostLong == null)) {
+        System.err.println("Error\nDETAILS: You can only select one: 'multipleFormatsPatterns' or 'formatPatternMostLong'\n");
         return -1;
     }
-      //Check the map has the format mostLong and Lesslong
-      //Revisar que el mapa tenga su formato mas largo y mas corto
-  else if(ArgsInputRule.MultiplesFormatsPatterns != null){
-    String Lesslong = '0';
-    String mostLong = '0';
-    for (Map.Entry<String, String> entry : ArgsInputRule.MultiplesFormatsPatterns.entrySet()) {
-            if ((Lesslong = entry.getKey) == null || (mostLong =entry.getKey) == null) {
-                System.err.println("Error in the format pattern:"+"format pattern most long: "+mostlong+"fomat pattern less long: "+Lesslong+"\nDETAILS: All formats need to has a less long format en most long format (can't be equal 'null')(If you want make 0 in any of these, put a number)\n"); 
-              return -1;
-        }
-  }
-    else if(ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null){
-      System.err.println("Error in the format pattern:\n"+"format pattern most long: "+ArgsInputRule.formatPatternMostLong+"fomat pattern less long: "+ArgsInputRule.formatPatternLessLong+"\nDETAILS: All formats need to has a less long format en most long format (can't be equal 'null')(If you want make 0 in any of these, put a number)\n"); 
-     return -1;
-  }
-  else if(ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null){
-      System.err.println("Error in the format pattern:\n"+"format pattern most long: "+ArgsInputRule.formatPatternMostLong+"fomat pattern less long: "+ArgsInputRule.formatPatternLessLong+"\nDETAILS: All formats need to has a less long format en most long format (can't be equal 'null')(If you want make 0 in any of these, put a number)\n"); 
-     return -1;
-  }
 
-    int n = 0, r = 0, n2 = 0;
+    // Validación para múltiples formatos
+    if (ArgsInputRule.multipleFormatsPatterns != null) {
+        for (Map.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
+            String lessLong = entry.getKey();
+            String mostLong = entry.getValue();
+            if (lessLong == null || mostLong == null) {
+                System.err.printf("Error in format pattern: formatPatternMostLong: %s, formatPatternLessLong: %s\nDETAILS: All formats must define both a most long and less long pattern.\n", mostLong, lessLong);
+                return -1;
+            }
+        }
+    }
+
+    // Validación para formato único
+    if ((ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null) ||
+        (ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null)) {
+        System.err.printf("Error in format pattern:\nMost long: %s\nLess long: %s\nDETAILS: Both formatPatternMostLong and formatPatternLessLong must be defined.\n",
+                          ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
+        return -1;
+    }
+
+    int n, r, n2;
     boolean coincidence = false;
 
-    // Check if multiple formats are provided
-    //Revisar si se dieron multiples formatos
-
-    if (ArgsInputRule.MultiplesFormatsPatterns != null) {
+    // Si hay múltiples formatos, validar si la línea entra en alguno
+    if (ArgsInputRule.multipleFormatsPatterns != null) {
         r = identifyTheFormat(line, SensibleToMayus);
-          for (Map.Entry<String, String> entry : ArgsInputRule.MultiplesFormatsPatterns.entrySet()) {
-            if ((r >=(n = identifyTheFormat(entry.getKey, SensibleToMayus)) && (r <= (n2 = identifyTheFormat(entry.getValue, SensibleToMayus)))) {
+        for (Map.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
+            n = identifyTheFormat(entry.getKey(), SensibleToMayus);
+            n2 = identifyTheFormat(entry.getValue(), SensibleToMayus);
+            if (r >= n && r <= n2) {
                 coincidence = true;
                 break;
             }
         }
 
         if (!coincidence) {
-            System.err.printf("Error in the line %s\nDETAILS: The format for the line is invalid. The format should be: '%s'\n", nLine, ArgsInputRule.MultipleFormatPattern);
+            System.err.printf("Error in line %s\nDETAILS: Format is invalid for this line.\n", nLine);
             return -1;
         }
     }
 
-    // Check if the single format pattern is valid
-    //Revisar si solo se dio un formatodo
-  
-    n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
-    n2 = identifyTheFormat(ArgsInputRule.foramtPatterLessLong, SensibleToMayus);
-    if (!((n >= (r = identifyTheFormat(line, SensibleToMayus))) && (n2 <= (r = identifyTheFormat(line, SensibleToMayus)))) && !coincidence) {
-        System.err.printf("Error in the line %s\nDETAILS: The format for the line is invalid. The format is: '%s'\n", nLine, ArgsInputRule.formatPattern);
-        return -1;
+    // Validar con formato único
+    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null) {
+        n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
+        n2 = identifyTheFormat(ArgsInputRule.formatPatternLessLong, SensibleToMayus);
+        r = identifyTheFormat(line, SensibleToMayus);
+
+        if (!(r >= n2 && r <= n)) {
+            System.err.printf("Error in line %s\nDETAILS: Format is invalid. Expected between: '%s' and '%s'\n", nLine, ArgsInputRule.formatPatternLessLong, ArgsInputRule.formatPatternMostLong);
+            return -1;
+        }
     }
 
-    // Remove delimiters from the line
-    //Eliminaro los delimitadores de la line
+    // Eliminar delimitadores
     StringBuilder WithoutDel = new StringBuilder();
-    for (int i = 0; i < line.length(); i++) {
-        char character = line.charAt(i);
-        if (!Delimiters.contains(character)) {
-            WithoutDel.append(character);  // Add character to new string
+    for (char c : line.toCharArray()) {
+        if (!Delimiters.contains(c)) {
+            WithoutDel.append(c);
         }
     }
     String newLine = WithoutDel.toString();
 
-    // Compare with the command table
-    //comparar con la tabla de comandos el comando
+    // Comparar comando
     int LengthOfCommand = 0;
     if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
 
-    // Ignore the command part and compare the arguments
-    //Ignorar el comando y comparar los argumentos
-
+    // Comparar argumentos (lo que sobra después del comando)
     String remainingNewLine = newLine.substring(LengthOfCommand);
     if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfCommand, true)) != 0) {
         return -1;
