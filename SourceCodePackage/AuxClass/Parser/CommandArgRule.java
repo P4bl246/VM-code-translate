@@ -1,4 +1,4 @@
-package Auxclass.Parser;
+package AuxClass.Parser;
 import java.util.ArrayList; 
 import java.util.HashMap;
 
