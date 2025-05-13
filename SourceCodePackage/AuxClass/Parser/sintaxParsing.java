@@ -1,4 +1,4 @@
-package sintax_parsing;
+package AuxClass.Parser;
 //import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
 
