@@ -228,7 +228,7 @@ public String GetNchars(String input, int n) {
     return result.toString();
 }
 //-------------------------------------------------------
-public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined) {
+public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, bool withArgs) {
     int i = 0;
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
         System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
@@ -242,13 +242,13 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         int n;
         switch (CompareWithPreDefined) {
             case POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i, true);
                 break;
             case Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i, false);
                 break;
             case Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i, false);
                break;
             default:
             n = -1;
@@ -258,23 +258,23 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         else return 0;
     }
     else if(hashTableForCompare != null && CompareWithPreDefined == null){
-       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i);
+       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i, withArgs);
        if(n != 0) return -1;
        else return 0;
     }
     else{
         int n;
-        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i);
+        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i, withArgs);
         if(n != 0){
             switch (CompareWithPreDefined) {
             case POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i, true);
                 break;
             case Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i, false);
                 break;
             case Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i, false);
                break;
             default:
             n = -1;
@@ -288,12 +288,12 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int iEspecial){
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int iEspecial, bool withArgumets){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
         String element = GetNchars(line, CharsNumToCompare_SRING_MORE_LONG);
-        if (hashTableForCompare.containsKey(element)) {
+        if (hashTableForCompare.containsKey(element) && !withArgumets) {
             // Verificar que no haya caracteres inesperados después del tercer carácter
             // Check that there are no unexpected characters after the third character
             String remaining = line.substring(CharsNumToCompare_SRING_MORE_LONG); // Tomamos lo que sigue //Take the rest of line 
