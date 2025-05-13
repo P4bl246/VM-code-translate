@@ -68,7 +68,7 @@ public int parser_Sintaxis(String File_in) {
     CreateHashTable(null, 1, args, argsTable, null);
     //Starts the sintx parsing
     //Empieza el analisisi sintactico
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "popconstatn1", null);
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant32768", "popthis0" null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while((nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ')) != null) {
@@ -345,23 +345,24 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
+  //coregir esta función porque haora multiplesFormatsPattesn es <String, String>
 public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters) {
     // Check for conflicting parameters (MultipleFormatPattern and formatPattern cannot be both set)
-    if (ArgsInputRule.MultipleFormatPattern != null && ArgsInputRule.formatPattern != null) {
+    if (ArgsInputRule.MultiplesFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null) {
         System.err.println("Error\nDETAILS: You can only select one of them: 'MultipleFormatPattern' or 'formatPattern'\n");
         return -1;
     }
 
-    int n = 0, r = 0;
+    int n = 0, r = 0, n2 = 0;
     boolean coincidence = false;
 
     // Check if multiple formats are provided
     //Revisar si se dieron multiples formatos
 
-    if (ArgsInputRule.MultipleFormatPattern != null) {
+    if (ArgsInputRule.MultiplesFormatsPatterns != null) {
         r = identifyTheFormat(line, SensibleToMayus);
-        for (String pattern : ArgsInputRule.MultipleFormatPattern) {
-            if ((n = identifyTheFormat(pattern, SensibleToMayus)) == r) {
+          for (String patternMost, String patternless : ArgsInputRule.MultipleFormatPattern) {
+            if ((r >=(n2 = identifyTheFormat(patternless, SensibleToMayus)) && (r <= (n = identifyTheFormat(patternMost, SensibleToMayus)))) {
                 coincidence = true;
                 break;
             }
@@ -375,8 +376,9 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 
     // Check if the single format pattern is valid
     //Revisar si solo se dio un formatodo
-
-    n = identifyTheFormat(ArgsInputRule.formatPattern, SensibleToMayus);
+  
+    n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
+    n2 = identifyTheFormat(ArgsInputRule.foramtPatterLessLong, SensibleToMayus);
     if ((n != (r = identifyTheFormat(line, SensibleToMayus))) && !coincidence) {
         System.err.printf("Error in the line %s\nDETAILS: The format for the line is invalid. The format is: '%s'\n", nLine, ArgsInputRule.formatPattern);
         return -1;
