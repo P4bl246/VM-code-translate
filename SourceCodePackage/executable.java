@@ -15,8 +15,8 @@ public class executable {
          if(n != 0) return;
 
       sintaxParsing r = new sintaxParsing();
-         
-         n = r.parser_Sintaxis("fileCopy.txt");
+    
+         n = r.CreateHashTable("hi", 0, )
          if(n != 0) return;
      
          return;        

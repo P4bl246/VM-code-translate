@@ -159,6 +159,10 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
     // If SimpleOrMultiples is not 0, create a hash table for multiple elements
     // Si SimpleOrMultiples no es 0, crea una tabla hash para múltiples elementos
     if (SimpleOrMultiples != 0) {
+        if(NewElements == null){
+            System.err.printf("Error: NewElements are null and you select 'Multiples'(SimpleOrMultiple: %d)", SimpleOrMultiples);
+        return;
+        }
         // Iterate through the list of new elements and add them to the hash table
         // Itera a través de la lista de nuevos elementos y agrégales a la tabla hash
         for (String element2 : NewElements) {
@@ -187,6 +191,10 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
     // If SimpleOrMultiples is 0, create a hash table for a single element
     // Si SimpleOrMultiples es 0, crea una tabla hash para un solo elemento 
     else {
+        if(element == null){
+            System.err.printf("Error: element are null and you select 'Single'(SimpleOrMultiple: %d)", SimpleOrMultiples);
+        return;
+        }
         hash = 0;
         for (int i = 0; i < element.length(); i++) {
             hash += element.charAt(i);
