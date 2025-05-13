@@ -1,7 +1,7 @@
 package sintax_parsing;
-import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
+//import AuxClass.Parser.Parser; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
-import AuxClass.Parser$Readmode;
+
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
 import java.util.HashMap; 
@@ -329,7 +329,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine,CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters) {
+public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters) {
     // Check for conflicting parameters (MultipleFormatPattern and formatPattern cannot be both set)
     if (ArgsInputRule.MultipleFormatPattern != null && ArgsInputRule.formatPattern != null) {
         System.err.println("Error\nDETAILS: You can only select one of them: 'MultipleFormatPattern' or 'formatPattern'\n");
