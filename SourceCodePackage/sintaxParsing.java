@@ -228,7 +228,7 @@ public String GetNchars(String input, int n) {
     return result.toString();
 }
 //-------------------------------------------------------
-public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, bool withArgs) {
+public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs) {
     int i = 0;
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
         System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
@@ -288,7 +288,7 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int iEspecial, bool withArgumets){
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int iEspecial, boolean withArgumets){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
@@ -309,7 +309,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             int sub;
             //Iterater until found a conincidence 
             //Iterar hasta encontrar una conincidencia
-            while(!(hashTableForCompare.containsKey(element)) && i<CharsNumToCompare_SRING_MORE_LONG){
+            while(!(hashTableForCompare.containsKey(element)) && i < CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
                 iEspecial++;
