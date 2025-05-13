@@ -76,9 +76,9 @@ public int parser_Sintaxis(String File_in) {
                          // Omitir la cadena de número de línea y el espacio
         line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0');
         
-        n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics);
+        n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false);
         if (n != 0){
-          n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans);
+          n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false);
           if (n != 0) {
           n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
           if (n != 0){
