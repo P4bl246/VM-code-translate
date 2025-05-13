@@ -386,7 +386,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Compare with the command table
     //comparar con la tabla de comandos el comando
     int LengthOfCommand = 0;
-    if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand)) != 0) {
+    if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
 
@@ -394,7 +394,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     //Ignorar el comando y comparar los argumentos
 
     String remainingNewLine = newLine.substring(LengthOfCommand);
-    if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfCommand)) != 0) {
+    if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
 
