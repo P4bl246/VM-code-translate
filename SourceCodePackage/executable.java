@@ -19,9 +19,12 @@ public class executable {
          if(n != 0) return;
 
       sintaxParsing r = new sintaxParsing();
+      ArrayList<String> r2 = new ArrayList<>();
+      r2.add("hi");
+      r2.add("yuca");
          HashMap<String, Integer> hashT = new HashMap<>();
-        r.CreateHashTable("hi", 0, null, hashT, null);
-          
+        r.CreateHashTable("hi", 1, r2, hashT, null);
+          System.out.println("\nFormat: Key=Value\nTableHash"+hashT+"\n");
          return;        
     }
 }
