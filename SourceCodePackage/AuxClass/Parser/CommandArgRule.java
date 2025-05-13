@@ -1,30 +1,31 @@
 package AuxClass.Parser;
-import java.util.ArrayList; 
-import java.util.HashMap;
 
-//this is a special class thinking for a function from the 'sintax_parsing' class, call 'CompareCommandsWithArgs'
-//Esta es una clase especial pensada para una función de la clase 'sintax_parsing', llamada 'CompareCommandsWithArgs'
-    //format of the arguments
-    //Formato de los argumentos
-     public class CommandArgRule {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+// Esta es una clase especial pensada para una función de la clase 'sintax_parsing', llamada 'CompareCommandsWithArgs'
+public class CommandArgRule {
     public HashMap<String, Integer> commandTable;
     public HashMap<String, Integer> argTable;
     public int commandLength;
-    public int argLength; //store the lenght of the argument more long
-                          //almacena el tamaño de el argumento mas largo
+    public int argLength;
+
+    // Formato más largo y más corto permitidos para las instrucciones con argumentos
     public String formatPatternMostLong;
     public String formatPatternLessLong;
-    public Map<String, String> MultipleformatsPatterns = new HashMap<String, Strings>();
 
-     //constructor for rules for the format and order of the parameters
-    //Construtor para las reglas de formato y orden de parametros
-    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatterLessLong,  Map<String, String> MultiplesFormatPatterns) {
+    // Múltiples patrones permitidos (por nombre)
+    public Map<String, String> multipleFormatsPatterns = new HashMap<>();
+
+    // Constructor completo
+    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns) {
         this.commandTable = commandTable;
         this.argTable = argTable;
         this.commandLength = commandLength;
         this.argLength = argLength;
         this.formatPatternMostLong = formatPatternMostLong;
-        this.formatPatterLeesLong = formatPatterLessLong;
-        this.MultiplesFormatsPatterns = MultiplesFormatPatterns;
+        this.formatPatternLessLong = formatPatternLessLong;
+        this.multipleFormatsPatterns = multipleFormatsPatterns;
     }
 }
