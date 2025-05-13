@@ -293,6 +293,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
         String element = GetNchars(line, CharsNumToCompare_SRING_MORE_LONG);
+        if(element == null) return -1;
         if (hashTableForCompare.containsKey(element) && !withArgumets) {
             // Verificar que no haya caracteres inesperados después del tercer carácter
             // Check that there are no unexpected characters after the third character
