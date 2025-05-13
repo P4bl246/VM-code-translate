@@ -14,11 +14,11 @@ import java.util.HashMap;
                           //almacena el tamaño de el argumento mas largo
     public String formatPatternMostLong;
     public String formatPatternLessLong;
-    public arrayList<String, String> MultipleformatsPatterns = new ArrayList<String, Strings>();
+    public Map<String, String> MultipleformatsPatterns = new HashMap<String, Strings>();
 
      //constructor for rules for the format and order of the parameters
     //Construtor para las reglas de formato y orden de parametros
-    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatterLessLong, ArrayList<String, String> MultiplesFormatPatterns) {
+    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatterLessLong,  Map<String, String> MultiplesFormatPatterns) {
         this.commandTable = commandTable;
         this.argTable = argTable;
         this.commandLength = commandLength;
