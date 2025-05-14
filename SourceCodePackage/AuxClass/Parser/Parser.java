@@ -88,9 +88,7 @@ public int CleanFile(String file_in){
 
     n = RemoveSimpleComments(file_in, "//");
     if(n != 0) return n;
-    ArrayList<Character> voidLines = new ArrayList<>();
-    voidLines.add('\n');
-    voidLines.add('\0');
+  
     n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
     
@@ -137,6 +135,7 @@ public int RemoveString(String Read_File_In, String Delimiter){
                   //while appears the string in the line
                   //mientras aparezca la cadena en la linea
                   while(n > 0 && n != -1){
+                     newh.setLength(0);
                     //Get the index where start the String in the line
                     //Obtner el indice de donde empiza la cadena en la linea
                      n = searchString(false, h, Delimiter, 0, null);
@@ -226,6 +225,7 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
         StringBuilder line = new StringBuilder();
         while ((actual = ReadFile.read()) != -1) { // Leer el primer carácter
                                                    //Read the first character
+           line.setLength(0);
           int n = 0;  
           while((char)actual != '\n' && actual != -1){
                 line.append((char)actual);
@@ -276,58 +276,50 @@ private int actual5; //Global variable to store the actual character (utlized ju
 //This variable is used to store the actual character in the method RemoveBlockComments and RemoveNestedBlockComments
 //Esta variable se utiliza para almacenar el carácter actual en el método RemoveBlockComments y RemoveNestedBlockComments
 
-public int RemoveBlockComments(String Read_File_in) {
+public int RemoveBlockComments(String Read_File_in, String Delimiter, Character DelimiterNumLine) {
     System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
+   if(Delimiter == null){
+     System.err.println("Error: Need put a delimiter\n");
+     return -1;
+   }
     actual5 = 0; // Inicializar la variable global
 
     try (Reader ReadFile = new FileReader(Read_File_in);
          Writer WritteFile = new FileWriter("tempWithoutBlockComments.txt");
          BufferedReader bufferedReader = new BufferedReader(ReadFile)) {
-
-        
+         
+        StringBuilder line = new StringBuilder();
         while (true)  { // Mientras no se alcance el EOF
+           line.setLength(0);
             if(actual5 == -1) break; // Si se alcanza el EOF, salir del bucle
                                     // If EOF is reached, exit the loop
-
-            String nLine = get(ReadFile, Readmode.NumberLine, ' '); // Obtener el número de línea
+           if(DelimiterNumLine != null){
+            String nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine); // Obtener el número de línea
             WritteFile.write(nLine);
-            WritteFile.write(" ");
+            WritteFile.write(DelimiterNumLine);
             actual5 = ReadFile.read(); // Leer el primer carácter
+           }
         // Leer el archivo línea por línea
         // Read the file line by line
 
             // Leer hasta el final de la línea
             // Read until the end of the line
-             while((char)actual5 != '/' && actual5 != -1){
-                WritteFile.write((char)actual5);
-                actual5 = ReadFile.read(); // Leer el siguiente carácter
-                                           // Read the next charactera
-            }
-            if(actual5 == -1) break;
-
-            else if((char)actual5 == '/'){
-                actual5 = ReadFile.read(); // Leer el siguiente carácter
-                                           // Read the next character
-                if(actual5 == -1){
-                    WritteFile.write('/');
-                    break;
-                } 
-                if((char)actual5 == '*'){
-                    actual5 = ReadFile.read(); // Leer el siguiente carácter
-                                                   // Read the next character
-
+          String line = "0"; 
+          while((line = bufferedReader) != null){
+            int n = 0;       
+            if((n = searchString(false, line, Delimiter, 0, null)) == -1) WritteFile.write(line);
+            else{
+               int i;
+                for(i = 0; i <n; i++) WritteFile.write(line.charAt(i));
                     // Si se encuentra un comentario de bloque, eliminarlo
                     // If a block comment is found, remove it
                     int nr = RemoveNestedBlockComments(actual5, ReadFile, nLine);
                     if(nr != 0) return -1;
                 }
-                else{
-                    WritteFile.write('/');
-                    continue;
-                }
             }
         
         }
+    }
 
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
