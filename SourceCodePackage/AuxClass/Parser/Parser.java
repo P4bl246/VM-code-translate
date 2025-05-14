@@ -233,7 +233,7 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
           }
           if(actual == -1) break;
           String h = line.toString();
-          if((n = searchString(false, h , SimpleCommentIdent, 0, null)) != -1)){
+          if((n = searchString(false, h , SimpleCommentIdent, 0, null)) != -1){
             //Writter the character out of the simple comment
             //Escribir los caracters fuera de el comentario simple
             for(int i = 0; i < n; i++){
