@@ -298,7 +298,7 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
 //-------------------------------------------------------
  public static class MutableInt {
     public int value;
-    private MutableInt(int value) {
+    public MutableInt(int value) {
         this.value = value;
     }
 }
@@ -313,7 +313,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             // Verificar que no haya caracteres inesperados después del tercer carácter
             // Check that there are no unexpected characters after the third character
             String remaining = line.substring(CharsNumToCompare_SRING_MORE_LONG); // Tomamos lo que sigue //Take the rest of line 
-            remaining.trim();//ignore the spaces and tab
+            remaining = remaining.trim();//ignore the spaces and tab
                              //ignorar esapcios y tabulaciones
             if (!remaining.isEmpty()) {
                 System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after instruction\n", nLine);
