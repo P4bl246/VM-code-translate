@@ -296,7 +296,7 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int iEspecial, boolean withArgumets){
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int &iEspecial, boolean withArgumets){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
@@ -315,7 +315,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             return 0;
         }
         else{
-             iEspecial = 1;
+             *iEspecial = 1;
             int i = 1;
             int sub;
             //Iterater until found a conincidence 
@@ -323,7 +323,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
-                iEspecial = sub;
+                *iEspecial = sub;
                 i++;
             }
             // Check if the string is a invalid expression (not found in the table)
