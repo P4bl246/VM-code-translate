@@ -126,7 +126,7 @@ public int RemoveString(String Read_File_In, String Delimiter){
               }
               if(c == -1) break;
               String h = line.toString();
-                if((n = searchString(false, h, Delimiter, 0, null) == -1)) writterFile.write(h + '\n');//if the line not has a string //si la line no tiene la cadena
+                if((n = searchString(false, h, Delimiter, 0, null)) == -1) writterFile.write(h + '\n');//if the line not has a string //si la line no tiene la cadena
                 //else if have 1 or more appears of the string
                 else{
                   n = searchString(true, h, Delimiter, 0, null);
