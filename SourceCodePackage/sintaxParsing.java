@@ -296,7 +296,14 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, int &iEspecial, boolean withArgumets){
+ private class lengthOf {
+    public int value;
+    private lengthOf(int value) {
+        this.value = value;
+    }
+}
+    
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, lengthOf iEspecial, boolean withArgumets){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
@@ -323,7 +330,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
-                *iEspecial = sub;
+                iEspecial.value = sub;
                 i++;
             }
             // Check if the string is a invalid expression (not found in the table)
@@ -416,7 +423,8 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     String newLine = WithoutDel.toString();
 
     // Comparar comando
-    int LengthOfCommand = 0;
+    lengthOf LengthOfCommand = new lenghtOf();
+    LengthOfCommand.value = 0;
     if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
