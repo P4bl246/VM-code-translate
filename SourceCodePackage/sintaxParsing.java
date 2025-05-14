@@ -296,14 +296,14 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------
- private class lengthOf {
+ public static class MutableInt {
     public int value;
-    private lengthOf(int value) {
+    private MutableInt(int value) {
         this.value = value;
     }
 }
     
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, lengthOf iEspecial, boolean withArgumets){
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, MutableInt iEspecial, boolean withArgumets){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
@@ -423,7 +423,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     String newLine = WithoutDel.toString();
 
     // Comparar comando
-    lengthOf LengthOfCommand = new lenghtOf();
+    MutableInt LengthOfCommand = new MutableInt();
     LengthOfCommand.value = 0;
     if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
         return -1;
