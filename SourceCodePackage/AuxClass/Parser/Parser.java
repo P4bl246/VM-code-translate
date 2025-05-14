@@ -86,10 +86,12 @@ public int CleanFile(String file_in){
     n = RemoveString(file_in, " ");
     if(n != 0) return n;
 
-    n = RemoveSimpleComments(file_in);
+    n = RemoveSimpleComments(file_in, "//");
     if(n != 0) return n;
-
-    n = RemoveVoidLines(file_in);
+    ArrayList<Character> voidLines = new ArrayList<>();
+    voidLines.add('\n');
+    voidLines.add('\0');
+    n = RemoveVoidLines(file_in, null, voidLines);
     if(n != 0) return n;
     
     n = NumLines(file_in);
@@ -148,77 +150,37 @@ public int RemoveString(String Read_File_In, String Delimiter){
             return -1;
 } 
 //--------------------------------------------------------------
-private int TimesApears = 0;
-public int SearchString(boolean SearchAllApearsTimesAndReturn, String line, String SearchThis, int indexLine, int indexSearch, Char Optionaldelimiter){
-  if(line == null || SearchThis == null){
-    System.err.println("Error: Put corrects arguments inputs in 'line' and 'SearchThis'\n");
-    return -1;
-  }
-  if(indexLine < 0 || indexSearch < 0){
-   System.err.println("Error: Index can't be negative values\n");
-    return -1;
-  }
-  if(indexLine >= line.length() || indexSearch >= SearchThis.length()){
-   System.err.println("Error: Index can't be greather or equal than the length of the string\n");
-    return -1;
-  }
-  if(!SearchAllApearsTimesAndReturn){
-   int countSearch = SearchThis.length();
-   int n = 0;
-    if((n= EqualStrings(line, SearchThis, indexLine, indexSearch, countSearch, Optionaldelimiter, false) == -1){
-     System.out.println("Error: String not found in the line\n");
-    return 0;
-    } else return;
-   }
-  else{
-    
-  }
-}
-//--------------------------------------------------------------      
-public int EqualStrings(String line, String SearchThis, int indexLine, int indexSearch, int lengthOfSearch, Char delimiter, boolean recursiveCall){
-  //Start in a infinite loop
-  //Comenzar en un bucle infinito
-  while(true){
-    //Chek the actual index, if greather than or equal return -2 like a special value for error
-    //Revisar el indice actual, si es mayor o igual retorna -2 como un valor especial para error
-    if(indexSearch >= SearchThis.length()){
-    System.err.println("Error: The index is equal or grether than the '"+SearchThis+"'\n");
-    return -2;
-  }
-  //If dont found coincidence return -1
-  //si no encuentra coincidencia retorna -1
-  if(line.charAt(indexLine) == '\n' || indexLine >= line.length() || line.charAt(indexLine) == delimiter && lengthOfSearch != 0) return -1;//not found //no encontrado;
-  else if(lengthOfSearch  == 0){
-    //if found a coincidence, out from de function //si encuentra una coincidencia sale de la función
-    System.out.println("String '"+SearchThis+"' find in the line\n");
-    return 1;
-  }
-
-  //If it's the pricipal function (not is a recursive call function)
-  //Si es la función principal(No es una llamada recursiva de esta)
-  if((line.charAt(indexLine) == SearchThis.charAt(indexSearch)) && !recursiveCall){
-       indexLine++;
-       indexSearch++;
-       lengthOfSearch--;
-       int n = EqualStrings(line, SearchThis, indexLine, indexSearch, lengthOfSearch, delimiter, true);
-     //Check the result of the call recursive function
-    //Ver el resultado de la función recursiva
-    if(n == -1){
-        lengthOfSearch = SearchThis.length();
-         indexSearch = 0;
-         continue;
-       }
-      else continue;
-    }
-   //If are a recursive function return -1 if the character are diferents, else reutrn 0
-  //Si es una función recursiva retorna -1 si los caracteres son diferentes, sino retorna 0
-   else if(line.charAt(indexLine) != SearchThis.charAt(indexSearch) && recursiveCall){
+public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter) {
+    if (line == null || searchThis == null || startIndex < 0 || startIndex >= line.length()) {
+        System.err.println("Error: Invalid input parameters.");
         return -1;
-     }
-    else if(line.charAt(indexLine) == SearchThis.charAt(indexSearch) && recursiveCall){
-        return 0;
-     }
-  } 
+    }
+
+    int count = 0;
+    for (int i = startIndex; i <= line.length() - searchThis.length(); i++) {
+        if (line.charAt(i) == delimiter) break;
+        
+        boolean match = true;
+        for (int j = 0; j < searchThis.length(); j++) {
+            if (i + j >= line.length() || line.charAt(i + j) != searchThis.charAt(j)) {
+                match = false;
+                break;
+            }
+        }
+
+        if (match) {
+            if (!searchAll) {
+                System.out.println("String found at index " + i);
+                return i;
+            }
+            count++;
+            i += searchThis.length() - 1; // Avoid overlapping matches
+        }
+    }
+
+    if (searchAll) return count;
+    System.out.println("String not found.");
+    return -1;
 }
 //--------------------------------------------------------------
 public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) {
@@ -227,46 +189,38 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
 
     try (Reader ReadFile = new FileReader(Read_File_In);
          Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")) {
-      
+        StringBuilder line = new StringBuilder();
         while ((actual = ReadFile.read()) != -1) { // Leer el primer carácter
+                                                   //Read the first character
           int n = 0;  
-          if((n = Search(mode.String, String.valueOf(actual), SimpleCommentIdent != 0)){
-            while ((actual = ReadFile.read()) != -1 && (char) actual != '\n') {
-                        // Ignorar caracteres hasta el final de la línea
-                    }
-                    if (actual == '\n') {
-                        WritteFile.write('\n'); // Escribir el salto de línea
-                    }
-          } 
-          else {
-                WritteFile.write((char) actual); // Escribir el carácter actual
+          while((char)actual != '\n' && actual != -1){
+                line.append((char)actual);
+                actual = ReadFile.read();
+          }
+          if(actual == -1) break;
+          String h = line.toString();
+          if((n = searchString(false, h , SimpleCommentIdent, 0, null)) != -1)){
+            //Writter the character out of the simple comment
+            //Escribir los caracters fuera de el comentario simple
+            for(int i = 0; i < n; i++){
+              WritteFile.write(h.charAt(i)); 
             }
-            /*if ((char) actual == '/') {
-                int next = ReadFile.read(); // Leer el siguiente carácter
-                if (next == -1) {
-                    WritteFile.write((char) actual); // Escribir el '/' si es el último carácter
-                    break;
-                }
-                if ((char) next == '/') {
-                    // Leer hasta el final de la línea
-                    while ((actual = ReadFile.read()) != -1 && (char) actual != '\n') {
-                        // Ignorar caracteres hasta el final de la línea
-                    }
-                    if (actual == '\n') {
-                        WritteFile.write('\n'); // Escribir el salto de línea
-                    }
-                } else {
-                    WritteFile.write((char) actual); // Escribir el '/'
-                    WritteFile.write((char) next);   // Escribir el siguiente carácter
-                }
-            } */
+            //Ignore the character after of the simple coment
+            // Ignorar los caracteres despues de el comentario simple
+            
+               WritteFile.write('\n'); // Escribir el salto de línea
+                                       // Writte the jump of line
+          }
+          //Escribir la línea
+          //Write the line
+          else WritteFile.write(h + '\n');
         }
 
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
     }
-
+     //Upload the input file
     // Actualizar el archivo de entrada
     File infile = new File(Read_File_In);
     if (infile.delete()) {
