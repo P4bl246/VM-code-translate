@@ -148,52 +148,8 @@ public int RemoveString(String Read_File_In, String Delimiter){
             return -1;
 } 
 //--------------------------------------------------------------
-public int SearchString(String line, Char actual, String SearchThis, Char OptionalDelimiter, boolean SearchAllApearsAndReturnTimes){
-  if(line == null){
-    System.err.println("line is equal to null\n");
-    return 0;//especial value
-            //valor especial
-    }
-  else if(SearchThis == null){
-    System.err.println("Can't search 'null'\n");
-    return 0;
-  }
-  int n = line.lenght();
-  int originalSearch = SearchThis.lenght();
-  int h = originalSearch;
-  if(h >= n){
-    System.err.println("Error: Can't search something equal or greather than the input line: '"+line+"'\n");
-    return 0;
-  }
-  char actual = '0';
-  originalSearch = 0;
-  int j = 0, i = 0;
-  while((actual = line.charAt(j)) != SearchThis.indexOf(i) && (actual != '\n' && actual != null && actual != '\0' && actual != OptionalDelimiter)) j++;
-  if(actual == SearchThis.indexOf(i) && !SearchAllApears){
-    StringBuilder Searchign = new StringBuilder();
-      while(actual != '\n' && actual != null && actual != '\0' && acutal != OptionalDelimiter && h != 0){
-        if(actual == SearchThis.(
-        Searching.append(actual);
-        h--;
-      }
-    if(h != 0){
-      return 0;//find
-               //Se encontro
-    }
-    
-  }
- else if(actual == SearchThis.indexOf(i) && SearchAllApears){
-    StringBuilder Searchign = new StringBuilder();
-      while(actual != '\n' && actual != null && actual != '\0' && acutal != OptionalDelimiter && h != 0){
-        Searching.append(actual);
-        h--;
-        if(h == 0)
-     }
-   }
-}
-//--------------------------------------------------------------
 private int TimesApears = 0;
-public int Equal(boolean SearchAllApearsTimesAndReturn, String line, String SearchThis, int indexLine, int indexSearch, Char Optinoaldelimiter){
+public int SearchString(boolean SearchAllApearsTimesAndReturn, String line, String SearchThis, int indexLine, int indexSearch, Char Optionaldelimiter){
   if(line == null || SearchThis == null){
     System.err.println("Error: Put corrects arguments inputs in 'line' and 'SearchThis'\n");
     return -1;
@@ -208,11 +164,15 @@ public int Equal(boolean SearchAllApearsTimesAndReturn, String line, String Sear
   }
   if(!SearchAllApearsTimesAndReturn){
    int countSearch = SearchThis.length();
-   while(line.charAt(indexLine) != '\n' && line.charat(indexLine) != Optionaldelimiter && line.charAt(indexLine) != '\0' && countSearch != 0){
-     
+   int n = 0;
+    if((n= EqualStrings(line, SearchThis, indexLine, indexSearch, countSearch, Optionaldelimiter, false) == -1){
+     System.out.println("Error: String not found in the line\n");
+    return 0;
+    } else return;
    }
+  else{
+    
   }
-  
 }
 //--------------------------------------------------------------      
 public int EqualStrings(String line, String SearchThis, int indexLine, int indexSearch, int lengthOfSearch, Char delimiter, boolean recursiveCall){
@@ -228,7 +188,11 @@ public int EqualStrings(String line, String SearchThis, int indexLine, int index
   //If dont found coincidence return -1
   //si no encuentra coincidencia retorna -1
   if(line.charAt(indexLine) == '\n' || indexLine >= line.length() || line.charAt(indexLine) == delimiter && lengthOfSearch != 0) return -1;//not found //no encontrado;
-  else if(lengthOfSearch  == 0) return 1; //if found a coincidence, out from de function //si encuentra una coincidencia sale de la función
+  else if(lengthOfSearch  == 0){
+    //if found a coincidence, out from de function //si encuentra una coincidencia sale de la función
+    System.out.println("String '"+SearchThis+"' find in the line\n");
+    return 1;
+  }
 
   //If it's the pricipal function (not is a recursive call function)
   //Si es la función principal(No es una llamada recursiva de esta)
