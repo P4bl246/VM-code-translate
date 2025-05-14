@@ -83,7 +83,7 @@ public int File_to_txt(String file_In, String nameOfNewFileWithFormat) {
 public int CleanFile(String file_in){
     System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
     int n;
-    n = RemoveString(file_in, " ");
+    n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
 
     n = RemoveSimpleComments(file_in, "//");
@@ -91,7 +91,7 @@ public int CleanFile(String file_in){
     ArrayList<Character> voidLines = new ArrayList<>();
     voidLines.add('\n');
     voidLines.add('\0');
-    n = RemoveVoidLines(file_in, null, voidLines);
+    n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
     
     n = NumLines(file_in);
@@ -111,23 +111,57 @@ public int CleanFile(String file_in){
 }
 //--------------------------------------------------------------
 public int RemoveString(String Read_File_In, String Delimiter){
-    System.out.printf("\nREMOVING SPACES FROM THE FILE: '%s'...\n\n", Read_File_In);
+    System.out.printf("\nREMOVING STRING FROM THE FILE: '%s'...\n\n", Read_File_In);
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
-    try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter("tempWithoutSpaces.txt")){ 
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter("tempWithoutString.txt")){ 
             int c = ReadFile.read(); // Read the first character
                                       // Leer el primer carácter
-
+              StringBuilder line = new StringBuilder();
             //While don't find EOF (End of file)
             //Mientras no encuentre EOF (Fin de archivo)
             while(c != -1){
-                if((char)c != Delimiter){
-                    writterFile.write((char)c);
-                }
-                c = ReadFile.read(); // Read the next character
-                                 // Leer el siguiente carácter
+              line.setLength(0);
+              while((char)c != '\n' && c!= -1){
+                line.append((char)c);
+                c = ReadFile.read();
+              }
+              if(c == -1) break;
+              String h = line.toString();
+                if((n = searchString(false, h, Delimiter, 0, null) == -1)) writterFile.write(h + '\n');//if the line not has a string //si la line no tiene la cadena
+                //else if have 1 or more appears of the string
+                else{
+                  n = searchString(true, h, Delimiter, 0, null);
+                  StringBuilder newh = new StringBuilder();
+                  int r = Delimiter.length();
+                  //while appears the string in the line
+                  //mientras aparezca la cadena en la linea
+                  while(n > 0 && n != -1){
+                    //Get the index where start the String in the line
+                    //Obtner el indice de donde empiza la cadena en la linea
+                     n = searchString(false, h, Delimiter, 0, null);
+                     //copy the characters before of the first appear of the string
+                    //copiar los caracters antes de la primera aparición de la cadena
+                     for(int i = 0; i < n; i++) newh.append(h.charAt(i));
+                     int index = 0; 
+                     index = r + n; //tomamos el indice ignorando la cadena
+                                   //Get de index ignoridn the string
+                    //while not find the end of line, copy the rest of line
+                    //mientras no se llegue a el final de la linea, copiar el resto de la línea
+                     while(h.charAt(r) != '\n'){
+                      newh.append(h.charAt(r));
+                       r++;
+                     }
+                     h = newh.toString();
+                     n = searchString(true, h, Delimiter, 0, null);
+                  }
+                //Writte the clean line in the file
+                //Escribir la linea limpia en el archivo
+                writterFile.write(h + '\n');
+                
             }
         }
+    }
         catch(IOException e){
             System.out.println("Error: " + e.getMessage());
             return -1; // Error
@@ -136,7 +170,7 @@ public int RemoveString(String Read_File_In, String Delimiter){
         //Subir los cambios de el archivo de entrada renombrandolo 
         File inFile = new File(Read_File_In);
             if(inFile.delete()){
-                File temp = new File("tempWithoutSpaces.txt");
+                File temp = new File("tempWithoutString.txt");
                 if(temp.renameTo(inFile)){
                     System.out.printf("The file 'Temp.txt' is rename to '%s'\n", Read_File_In);
                     System.out.printf("\nTHE FILE '%s' IS CLEAN OF SPACES\n", Read_File_In);
@@ -348,37 +382,32 @@ public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) 
     return 0;
 }
 //--------------------------------------------------------------
-public int RemoveVoidLines(String Read_File_In){
-    System.out.printf("\nREMOVING VOID LINES FROM THE FILE: '%s'...\n\n", Read_File_In);
+public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
+    System.out.printf("\nREMOVING VOID CHARS FROM THE FILE: '%s'...\n\n", Read_File_In);
     // Open the file for reading
     // Abrir el archivo para lectura y el archivo de escritura
-    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter("tempWithoutVoidLines.txt")){
+    try(Reader ReadFile = new FileReader(Read_File_In); Writer WritteFile = new FileWriter("tempWithoutVoidChars.txt")){
         int c = ReadFile.read(); // Read the first character
                                   // Leer el primer carácter
         //While don't find EOF (End of file)
         //Mientras no encuentre EOF (Fin de archivo)
         while(c != -1){
-            while(c != -1 && (char)c != '\n' && (char)c != '\0' && (char)c != ' '){
+            while(c != -1 && (char)c != '\0' && (char)c != ' ' && (char)c != VoidCharacterStart){
                 WritteFile.write((char)c);
                 c = ReadFile.read(); // Read the next character
                                      // Leer el siguiente carácter
+            }
                 if(c == -1){
                     break;
                 }
-                else if((char)c == '\n'){
-                    WritteFile.write('\n');
-                    c = ReadFile.read(); // Read the next character
-                                         // Leer el siguiente carácter
-                }
                 //ignore it
                 //ignóralo
-                else if((char)c == '\0'){
-                    c = ReadFile.read(); // Read the next character
+                else if((char)c == '\0' || (char)c == VoidCharacterStart || (char)c == ' '){
+                   c = ReadFile.read(); // Read the next character
                                          // Leer el siguiente carácter
                 }
-            }
-            //if the next character is a '\n' or '\0', ginore it
-            //Si el siguiente carácter es un '\n' o '\0', ignorarlo
+            //if the next character is a '\n' or '\0'or VoidCharacterStart, ginore it
+            //Si el siguiente carácter es un '\n' o '\0' o VoidCharacterStart, ignorarlo
             c = ReadFile.read(); // Read the next character
                                  // Leer el siguiente carácter
         }
@@ -391,7 +420,7 @@ public int RemoveVoidLines(String Read_File_In){
     //Actualizar el archivo de entrada
     File infile = new File(Read_File_In);
     if(infile.delete()){
-        File temp = new File("tempWithoutVoidLines.txt");
+        File temp = new File("tempWithoutVoidChars.txt");
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempWithoutVoidLines.txt' is rename to '%s'\n", Read_File_In);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID LINES\n", Read_File_In);
