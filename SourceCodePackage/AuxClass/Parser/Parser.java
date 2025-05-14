@@ -19,23 +19,23 @@ public class Parser {
 
 *************************************************------------------------------------------------*******************************-------------------------------
 
-    public int RemoveSpaces(String Read_File_In);// This method is used to remove spaces from the input file(internal method)
+    public int RemoveString(String Read_File_In, String Delimiter);// This method is used to remove spaces from the input file(internal method)
                                                             // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
 
-    public int RemoveSimpleComments(String Read_File_In);// This method is used to remove simple comments from the input file(internal method)
+    public int RemoveSimpleComments(String Read_File_In, String Delmiter);// This method is used to remove simple comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
 
-    public String get(Reader fileIn, Readmode mode, char forNumberLine_Delimiter) throws IOException;// This method is used to obtain the line number from the input file(internal method)
-                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada(Método interno)
+    public String get(Reader fileIn, Readmode mode, char forNumberLine_Delimiter) throws IOException;// This method is used to obtain the line number or completely line from the input file(internal method)
+                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)
 
-    public int RemoveBlockComments(String Read_File_In);// This method is used to remove block comments from the input file(internal method)
-                                                                           // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada(Método interno)
+    public int RemoveBlockComments(String Read_File_In, String Delimiter, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
+                                                                                                     // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)
 
     public int RemoveNestedBlockComments(int actual, Reader ReadFile, String nLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
                                                                                                         // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
     
-    public int RemoveVoidLines(String Read_File_In);// This method is used to remove void lines from the input file(internal method)
-                                                        // Este método se utiliza para eliminar líneas vacías del archivo de entrada(Método interno)
+    public int RemoveVoidChars(String Read_File_In, Character Delimiter);// This method is used to remove void lines or characters from the input file(internal method)
+                                                        // Este método se utiliza para eliminar líneas vacías o caracteres del archivo de entrada(Método interno)
 
     public int RemoveNLine(String file_in);// This method is used to remove the number line from the input file(internal method)
                                                 // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)
