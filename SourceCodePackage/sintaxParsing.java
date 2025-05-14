@@ -322,7 +322,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             return 0;
         }
         else{
-             *iEspecial = 1;
+             iEspecial.value = 1;
             int i = 1;
             int sub;
             //Iterater until found a conincidence 
