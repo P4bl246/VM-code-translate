@@ -220,20 +220,22 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
 }
 //-------------------------------------------------------
 public String GetNchars(String input, int n) {
-    if(n < 0){
-        System.out.printf("Error: cant't use negative numbers to get characters\n");
+    if (input == null) {
+        System.out.println("Error: input string is null");
         return null;
     }
-    StringBuilder result = new StringBuilder();
-    if(n > input.length()) {
+
+    if (n < 0) {
+        System.out.println("Error: can't use negative numbers to get characters");
+        return null;
+    }
+
+    if (n > input.length()) {
         System.out.println("The number of characters to get is greater than the length of the input string\nThe code will be executed with the length of the input string\n");
         n = input.length();
     }
-    for (int i = 0; i < n; i++) {
-        char c = input.charAt(i);
-        result.append(c);
-    }
-    return result.toString();
+
+    return input.substring(0, n);
 }
 //-------------------------------------------------------
 public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs) {
