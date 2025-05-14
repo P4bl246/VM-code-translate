@@ -108,80 +108,40 @@ public int CleanFile(String file_in){
     return 0;
 }
 //--------------------------------------------------------------
-public int RemoveString(String Read_File_In, String Delimiter){
-    System.out.printf("\nREMOVING STRING FROM THE FILE: '%s'...\n\n", Read_File_In);
-    // Open the file for reading and the file for writing
-    // Abrir el archivo para lectura y el archivo de escritura
-    try(Reader ReadFile = new FileReader(Read_File_In); Writer writterFile = new FileWriter("tempWithoutString.txt")){ 
-            int c = ReadFile.read(); // Read the first character
-                                      // Leer el primer carácter
-              StringBuilder line = new StringBuilder();
-            //While don't find EOF (End of file)
-            //Mientras no encuentre EOF (Fin de archivo)
-            while(c != -1){
-              line.setLength(0);
-              while((char)c != '\n' && c!= -1){
-                line.append((char)c);
-                c = ReadFile.read();
-              }
-              if(c == -1) break;
-              String h = line.toString();
-                if((n = searchString(false, h, Delimiter, 0, null)) == -1) writterFile.write(h + '\n');//if the line not has a string //si la line no tiene la cadena
-                //else if have 1 or more appears of the string
-                else{
-                  n = searchString(true, h, Delimiter, 0, null);
-                  StringBuilder newh = new StringBuilder();
-                  int r = Delimiter.length();
-                  //while appears the string in the line
-                  //mientras aparezca la cadena en la linea
-                  while(n > 0 && n != -1){
-                     newh.setLength(0);
-                    //Get the index where start the String in the line
-                    //Obtner el indice de donde empiza la cadena en la linea
-                     n = searchString(false, h, Delimiter, 0, null);
-                     //copy the characters before of the first appear of the string
-                    //copiar los caracters antes de la primera aparición de la cadena
-                     for(int i = 0; i < n; i++) newh.append(h.charAt(i));
-                     int index = 0; 
-                     index = r + n; //tomamos el indice ignorando la cadena
-                                   //Get de index ignoridn the string
-                    //while not find the end of line, copy the rest of line
-                    //mientras no se llegue a el final de la linea, copiar el resto de la línea
-                     while(h.charAt(r) != '\n'){
-                      newh.append(h.charAt(r));
-                       r++;
-                     }
-                     h = newh.toString();
-                     n = searchString(true, h, Delimiter, 0, null);
-                  }
-                //Writte the clean line in the file
-                //Escribir la linea limpia en el archivo
-                writterFile.write(h + '\n');
-                
-            }
+public int RemoveString(String Read_File_In, String Delimiter) {
+    System.out.printf("\nREMOVING STRING '%s' FROM THE FILE: '%s'...\n\n", Delimiter, Read_File_In);
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(Read_File_In));
+         BufferedWriter writer = new BufferedWriter(new FileWriter("tempWithoutString.txt"))) {
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String cleanedLine = line.replace(Delimiter, "");
+            writer.write(cleanedLine);
+            writer.newLine();
         }
+
+    } catch (IOException e) {
+        System.out.println("Error: " + e.getMessage());
+        return -1;
     }
-        catch(IOException e){
-            System.out.println("Error: " + e.getMessage());
-            return -1; // Error
-        }
-        //Upload the change to input file rename it
-        //Subir los cambios de el archivo de entrada renombrandolo 
-        File inFile = new File(Read_File_In);
-            if(inFile.delete()){
-                File temp = new File("tempWithoutString.txt");
-                if(temp.renameTo(inFile)){
-                    System.out.printf("The file 'Temp.txt' is rename to '%s'\n", Read_File_In);
-                    System.out.printf("\nTHE FILE '%s' IS CLEAN OF SPACES\n", Read_File_In);
-                    return 0;
-                }
-                System.out.printf("Error to try rename file 'tempWithoutSpaces.txt' to '%s'\n", Read_File_In);
-                return -1;
-            }
-            System.out.printf("Error to try eliminated the file '%s'\n", Read_File_In);
-             
+
+    File originalFile = new File(Read_File_In);
+    File tempFile = new File("tempWithoutString.txt");
+
+    if (originalFile.delete()) {
+        if (tempFile.renameTo(originalFile)) {
+            System.out.printf("The file was cleaned and renamed to '%s'\n", Read_File_In);
+            return 0;
+        } else {
+            System.out.println("Error renaming temp file.");
             return -1;
-} 
+        }
+    } else {
+        System.out.println("Error deleting original file.");
+        return -1;
+    }
+}
 //--------------------------------------------------------------
 public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter) {
     if (line == null || searchThis == null || startIndex < 0 || startIndex >= line.length()) {
