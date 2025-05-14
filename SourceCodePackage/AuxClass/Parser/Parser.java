@@ -59,11 +59,11 @@ public class Parser {
 
 //STARTS THE PROCESS OF PREPARE FILES (INICIA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)----------------------------------------------------------------- 
 
-public int File_to_txt(String file_In) {
+public int File_to_txt(String file_In, String nameOfNewFileWithFormat) {
     
     // Open the file_In in reading and create a temporary file for writing
     // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
-    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter("fileCopy.txt")) {
+    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter(nameOfNewFileWithFormat) {
         int c;
         // Read character by character from the input file and write to the temporary file
         // Leer carácter por carácter del archivo de entrada y escribir en el archivo temporal
@@ -83,7 +83,7 @@ public int File_to_txt(String file_In) {
 public int CleanFile(String file_in){
     System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
     int n;
-    n = RemoveSpaces(file_in);
+    n = RemoveString(file_in, " ");
     if(n != 0) return n;
 
     n = RemoveSimpleComments(file_in);
@@ -108,7 +108,7 @@ public int CleanFile(String file_in){
     return 0;
 }
 //--------------------------------------------------------------
-public int RemoveSpaces(String Read_File_In){
+public int RemoveString(String Read_File_In, String Delimiter){
     System.out.printf("\nREMOVING SPACES FROM THE FILE: '%s'...\n\n", Read_File_In);
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
@@ -119,7 +119,7 @@ public int RemoveSpaces(String Read_File_In){
             //While don't find EOF (End of file)
             //Mientras no encuentre EOF (Fin de archivo)
             while(c != -1){
-                if((char)c != ' '){
+                if((char)c != Delimiter){
                     writterFile.write((char)c);
                 }
                 c = ReadFile.read(); // Read the next character
@@ -148,15 +148,136 @@ public int RemoveSpaces(String Read_File_In){
             return -1;
 } 
 //--------------------------------------------------------------
-public int RemoveSimpleComments(String Read_File_In) {
+public int SearchString(String line, Char actual, String SearchThis, Char OptionalDelimiter, boolean SearchAllApearsAndReturnTimes){
+  if(line == null){
+    System.err.println("line is equal to null\n");
+    return 0;//especial value
+            //valor especial
+    }
+  else if(SearchThis == null){
+    System.err.println("Can't search 'null'\n");
+    return 0;
+  }
+  int n = line.lenght();
+  int originalSearch = SearchThis.lenght();
+  int h = originalSearch;
+  if(h >= n){
+    System.err.println("Error: Can't search something equal or greather than the input line: '"+line+"'\n");
+    return 0;
+  }
+  char actual = '0';
+  originalSearch = 0;
+  int j = 0, i = 0;
+  while((actual = line.charAt(j)) != SearchThis.indexOf(i) && (actual != '\n' && actual != null && actual != '\0' && actual != OptionalDelimiter)) j++;
+  if(actual == SearchThis.indexOf(i) && !SearchAllApears){
+    StringBuilder Searchign = new StringBuilder();
+      while(actual != '\n' && actual != null && actual != '\0' && acutal != OptionalDelimiter && h != 0){
+        if(actual == SearchThis.(
+        Searching.append(actual);
+        h--;
+      }
+    if(h != 0){
+      return 0;//find
+               //Se encontro
+    }
+    
+  }
+ else if(actual == SearchThis.indexOf(i) && SearchAllApears){
+    StringBuilder Searchign = new StringBuilder();
+      while(actual != '\n' && actual != null && actual != '\0' && acutal != OptionalDelimiter && h != 0){
+        Searching.append(actual);
+        h--;
+        if(h == 0)
+     }
+   }
+}
+//--------------------------------------------------------------
+private int TimesApears = 0;
+public int Equal(boolean SearchAllApearsTimesAndReturn, String line, String SearchThis, int indexLine, int indexSearch, Char Optinoaldelimiter){
+  if(line == null || SearchThis == null){
+    System.err.println("Error: Put corrects arguments inputs in 'line' and 'SearchThis'\n");
+    return -1;
+  }
+  if(indexLine < 0 || indexSearch < 0){
+   System.err.println("Error: Index can't be negative values\n");
+    return -1;
+  }
+  if(indexLine >= line.length() || indexSearch >= SearchThis.length()){
+   System.err.println("Error: Index can't be greather or equal than the length of the string\n");
+    return -1;
+  }
+  if(!SearchAllApearsTimesAndReturn){
+   int countSearch = SearchThis.length();
+   while(line.charAt(indexLine) != '\n' && line.charat(indexLine) != Optionaldelimiter && line.charAt(indexLine) != '\0' && countSearch != 0){
+     
+   }
+  }
+  
+}
+//--------------------------------------------------------------      
+public int EqualStrings(String line, String SearchThis, int indexLine, int indexSearch, int lengthOfSearch, Char delimiter, boolean recursiveCall){
+  //Start in a infinite loop
+  //Comenzar en un bucle infinito
+  while(true){
+    //Chek the actual index, if greather than or equal return -2 like a special value for error
+    //Revisar el indice actual, si es mayor o igual retorna -2 como un valor especial para error
+    if(indexSearch >= SearchThis.length()){
+    System.err.println("Error: The index is equal or grether than the '"+SearchThis+"'\n");
+    return -2;
+  }
+  //If dont found coincidence return -1
+  //si no encuentra coincidencia retorna -1
+  if(line.charAt(indexLine) == '\n' || indexLine >= line.length() || line.charAt(indexLine) == delimiter && lengthOfSearch != 0) return -1;//not found //no encontrado;
+  else if(lengthOfSearch  == 0) return 1; //if found a coincidence, out from de function //si encuentra una coincidencia sale de la función
+
+  //If it's the pricipal function (not is a recursive call function)
+  //Si es la función principal(No es una llamada recursiva de esta)
+  if((line.charAt(indexLine) == SearchThis.charAt(indexSearch)) && !recursiveCall){
+       indexLine++;
+       indexSearch++;
+       lengthOfSearch--;
+       int n = EqualStrings(line, SearchThis, indexLine, indexSearch, lengthOfSearch, delimiter, true);
+     //Check the result of the call recursive function
+    //Ver el resultado de la función recursiva
+    if(n == -1){
+        lengthOfSearch = SearchThis.length();
+         indexSearch = 0;
+         continue;
+       }
+      else continue;
+    }
+   //If are a recursive function return -1 if the character are diferents, else reutrn 0
+  //Si es una función recursiva retorna -1 si los caracteres son diferentes, sino retorna 0
+   else if(line.charAt(indexLine) != SearchThis.charAt(indexSearch) && recursiveCall){
+        return -1;
+     }
+    else if(line.charAt(indexLine) == SearchThis.charAt(indexSearch) && recursiveCall){
+        return 0;
+     }
+  } 
+}
+//--------------------------------------------------------------
+public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) {
     int actual;
     System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
 
     try (Reader ReadFile = new FileReader(Read_File_In);
          Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")) {
-
+      
         while ((actual = ReadFile.read()) != -1) { // Leer el primer carácter
-            if ((char) actual == '/') {
+          int n = 0;  
+          if((n = Search(mode.String, String.valueOf(actual), SimpleCommentIdent != 0)){
+            while ((actual = ReadFile.read()) != -1 && (char) actual != '\n') {
+                        // Ignorar caracteres hasta el final de la línea
+                    }
+                    if (actual == '\n') {
+                        WritteFile.write('\n'); // Escribir el salto de línea
+                    }
+          } 
+          else {
+                WritteFile.write((char) actual); // Escribir el carácter actual
+            }
+            /*if ((char) actual == '/') {
                 int next = ReadFile.read(); // Leer el siguiente carácter
                 if (next == -1) {
                     WritteFile.write((char) actual); // Escribir el '/' si es el último carácter
@@ -174,9 +295,7 @@ public int RemoveSimpleComments(String Read_File_In) {
                     WritteFile.write((char) actual); // Escribir el '/'
                     WritteFile.write((char) next);   // Escribir el siguiente carácter
                 }
-            } else {
-                WritteFile.write((char) actual); // Escribir el carácter actual
-            }
+            } */
         }
 
     } catch (IOException e) {
