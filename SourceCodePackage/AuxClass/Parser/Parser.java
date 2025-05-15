@@ -254,7 +254,7 @@ public class MutableTypeData<T> {
 
 public int RemoveBlockComments(String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine) {
   MutableTypeData<Integer>actual5 = new MutableTypeData<>(0);
-MutableTypeData<String>line5 = new MutableTypeData<"">(0);
+MutableTypeData<String>line5 = new MutableTypeData<>("");
   //Globals variables to store the actual character and line (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
   //Variables globales para almacenar el carácter actual y linea (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
     System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
@@ -288,7 +288,7 @@ MutableTypeData<String>line5 = new MutableTypeData<"">(0);
         // Read the file line by line
           int r = 0, n = 0;
            while(actual5.valor != -1 && (char)actual5.valor != '\n' && (n = searchString(false, line, Delimiter, r, null)) == -1){
-                line.append((char)actual5);
+                line.append((char)((int)actual5.getValor());
                 actual5.valor = ReadFile.read();
              r++;
            }
@@ -372,7 +372,7 @@ public int RemoveNestedBlockComments(String line, Reader ReadFile, String nLine,
         //Actualizar los parametros, actualizando la linea, el indice
          while(actual5.valor  != '\n' && actual5.valor != -1){
            actual5.valor = ReadFile.read();
-           newLine.append((char)actual5.valor);
+           newLine.append((char)((int)actual5.getValor());
          }
         line = newLine.toString();
         indexActualLine = 0;
