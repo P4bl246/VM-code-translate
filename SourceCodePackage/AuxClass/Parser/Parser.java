@@ -146,9 +146,9 @@ public int RemoveString(String Read_File_In, String Delimiter) {
 public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter) {
     if (line == null || searchThis == null || startIndex < 0) {
         System.err.printf("Error: Invalid input parameters.\nDETAILS: line: %s, searchThis: %s, Index: %d, sizeOfLine: %d\n", line, searchThis, startIndex, line.length());
-        return -3;
+        return -2;
     }
-   if (startIndex >= line.length()) return -2;
+   if (startIndex >= line.length()) return -3;
 
     int count = 0;
     for (int i = startIndex; i <= line.length() - searchThis.length(); i++) {
