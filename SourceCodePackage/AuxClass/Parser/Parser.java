@@ -342,7 +342,7 @@ public int RemoveNestedBlockComments(String line, Integer actual, Reader ReadFil
     //Leer hasta el final del comentario
     while(actual.getValor()  != -1){
       int n = 0, r = 0;  
-      while(actual.getValor()  != -1 && ((char)((int)actual.getValor()))  != '\n' && (n = searchString(false, line, delimiterEnd, indexActualLine, null)) == -1 && (r = searchString(false, line, delimiter, indexActualLine)) == -1){
+      while(actual.getValor()  != -1 && ((char)((int)actual.getValor()))  != '\n' && (n = searchString(false, line.getValor(), delimiterEnd, indexActualLine, null)) == -1 && (r = searchString(false, line.getValor(), delimiter, indexActualLine)) == -1){
          actual.setValor(ReadFile.read());
          indexActualLine++;
       }
@@ -374,7 +374,7 @@ public int RemoveNestedBlockComments(String line, Integer actual, Reader ReadFil
            actual.setValor(ReadFile.read());
            newLine.append((char)((int)actual.getValor()));
          }
-        line = newLine.toString();
+        line.setValor(newLine.toString());
         indexActualLine = 0;
         continue;
       }
@@ -382,12 +382,12 @@ public int RemoveNestedBlockComments(String line, Integer actual, Reader ReadFil
       //if has a nested comment block
       //Si tiene un comentario en bloque anidado
       if(r == 0){
-         if(RemoveNestedBlockComments(line, actual, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine) != 0) return -1;
+         if(RemoveNestedBlockComments(line.getValor(), actual, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine) != 0) return -1;
       }
     }
   // If find the end of file without closing the comment
         // Si encuentra el final del archivo sin cerrar el comentario
-        if(actual5.valor  == -1){
+        if(actual5.getValor()  == -1){
             System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
         }
   return 0;
