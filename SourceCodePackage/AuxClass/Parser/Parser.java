@@ -304,7 +304,7 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
                 line5.setValor(line.toString());
                     // Si se encuentra un comentario de bloque, eliminarlo
                     // If a block comment is found, remove it
-                    int nr = RemoveNestedBlockComments(line5.getValor(), actual5.getValor(), ReadFile, nLine,Delimiter, delimiterEnd, DelimiterNumLine, (i+Delimiter.length()));
+                    int nr = RemoveNestedBlockComments(line5, actual5, ReadFile, nLine,Delimiter, delimiterEnd, DelimiterNumLine, (i+Delimiter.length()));
                     if(nr != 0) return -1;
            }
           while(((char)((int)actual5.getValor())) != '\n' && actual5.getValor() != -1) WritteFile.write((char)((int)actual5.getValor()));
