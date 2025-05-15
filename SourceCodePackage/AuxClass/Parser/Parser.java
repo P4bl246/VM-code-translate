@@ -364,15 +364,15 @@ public int RemoveNestedBlockComments(String line, Reader ReadFile, String nLine,
           StringBuilder newLine = new StringBuilder();
         //Check if the character actual is the end of the before line
         //Revisar si el caracter actual es el final de la linea anteriror
-        if(actual5.valor  == '\n') actual5 = ReadFile.read();
+        if(actual5.valor  == '\n') actual5.valor = ReadFile.read();
         //If not have more lines
         //Si no hay mas lineas
         if(actual5.valor  == -1) continue;
         //Upload the parameters, uploading the line, the index
         //Actualizar los parametros, actualizando la linea, el indice
-         while(actual5.valor  != '\n' && actual5 != -1){
+         while(actual5.valor  != '\n' && actual5.valor != -1){
            actual5.valor = ReadFile.read();
-           newLine.append((char)actual5);
+           newLine.append((char)actual5.valor);
          }
         line = newLine.toString();
         indexActualLine = 0;
