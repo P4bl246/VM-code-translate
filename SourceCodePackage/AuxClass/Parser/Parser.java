@@ -95,7 +95,7 @@ public int CleanFile(String file_in){
     n = NumLines(file_in);
     if(n != 0) return n;
 
-    n = RemoveBlockComments(file_in);
+    n = RemoveBlockComments(file_in, "/*", "*/", " ");
     if(n != 0) return n;
 
     n = RemoveNLine(file_in);
