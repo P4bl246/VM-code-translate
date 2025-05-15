@@ -47,7 +47,7 @@ public class Parser {
     public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
                                                             // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
-    public int File_to_txt(String file_In);// This method is used to convert the file to txt format(internal method)
+    public int File_to_txt(String file_In, String nameOfNewFileWithFormat);// This method is used to convert the file to txt format(internal method)
                                              // Este método se utiliza para convertir el archivo a formato txt(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
     public int PrepareFiles();
@@ -63,7 +63,7 @@ public int File_to_txt(String file_In, String nameOfNewFileWithFormat) {
     
     // Open the file_In in reading and create a temporary file for writing
     // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
-    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter(nameOfNewFileWithFormat) {
+    try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter(nameOfNewFileWithFormat)) {
         int c;
         // Read character by character from the input file and write to the temporary file
         // Leer carácter por carácter del archivo de entrada y escribir en el archivo temporal
@@ -71,14 +71,14 @@ public int File_to_txt(String file_In, String nameOfNewFileWithFormat) {
             tempFile.write((char)c);
         }
         return 0; // Éxito
-    } catch (IOException e) {
+        }
+      catch (IOException e) {
         // Manejar errores de entrada/salida
         // Handle input/output errors
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
-    }
-}
-
+        }
+  }
 //--------------------------------------------------------------
 public int CleanFile(String file_in){
     System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
