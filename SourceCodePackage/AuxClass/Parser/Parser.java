@@ -382,7 +382,7 @@ public int RemoveNestedBlockComments(String line, Integer actual, Reader ReadFil
       //if has a nested comment block
       //Si tiene un comentario en bloque anidado
       if(r == 0){
-         if(RemoveNestedBlockComments(line.getValor(), actual, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine) != 0) return -1;
+         if(RemoveNestedBlockComments(line.getValor(), actual.getValor(), ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine) != 0) return -1;
       }
     }
   // If find the end of file without closing the comment
