@@ -282,20 +282,20 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
             nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine); // Obtener el número de línea
             WritteFile.write(nLine);
             WritteFile.write(DelimiterNumLine);
-            actual5.setValor((Integer)ReadFile.read()); // Leer el primer carácter
+            actual5.setValor(ReadFile.read()); // Leer el primer carácter
            }
         // Leer el archivo línea por línea
         // Read the file line by line
           int r = 0, n = 0;
            while(actual5.getValor() != -1 && ((char)((int)actual5.getValor()))  != '\n' && (n = searchString(false, line, Delimiter, r, null)) == -1){
                 line.append((char)((int)actual5.getValor()));
-                actual5.setValor((Integer)ReadFile.read());
+                actual5.setValor(ReadFile.read());
              r++;
            }
            if(actual5.getValor() == -1) break;
            else if(n == -1 && ((char)((int)actual5.getValor())) == '\n'){
              WritteFile.write(line.toString() + '\n');
-             actual5.serValor((Integer)ReadFile.read());
+             actual5.serValor(ReadFile.read());
              continue;
            }
            else{
@@ -310,7 +310,7 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
           while(((char)((int)actual5.getValor())) != '\n' && actual5.getValor() != -1) WritteFile.write((char)((int)actual5.getValor()));
   
           if(((char)((int)actual5.getValor())) == '\n'){
-            actual5.setValor((Integer)ReadFile.read());
+            actual5.setValor(ReadFile.read());
                WritteFile.write('\n');
           }
         }
@@ -343,7 +343,7 @@ public int RemoveNestedBlockComments(MutableTypeData<String> line, MutableTypeDa
     while(actual.getValor()  != -1){
       int n = 0, r = 0;  
       while(actual.getValor()  != -1 && ((char)((int)actual.getValor()))  != '\n' && (n = searchString(false, line.getValor(), delimiterEnd, indexActualLine, null)) == -1 && (r = searchString(false, line.getValor(), delimiter, indexActualLine)) == -1){
-         actual.setValor((Integer)ReadFile.read());
+         actual.setValor(ReadFile.read());
          indexActualLine++;
       }
       // If find the end of file without closing the comment
@@ -358,20 +358,20 @@ public int RemoveNestedBlockComments(MutableTypeData<String> line, MutableTypeDa
         //Obtener el numbero de linea si lo tiene
          if(DelimiterNumLine != null){
             nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine); // Obtener el número de línea
-            actual.setValor((Integer)ReadFile.read()); // Leer el primer carácter
+            actual.setValor(ReadFile.read()); // Leer el primer carácter
            }
   
           StringBuilder newLine = new StringBuilder();
         //Check if the character actual is the end of the before line
         //Revisar si el caracter actual es el final de la linea anteriror
-        if(((char)((int)actual.getValor()))  == '\n') actual.setValor((Integer)ReadFile.read());
+        if(((char)((int)actual.getValor()))  == '\n') actual.setValor(ReadFile.read());
         //If not have more lines
         //Si no hay mas lineas
         if(actual.getValor()  == -1) continue;
         //Upload the parameters, uploading the line, the index
         //Actualizar los parametros, actualizando la linea, el indice
          while(((char)((int)actual.getValor()))  != '\n' && actual.getValor() != -1){
-           actual.setValor((Integer)ReadFile.read());
+           actual.setValor(ReadFile.read());
            newLine.append((char)((int)actual.getValor()));
          }
         line.setValor(newLine.toString());
