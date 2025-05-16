@@ -1,3 +1,6 @@
 push constant 10
 add
-pop local 0
+pop local 0//simple comment
+////simple comment
+/*this is a block comment*/
+/*hi/*this/*is/*a extra/*large/*yuca*/d*/d*/d*/*/

@@ -1,8 +1,8 @@
 import AuxClass.Parser.*; // Import the Parser class from the AuxCLass.Parser package
                                // Importar la clase Parser del paquete AuxCLass.Parser
-                               import java.util.ArrayList; // Import the ArrayList class from the java.util package
+//import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
-import java.util.HashMap; 
+//import java.util.HashMap; 
 
 public class executable {
 
@@ -11,20 +11,17 @@ public class executable {
                                    //Crear una nueva instancia de la clase Parser para usar sus métodos en el método principal
 
          int n;
-         n= parseF.File_to_txt("Archivo.vm"); 
+         String copy = "fileCopy.txt";
+         n= parseF.File_to_txt("Archivo.vm", copy); 
          if(n != 0) return;
         
          
-         n = parseF.CleanFile("fileCopy.txt");
+         n = parseF.RemoveSimpleComments(copy, "//");
          if(n != 0) return;
+         n = parseF.RemoveBlockComments(copy, null, "*/", null);
 
-      sintaxParsing r = new sintaxParsing();
-      ArrayList<String> r2 = new ArrayList<>();
-      r2.add("hi");
-      r2.add("yuca");
-         HashMap<String, Integer> hashT = new HashMap<>();
-        r.CreateHashTable("hi", 1, r2, hashT, null);
-          System.out.println("\nFormat: Key=Value\nTableHash"+hashT+"\n");
+      //sintaxParsing r = new sintaxParsing();
+      
          return;        
     }
 }

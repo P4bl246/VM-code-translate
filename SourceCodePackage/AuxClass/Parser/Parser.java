@@ -95,13 +95,13 @@ public int CleanFile(String file_in){
     n = NumLines(file_in);
     if(n != 0) return n;
 
-    n = RemoveBlockComments(file_in, "/*", "*/", " ");
+    n = RemoveBlockComments(file_in, "/*", "*/", ' ');
     if(n != 0) return n;
 
     n = RemoveNLine(file_in);
     if(n != 0) return n;
     
-    n = RemoveVoidLines(file_in);
+    n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
 
     System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_in);
@@ -152,7 +152,7 @@ public int searchString(boolean searchAll, String line, String searchThis, int s
 
     int count = 0;
     for (int i = startIndex; i <= line.length() - searchThis.length(); i++) {
-        if (line.charAt(i) == delimiter) break;
+        if(delimiter != null) if (line.charAt(i) == delimiter) break;
         
         boolean match = true;
         for (int j = 0; j < searchThis.length(); j++) {
@@ -287,7 +287,7 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
         // Leer el archivo línea por línea
         // Read the file line by line
           int r = 0, n = 0;
-           while(actual5.getValor() != -1 && ((char)((int)actual5.getValor()))  != '\n' && (n = searchString(false, line, Delimiter, r, null)) == -1){
+           while(actual5.getValor() != -1 && ((char)((int)actual5.getValor()))  != '\n' && (n = searchString(false, line.toString(), Delimiter, r, null)) == -1){
                 line.append((char)((int)actual5.getValor()));
                 actual5.setValor(ReadFile.read());
              r++;
@@ -295,7 +295,7 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
            if(actual5.getValor() == -1) break;
            else if(n == -1 && ((char)((int)actual5.getValor())) == '\n'){
              WritteFile.write(line.toString() + '\n');
-             actual5.serValor(ReadFile.read());
+             actual5.setValor(ReadFile.read());
              continue;
            }
            else{
@@ -304,7 +304,8 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
                 line5.setValor(line.toString());
                     // Si se encuentra un comentario de bloque, eliminarlo
                     // If a block comment is found, remove it
-                    int nr = RemoveNestedBlockComments(line5, actual5, ReadFile, nLine,Delimiter, delimiterEnd, DelimiterNumLine, (i+Delimiter.length()));
+                    int m = i + Delimiter.length();
+                    int nr = RemoveNestedBlockComments(line5, actual5, ReadFile, nLine,Delimiter, delimiterEnd, DelimiterNumLine, m);
                     if(nr != 0) return -1;
            }
           while(((char)((int)actual5.getValor())) != '\n' && actual5.getValor() != -1) WritteFile.write((char)((int)actual5.getValor()));
@@ -337,25 +338,27 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
     return -1;
 }
 //--------------------------------------------------------------
-public int RemoveNestedBlockComments(MutableTypeData<String> line, MutableTypeData<Integer> actual, Reader ReadFile, String nLine,String delimiter, String delmiterEnd, String DelimiterNumLine, int indexActualLine) throws IOException{
+public int RemoveNestedBlockComments(MutableTypeData<String> line, MutableTypeData<Integer> actual, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, int indexActualLine) throws IOException{
     //Read until the end of comment
     //Leer hasta el final del comentario
     while(actual.getValor()  != -1){
       int n = 0, r = 0;  
-      while(actual.getValor()  != -1 && ((char)((int)actual.getValor()))  != '\n' && (n = searchString(false, line.getValor(), delimiterEnd, indexActualLine, null)) == -1 && (r = searchString(false, line.getValor(), delimiter, indexActualLine)) == -1){
-         actual.setValor(ReadFile.read());
+      while(actual.getValor()  != -1 && ((char)((int)actual.getValor()))  != '\n' && (n = searchString(false, line.getValor(), delimiterEnd, indexActualLine, null)) == -1 && (r = searchString(false, line.getValor(), delimiter, indexActualLine, null)) == -1){ 
+        actual.setValor(ReadFile.read());
          indexActualLine++;
       }
       // If find the end of file without closing the comment
         // Si encuentra el final del archivo sin cerrar el comentario
-        if(actual.getValor()  == -1) continue;
+        if(n  == -1) continue;
+        else if(n == -2 || r == -2) return -1; //error in the parameters 
+
       //If find the end of the line actual
       //Si llega a el finla de la línea actual
       //Upload the parameters, uploading the line, the index, and the number of line actual
       //Actualizar los parametros, actualizando la linea, el indice y el numbero de linea actual
       if(n == -3 || r == -3){
         //Get the number of line if it has
-        //Obtener el numbero de linea si lo tiene
+        //Obtener el numero de linea si lo tiene
          if(DelimiterNumLine != null){
             nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine); // Obtener el número de línea
             actual.setValor(ReadFile.read()); // Leer el primer carácter
@@ -403,6 +406,7 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
         //While don't find EOF (End of file)
         //Mientras no encuentre EOF (Fin de archivo)
         while(c != -1){
+            if(VoidCharacterStart != null){
             while(c != -1 && (char)c != '\0' && (char)c != ' ' && (char)c != VoidCharacterStart){
                 WritteFile.write((char)c);
                 c = ReadFile.read(); // Read the next character
@@ -413,17 +417,32 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
                 }
                 //ignore it
                 //ignóralo
-                else if((char)c == '\0' || (char)c == VoidCharacterStart || (char)c == ' '){
+                else{
                    c = ReadFile.read(); // Read the next character
                                          // Leer el siguiente carácter
+                  continue;
                 }
-            //if the next character is a '\n' or '\0'or VoidCharacterStart, ginore it
-            //Si el siguiente carácter es un '\n' o '\0' o VoidCharacterStart, ignorarlo
-            c = ReadFile.read(); // Read the next character
-                                 // Leer el siguiente carácter
+        }
+        else {
+            while(c != -1 && (char)c != '\0' && (char)c != ' '){
+                WritteFile.write((char)c);
+                c = ReadFile.read(); // Read the next character
+                                     // Leer el siguiente carácter
+            }
+                if(c == -1){
+                    break;
+                }
+                //ignore it
+                //ignóralo
+                else{
+                   c = ReadFile.read(); // Read the next character
+                                         // Leer el siguiente carácter
+                   continue;
+                }
         }
     }
-    catch(IOException e){
+ }
+ catch(IOException e){
         System.out.println("Error: " + e.getMessage());
         return -1; // Error
     }
@@ -434,7 +453,7 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
         File temp = new File("tempWithoutVoidChars.txt");
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempWithoutVoidLines.txt' is rename to '%s'\n", Read_File_In);
-            System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID LINES\n", Read_File_In);
+            System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID CHARS\n", Read_File_In);
             return 0;
         }
         System.out.printf("Error to try rename file 'tempWithoutVoidLines.txt' to '%s'\n", Read_File_In);

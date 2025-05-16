@@ -1,6 +1,7 @@
 
 import AuxClass.Parser.*; // Import the Parser class from the AuxCLass.Parser package
                             // Importar la clase Parser del paquete AuxCLass.Parser
+                            import AuxClass.Parser.Parser.MutableTypeData;
 
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
@@ -68,7 +69,7 @@ public int parser_Sintaxis(String File_in) {
     CreateHashTable(null, 1, args, argsTable, null);
     //Starts the sintx parsing
     //Empieza el analisisi sintactico
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant32768", "popthis0" null);
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant32768", "popthis0", null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while((nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ')) != null) {
@@ -110,8 +111,8 @@ private HashMap<String, Integer> hashTableBool = new HashMap<>(); // Create a ha
 
 private HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a hash table for functions
                                                                     // Crear una tabla hash para funciones
-//constructor for create the PreDeterminate hash tables
-// constructor para crear las tablas hash predefinidas
+//constructor function for create the PreDeterminate hash tables
+// función constructora para crear las tablas hash predefinidas
   public void HashTablePreDet(){
     ArrayList<String> NewElements = new ArrayList<>();
     //Arithmetic operations
@@ -239,7 +240,10 @@ public String GetNchars(String input, int n) {
 }
 //-------------------------------------------------------
 public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs) {
-    int i = 0;
+    //Create a mutable value variable for upload his value in call in diferents functions
+    //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
+    Parser hpar = new Parser();
+    Parser.MutableTypeData<Integer> i =  hpar.new MutableTypeData<>(0);
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
         System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
         return -1;
@@ -297,15 +301,8 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
     return -3;//especial value, this never must be the out
              //Valor especial, esto nunca deberia salir
 }
-//-------------------------------------------------------
- public static class MutableInt {
-    public int value;
-    public MutableInt(int value) {
-        this.value = value;
-    }
-}
-    
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, MutableInt iEspecial, boolean withArgumets){
+//-------------------------------------------------------  
+public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, MutableTypeData<Integer> iEspecial, boolean withArgumets){
     if(line != null){
     // Get the first three characters of the input string
         // Obtener los primeros tres caracteres de la cadena de entrada
@@ -324,7 +321,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             return 0;
         }
         else{
-             iEspecial.value = 1;
+             iEspecial.setValor(1);
             int i = 1;
             int sub;
             //Iterater until found a conincidence 
@@ -332,7 +329,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
-                iEspecial.value = sub;
+                iEspecial.setValor(sub);
                 i++;
             }
             // Check if the string is a invalid expression (not found in the table)
@@ -356,15 +353,19 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
 //-------------------------------------------------------
 public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters) {
 
+    Parser hpar = new Parser();
+
     // Verifica que no se usen ambos tipos de formato al mismo tiempo
+    //Check if is use both types of format to the same time
     if (ArgsInputRule.multipleFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null || (ArgsInputRule.multipleFormatsPatterns == null && ArgsInputRule.formatPatternMostLong == null)) {
         System.err.println("Error\nDETAILS: You can only select one: 'multipleFormatsPatterns' or 'formatPatternMostLong'\n");
         return -1;
     }
 
     // Validación para múltiples formatos
+    //If select multiples format, check this
     if (ArgsInputRule.multipleFormatsPatterns != null) {
-        for (Map.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
+        for (HashMap.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
             String lessLong = entry.getKey();
             String mostLong = entry.getValue();
             if (lessLong == null || mostLong == null) {
@@ -375,6 +376,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     }
 
     // Validación para formato único
+    //Check if is just one format
     if ((ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null) ||
         (ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null)) {
         System.err.printf("Error in format pattern:\nMost long: %s\nLess long: %s\nDETAILS: Both formatPatternMostLong and formatPatternLessLong must be defined.\n",
@@ -386,9 +388,10 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     boolean coincidence = false;
 
     // Si hay múltiples formatos, validar si la línea entra en alguno
+    //Check for multiples formats the line
     if (ArgsInputRule.multipleFormatsPatterns != null) {
         r = identifyTheFormat(line, SensibleToMayus);
-        for (Map.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
+        for (HashMap.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
             n = identifyTheFormat(entry.getKey(), SensibleToMayus);
             n2 = identifyTheFormat(entry.getValue(), SensibleToMayus);
             if (r >= n && r <= n2) {
@@ -404,6 +407,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     }
 
     // Validar con formato único
+    //Check for singular format the line
     if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null) {
         n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
         n2 = identifyTheFormat(ArgsInputRule.formatPatternLessLong, SensibleToMayus);
@@ -416,6 +420,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     }
 
     // Eliminar delimitadores
+    //Delete delimiters
     StringBuilder WithoutDel = new StringBuilder();
     for (char c : line.toCharArray()) {
         if (!Delimiters.contains(c)) {
@@ -425,14 +430,18 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     String newLine = WithoutDel.toString();
 
     // Comparar comando
-    MutableInt LengthOfCommand = new MutableInt();
-    LengthOfCommand.value = 0;
+    // Compare the comand
+    //Create a mutable value variable for upload his value in call in diferents functions
+    //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
+    Parser.MutableTypeData<Integer>LengthOfCommand = hpar.new MutableTypeData<>(0);
+    LengthOfCommand.setValor(0);
     if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
 
     // Comparar argumentos (lo que sobra después del comando)
-    String remainingNewLine = newLine.substring(LengthOfCommand);
+    //compare the arguments (the rest after the comand)
+    String remainingNewLine = newLine.substring(LengthOfCommand.getValor());
     if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
