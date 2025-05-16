@@ -178,38 +178,39 @@ public int searchString(boolean searchAll, String line, String searchThis, int s
 }
 //--------------------------------------------------------------
 public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) {
-    int actual;
+    
     System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
 
     try (Reader ReadFile = new FileReader(Read_File_In);
          Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")) {
-        StringBuilder line = new StringBuilder();
-        while ((actual = ReadFile.read()) != -1) { // Leer el primer carácter
-                                                   //Read the first character
-           line.setLength(0);
-          int n = 0;  
-          while((char)actual != '\n' && actual != -1){
-                line.append((char)actual);
-                actual = ReadFile.read();
-          }
-          if(actual == -1) break;
-          String h = line.toString();
-          if((n = searchString(false, h , SimpleCommentIdent, 0, null)) != -1){
+        String line = null;
+        MutableTypeData<Integer>actual = new MutableTypeData<>(0);
+        MutableTypeData<Boolean> contain = new MutableTypeData<>(false);
+        while (true) { 
+            int n = 0;  
+            line = null;
+          contain.setValor(false);
+          //get the line
+          //obtener la linea
+          line = get(ReadFile, Readmode.CompletelyLine, null, actual, contain);
+          if(line == "ERROR") return -1;
+          if(line == "") break;
+          else if(!(actual.getValor() == -1)) actual.setValor(ReadFile.read());//next character after the '\n' //caracter despues de el '\n'
+          if((n = searchString(false, line, SimpleCommentIdent, 0, null)) != -1){
+            if(n == -3 || n == -2) return -1;
             //Writter the character out of the simple comment
             //Escribir los caracters fuera de el comentario simple
             for(int i = 0; i < n; i++){
-              WritteFile.write(h.charAt(i)); 
+              WritteFile.write(line.charAt(i)); 
             }
-            //Ignore the character after of the simple coment
-            // Ignorar los caracteres despues de el comentario simple
-            
-               WritteFile.write('\n'); // Escribir el salto de línea
-                                       // Writte the jump of line
-          }
+            WritteFile.write('\n');
+        }
           //Escribir la línea
           //Write the line
-          else WritteFile.write(h + '\n');
+          else WritteFile.write(line + '\n');
         }
+        WritteFile.close();
+        ReadFile.close();
 
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
@@ -279,7 +280,7 @@ MutableTypeData<String>line5 = new MutableTypeData<>("");
             if(actual5.getValor()  == -1) break; // Si se alcanza el EOF, salir del bucle
                                     // If EOF is reached, exit the loop
            if(DelimiterNumLine != null){
-            nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine); // Obtener el número de línea
+            nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine, null, null); // Obtener el número de línea
             WritteFile.write(nLine);
             WritteFile.write(DelimiterNumLine);
             actual5.setValor(ReadFile.read()); // Leer el primer carácter
@@ -360,7 +361,7 @@ public int RemoveNestedBlockComments(MutableTypeData<String> line, MutableTypeDa
         //Get the number of line if it has
         //Obtener el numero de linea si lo tiene
          if(DelimiterNumLine != null){
-            nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine); // Obtener el número de línea
+            nLine = get(ReadFile, Readmode.NumberLine, DelimiterNumLine, null, null); // Obtener el número de línea
             actual.setValor(ReadFile.read()); // Leer el primer carácter
            }
   
@@ -525,22 +526,33 @@ public enum Readmode{
     NumberLine,
     CompletelyLine
 }
-public String get(Reader fileIn, Readmode mode,char forNumberLine_Delimiter) throws IOException {
-
-    int c;
+public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> UploadVariableWithLastReadCharacter, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException {
+    if(fileIn == null){ 
+    System.err.println("Error: Need put a argument in parameter 'fileIn'\n");
+    return "ERROR";
+  }
+    int c = 0;
+    if(containsBeforeEOForEndLine != null) c = UploadVariableWithLastReadCharacter.getValor();
+    else c = fileIn.read();//Read the first character //Leer el primer caracter
     StringBuilder result = new StringBuilder();
-    
+    if( containsBeforeEOForEndLine!= null)containsBeforeEOForEndLine.setValor(false);
     // Leer caracteres hasta encontrar un espacio. Se asume que el número de línea está separado por un espacio
     // Read characters until a space is found. It is assumed that the line number is separated by a space
      if(mode == Readmode.NumberLine){
-        while ((c = fileIn.read()) != -1 && c != forNumberLine_Delimiter) {
-        result.append((char) c);
+        while (c != -1 && (char)c != forNumberLine_Delimiter) {
+        result.append((char)c);
+        if(containsBeforeEOForEndLine != null)containsBeforeEOForEndLine.setValor(true);
+        if(UploadVariableWithLastReadCharacter != null) UploadVariableWithLastReadCharacter.setValor(c);
+        c = fileIn.read();
      }
      return result.toString();
     }
     else if(mode == Readmode.CompletelyLine){
-        while ((c = fileIn.read()) != -1 && c != '\n') {
-            result.append((char) c);
+        while (c != -1 && (char)c != '\n') {
+            if(containsBeforeEOForEndLine != null)containsBeforeEOForEndLine.setValor(true);
+            result.append((char)c);
+            if(UploadVariableWithLastReadCharacter != null) UploadVariableWithLastReadCharacter.setValor(c);
+            c = fileIn.read();
         }
         return result.toString();
     }
@@ -558,7 +570,7 @@ public int RemoveNLine(String file_in){
         while(c != -1){
             //Get the number line and ignore it
             //Obtener el número de línea y ignorarlo
-            get(readFile, Readmode.NumberLine, ' '); 
+            get(readFile, Readmode.NumberLine, ' ', null, null); 
             c = readFile.read(); // Read the next character
                                     // Leer el siguiente carácter
            if(c == -1) break;

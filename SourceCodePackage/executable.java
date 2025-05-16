@@ -18,7 +18,7 @@ public class executable {
          
          n = parseF.RemoveSimpleComments(copy, "//");
          if(n != 0) return;
-         n = parseF.RemoveBlockComments(copy, null, "*/", null);
+        // n = parseF.RemoveBlockComments(copy, null, "*/", null);
 
       //sintaxParsing r = new sintaxParsing();
       
