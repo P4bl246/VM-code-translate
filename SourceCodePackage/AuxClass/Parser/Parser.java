@@ -181,34 +181,32 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
     
     System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
 
-    try (Reader ReadFile = new FileReader(Read_File_In);
-         Writer WritteFile = new FileWriter("tempwithoutSimpleComments.txt")) {
-        String line = null;
-        MutableTypeData<Integer>actual = new MutableTypeData<>(0);
-        MutableTypeData<Boolean> contain = new MutableTypeData<>(false);
-        while (true) { 
-            int n = 0;  
-            line = null;
-          contain.setValor(false);
-          //get the line
-          //obtener la linea
-          line = get(ReadFile, Readmode.CompletelyLine, null, actual, contain);
-          if(line == "ERROR") return -1;
-          if(line == "") break;
-          else if(!(actual.getValor() == -1)) actual.setValor(ReadFile.read());//next character after the '\n' //caracter despues de el '\n'
-          if((n = searchString(false, line, SimpleCommentIdent, 0, null)) != -1){
-            if(n == -3 || n == -2) return -1;
-            //Writter the character out of the simple comment
-            //Escribir los caracters fuera de el comentario simple
-            for(int i = 0; i < n; i++){
-              WritteFile.write(line.charAt(i)); 
+     try (BufferedReader ReadFile = new BufferedReader(new FileReader(Read_File_In));
+         BufferedWriter WritteFile = new BufferedWriter(new FileWriter("tempwithoutSimpleComments.txt"))) {
+        
+        String line;
+        while ((line = ReadFile.readLine()) != null) {
+            // Buscar comentario en la línea actual
+            //Search the delimiter in the actual line
+            int commentPosition = searchString(false, line, SimpleCommentIdent, 0, null);
+            
+            if (commentPosition != -1 && commentPosition != -2 && commentPosition != -3) {
+                // Si hay un comentario, escribir solo la parte antes del comentario
+                // if has a comment, writte just the part before of the delimiter
+                String codePart = line.substring(0, commentPosition);
+                WritteFile.write(codePart);
+            } else {
+                // Si no hay comentario, escribir la línea completa
+                // If not has a comment, writte the line
+                WritteFile.write(line);
             }
-            WritteFile.write('\n');
+            
+            // Añadir salto de línea (utiliza el separador de línea del sistema)
+            // Add jump of line (use the separator of the line for the system)
+            WritteFile.newLine();
         }
-          //Escribir la línea
-          //Write the line
-          else WritteFile.write(line + '\n');
-        }
+        
+        WritteFile.flush();
         WritteFile.close();
         ReadFile.close();
 
@@ -255,7 +253,7 @@ public class MutableTypeData<T> {
 
 public int RemoveBlockComments(String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine) {
   MutableTypeData<Integer>actual5 = new MutableTypeData<>(0);
-MutableTypeData<String>line5 = new MutableTypeData<>("");
+  MutableTypeData<String>line5 = new MutableTypeData<>("");
   //Globals variables to store the actual character and line (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
   //Variables globales para almacenar el carácter actual y linea (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
     System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
@@ -526,13 +524,13 @@ public enum Readmode{
     NumberLine,
     CompletelyLine
 }
-public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> UploadVariableWithLastReadCharacter, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException {
+public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException {
     if(fileIn == null){ 
     System.err.println("Error: Need put a argument in parameter 'fileIn'\n");
     return "ERROR";
   }
     int c = 0;
-    if(containsBeforeEOForEndLine != null) c = UploadVariableWithLastReadCharacter.getValor();
+    if(containsBeforeEOForEndLine != null) c = actual.getValor();
     else c = fileIn.read();//Read the first character //Leer el primer caracter
     StringBuilder result = new StringBuilder();
     if( containsBeforeEOForEndLine!= null)containsBeforeEOForEndLine.setValor(false);
@@ -542,7 +540,7 @@ public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimite
         while (c != -1 && (char)c != forNumberLine_Delimiter) {
         result.append((char)c);
         if(containsBeforeEOForEndLine != null)containsBeforeEOForEndLine.setValor(true);
-        if(UploadVariableWithLastReadCharacter != null) UploadVariableWithLastReadCharacter.setValor(c);
+        if(actual != null) actual.setValor(c);
         c = fileIn.read();
      }
      return result.toString();
@@ -551,7 +549,7 @@ public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimite
         while (c != -1 && (char)c != '\n') {
             if(containsBeforeEOForEndLine != null)containsBeforeEOForEndLine.setValor(true);
             result.append((char)c);
-            if(UploadVariableWithLastReadCharacter != null) UploadVariableWithLastReadCharacter.setValor(c);
+            if(actual != null) actual.setValor(c);
             c = fileIn.read();
         }
         return result.toString();
