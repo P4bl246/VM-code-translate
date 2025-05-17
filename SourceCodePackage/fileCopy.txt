@@ -2,6 +2,7 @@ pushconstant10
 add
 poplocal0
 
+d*/d*/d*/d*/dfg*/
 
 
 
@@ -10,5 +11,4 @@ poplocal0
 
 
 
-
-
+d*/d*/d*/

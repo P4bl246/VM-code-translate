@@ -21,7 +21,7 @@ public class executable {
          n = parseF.RemoveVoidChars(copy, null);
          if(n != 0) return;
          
-         n = parseF.RemoveBlockComments(Parser.ReadmodeBlock.NestedEnd, copy, "/*", "*/", null);
+         n = parseF.RemoveBlockComments(Parser.ReadmodeBlock.SingleEnd, copy, "/*", "*/", null);
 
       //sintaxParsing r = new sintaxParsing();
       

@@ -334,6 +334,14 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
     return -1;
 }
 //--------------------------------------------------------------
+/*mode for know how proccess the block comments
+*SingleEnd: search only the first close of the comment, independent if are nested block comments(not check the content, not are important)
+*NestedEnd: search and verify that all nested comments are closed correctly(check the content and are important)
+*/
+/*modo para saber como procesar los comentarios en bloque
+ * SingleEnd: busca solo el primer cierre de el comentario, independientemente de si hay comentarios andidados(no interesa el contenido)
+ * NestedEnd: busca y verifica que todos los comentarios anidados este cerrados correctamente(interesa el conteindo)
+ */
 public enum ReadmodeBlock{
     NestedEnd,
     SingleEnd
@@ -344,35 +352,45 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
     System.err.println("Error: Can't put the flag 'NestedJobFlag' if you put the mode 'ReadmodeBlock.SingleEnd'\n");
     return -1;
    }
+    
+    MutableTypeData<Integer> actual = new MutableTypeData<>(0);
     //Read until the end of comment
     //Leer hasta el final del comentario
-    MutableTypeData<Integer> actual = new MutableTypeData<>(0);
     while(true){
-      int n = 0, r = 0; 
+      int n = 0, r = 0; //variables for watch the result of the search //variables para ver el resultado de la busqueda
+      //search the delimiter that indicate the start of the comment
+      //Buca el delimitador que indica el iniciio de un comentario
       r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null); 
      int m = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null);
-      //remove the open block comment ident
-        if(NestedJobFlag != false && r >= 0 && (r+delimiter.length()) != (line.getValor().length()) && r != line.getValor().length()){ 
+      //remove the delimiter readed and upload de line
+      //eliminar el delimitador ya leido y actualizar la linea
+        if(r >= 0 && (r+delimiter.length()) != (line.getValor().length()) && r != line.getValor().length()){ 
             StringBuilder newLine = new StringBuilder(line.getValor());
             newLine.delete(r, r+delimiter.length());
             line.setValor(newLine.toString());
             indexActualLine.setValor(0);
         }
+        //if the delimiter occupe a line(are be alone)
+        //si el delimitador ocupa una linea(esta solo)
         else if((r+delimiter.length()) == (line.getValor().length())){
          line.setValor(" ");
          indexActualLine.setValor(0);
         }
+        //search the delimiter in the uploading line, for search nested comments
+        //buscar el delimitador en la linea actualizada, para buscar comentarios anidados
     r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null);   
 
       //if has a nested comment block
       //Si tiene un comentario en bloque anidado
       if(r >= 0 || (itsMultiLine && m >= 0)){
-        
+        //Dependend the mode
+        //Dependiendo de el modo
         switch (mode){
           case NestedEnd:
          if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, true, itsMultiLine) != 0) return -1;
            break;
           case SingleEnd: 
+
           if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  false, itsMultiLine) != 0 ) return -1;
           break;
           default:
@@ -380,8 +398,17 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
           return -1;
       }
     }
-    n = searchString(false, line.getValor(), delimiterEnd, indexActualLine.getValor(), null);//if not is the recursive call
-        
+
+ //   *after remove all the starts comment delimiters and call all the recursives for each block comments (each call of function are asiganted a comment and verify that)
+    //-example: for /*d/*  */*/ this are 1 nested block comment, where the first call has assignated the first block(after 'd'), and the recursive call have asignated the second block (before 'd')
+ //   *despues de remover todos los delimitadores que indican el incio de los comentarios en bloque (cada llamada de función tiene asignado un comentario y debe verificar este)
+    //-Ejemplo: para /*d/*  */*/ este tiene 1 cometario anidado, donde el primer comentario(antes de 'd') se asigna a la primer llamada, y la llamada recursiva se le asigna el segundo comentario(despues de 'd')
+    
+    //Search the delimiter of end comment
+    //buscar el delimitador de final de comentario
+    n = searchString(false, line.getValor(), delimiterEnd, indexActualLine.getValor(), null);
+        //remove the delimiter after readed
+        //eliminar el delimitador una vez leido
         if(NestedJobFlag != false && n >= 0 && (n+delimiterEnd.length()) != (line.getValor().length()) && n != line.getValor().length()){ 
             StringBuilder newLine = new StringBuilder(line.getValor());
             newLine.delete(n, n+delimiterEnd.length());
@@ -389,6 +416,9 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
             indexActualLine.setValor(0);
         }
         if(n == -2 || r == -2 || (n == -3 || r == -3)) return -1; //error in the parameters 
+    
+        //if not find in this line
+        //si no encuentra en esta line
       //Upload the parameters, uploading the line, the index, and the number of line actual
       //Actualizar los parametros, actualizando la linea, el indice y el numbero de linea actual
       else if(n == -1 && r == -1){
@@ -397,11 +427,6 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         actual.setValor((int)line.getValor().length());
         if(actual.getValor() == -1 )break;
         while((char)((int)actual.getValor()) == '\n') actual.setValor(ReadFile.read()); 
-        /* 
-        while((char)((int)actual.getValor()) == '\n'){
-            actual.setValor(ReadFile.read());
-        if( actual.getValor()== -1) break;
-        }*/
         
          if(DelimiterNumLine != null){
             int h = line.getValor().indexOf(DelimiterNumLine);
