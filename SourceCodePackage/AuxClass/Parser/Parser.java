@@ -291,10 +291,10 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                         MutableTypeData<Integer> LinesJump = new MutableTypeData<Integer>(0);
                         switch (mode){
                             case NestedEnd:
-                               if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, true) != 0) return -1;
+                               if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, true, false) != 0) return -1;
                                break;
                             case SingleEnd: 
-                               if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump,  false) != 0 ) return -1;
+                               if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump,  false, false) != 0 ) return -1;
                                break;
                             default:
                                System.err.println("Error in the argument 'mode'\n");
@@ -303,8 +303,10 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                             for(int i= 0; i < LinesJump.getValor(); i++){
                             WritteFile.newLine();
                         }
+                       
                         getString= line5.getValor().substring(index.getValor()+delimiterEnd.length(), line5.getValor().length());
                         WritteFile.write(getString);
+                        
                     }
                 }
                 else WritteFile.write(line5.getValor());//Escrbir la linea
@@ -337,19 +339,20 @@ public enum ReadmodeBlock{
     SingleEnd
 }
 
-public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean NestedJobFlag) throws IOException{
+public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean NestedJobFlag, boolean itsMultiLine) throws IOException{
    if(mode == ReadmodeBlock.SingleEnd && NestedJobFlag){
     System.err.println("Error: Can't put the flag 'NestedJobFlag' if you put the mode 'ReadmodeBlock.SingleEnd'\n");
     return -1;
    }
     //Read until the end of comment
     //Leer hasta el final del comentario
-    int actual = 0;
+    MutableTypeData<Integer> actual = new MutableTypeData<>(0);
     while(true){
       int n = 0, r = 0; 
-      r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null);   
+      r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null); 
+     int m = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null);
       //remove the open block comment ident
-        if(NestedJobFlag != false && r >= 0 && (r+delimiter.length()) != (line.getValor().length())){ 
+        if(NestedJobFlag != false && r >= 0 && (r+delimiter.length()) != (line.getValor().length()) && r != line.getValor().length()){ 
             StringBuilder newLine = new StringBuilder(line.getValor());
             newLine.delete(r, r+delimiter.length());
             line.setValor(newLine.toString());
@@ -363,14 +366,14 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
 
       //if has a nested comment block
       //Si tiene un comentario en bloque anidado
-      if(r >= 0){
+      if(r >= 0 || (itsMultiLine && m >= 0)){
         
         switch (mode){
           case NestedEnd:
-         if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, true) != 0) return -1;
+         if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, true, itsMultiLine) != 0) return -1;
            break;
           case SingleEnd: 
-          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  false) != 0 ) return -1;
+          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  false, itsMultiLine) != 0 ) return -1;
           break;
           default:
           System.err.println("Error in the argument 'mode'\n");
@@ -379,7 +382,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
     }
     n = searchString(false, line.getValor(), delimiterEnd, indexActualLine.getValor(), null);//if not is the recursive call
         
-        if(NestedJobFlag != false && n >= 0 && (n+delimiterEnd.length()) != (line.getValor().length())){ 
+        if(NestedJobFlag != false && n >= 0 && (n+delimiterEnd.length()) != (line.getValor().length()) && n != line.getValor().length()){ 
             StringBuilder newLine = new StringBuilder(line.getValor());
             newLine.delete(n, n+delimiterEnd.length());
             line.setValor(newLine.toString());
@@ -391,7 +394,15 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
       else if(n == -1 && r == -1){
         //Get the number of line if it has
         //Obtener el numero de linea si lo tiene
-        if((actual = ReadFile.read()) == -1) break;
+        actual.setValor((int)line.getValor().length());
+        if(actual.getValor() == -1 )break;
+        while((char)((int)actual.getValor()) == '\n') actual.setValor(ReadFile.read()); 
+        /* 
+        while((char)((int)actual.getValor()) == '\n'){
+            actual.setValor(ReadFile.read());
+        if( actual.getValor()== -1) break;
+        }*/
+        
          if(DelimiterNumLine != null){
             int h = line.getValor().indexOf(DelimiterNumLine);
             nLine = line.getValor().substring(0, h);
@@ -399,7 +410,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         //Check if the character actual is the end of the before line
         //Revisar si el caracter actual es el final de la linea anteriror
         MutableTypeData<Boolean> contain = new MutableTypeData<>(false);
-        line.setValor(get(ReadFile, Readmode.CompletelyLine, DelimiterNumLine, null, contain));
+        line.setValor(get(ReadFile, Readmode.CompletelyLine, DelimiterNumLine, actual, contain));
             //If find EOF and not are content before
         //Si se llego a EOF y no habia contenido antes
         if(line.getValor() == "" && !contain.getValor()) break;
@@ -410,6 +421,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         int moreLine = CountOfLinePass.getValor()+1;
         CountOfLinePass.setValor(moreLine);
         }
+        itsMultiLine = true;
         continue;
       }
       else if(n >= 0){
@@ -419,7 +431,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
  }
   // If find the end of file without closing the comment
     // Si encuentra el final del archivo sin cerrar el comentario
-        if(actual == -1){
+        if(actual.getValor() == -1){
             System.err.println("Error in the line: "+ nLine +"\nDETAILS:End of file without closing comment\n");
             return -1;
         }
@@ -557,36 +569,58 @@ public enum Readmode{
 }
 public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException {
     if(fileIn == null){ 
-    System.err.println("Error: Need put a argument in parameter 'fileIn'\n");
-    return "ERROR";
-  }
-    int c = 0;
-    if(actual != null) c = actual.getValor();
-    else c = fileIn.read();//Read the first character //Leer el primer caracter
-    StringBuilder result = new StringBuilder();
-    if( containsBeforeEOForEndLine!= null)containsBeforeEOForEndLine.setValor(false);
-    // Leer caracteres hasta encontrar un espacio. Se asume que el número de línea está separado por un espacio
-    // Read characters until a space is found. It is assumed that the line number is separated by a space
-     if(mode == Readmode.NumberLine){
-        while (c != -1 && (char)c != forNumberLine_Delimiter) {
-        result.append((char)c);
-        if(containsBeforeEOForEndLine != null)containsBeforeEOForEndLine.setValor(true);
-        if(actual != null) actual.setValor(c);
-        c = fileIn.read();
-     }
-     return result.toString();
+        System.err.println("Error: Need put a argument in parameter 'fileIn'\n");
+        return "ERROR";
     }
-    else if(mode == Readmode.CompletelyLine){
-        while (c != -1 && (char)c != '\n') {
-            if(containsBeforeEOForEndLine != null)containsBeforeEOForEndLine.setValor(true);
+    
+    int c = 0;
+    if(actual != null) {
+        c = actual.getValor();
+    } else {
+        c = fileIn.read(); // Lee el primer carácter
+        
+        // Filtrar BOM si existe
+        if (c == 0xFEFF) {
+            c = fileIn.read(); // Leer el siguiente carácter después del BOM
+        }
+    }
+    
+    StringBuilder result = new StringBuilder();
+    if(containsBeforeEOForEndLine != null) {
+        containsBeforeEOForEndLine.setValor(false);
+    }
+    
+    if(mode == Readmode.NumberLine) {
+        while (c != -1 && (char)c != forNumberLine_Delimiter) {
             result.append((char)c);
-            if(actual != null) actual.setValor(c);
+            if(containsBeforeEOForEndLine != null) {
+                containsBeforeEOForEndLine.setValor(true);
+            }
+            if(actual != null) {
+                actual.setValor(c);
+            }
             c = fileIn.read();
         }
         return result.toString();
     }
-    // Si no se especifica el número de línea ni la línea completa, se devuelve null
-    // If neither the line number nor the complete line is specified, return null
+    else if(mode == Readmode.CompletelyLine) {
+        while (c != -1 && (char)c != '\n') {
+            // Solo agregar caracteres imprimibles o espacios
+            if ((c >= 32 && c <= 126) || c == 9 || c == 32) { // ASCII imprimible o tabs/espacios
+                result.append((char)c);
+            }
+            
+            if(containsBeforeEOForEndLine != null) {
+                containsBeforeEOForEndLine.setValor(true);
+            }
+            if(actual != null) {
+                actual.setValor(c);
+            }
+            c = fileIn.read();
+        }
+        return result.toString();
+    }
+    
     return null;
 }
 //--------------------------------------------------------------

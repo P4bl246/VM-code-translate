@@ -2,15 +2,13 @@ pushconstant10
 add
 poplocal0
 
-/*thisisablockcomment*/
-/*hi/*this/*is/*aextra/*large/*yuca*/d*/d*/d*/d*/dfg*/
-/*
-estosesmultil
--inea
-porqueyolo*/
-/*esto
-/*es
-/*multilinea
-/*anidado
-*/d*/d*/d*/
+
+
+
+
+
+
+
+
+
 
