@@ -14,17 +14,10 @@ public class executable {
          String copy = "fileCopy.txt";
          n= parseF.File_to_txt("Archivo.vm", copy); 
          if(n != 0) return;
-        
-         
-         n = parseF.RemoveSimpleComments(copy, "//");
-         if(n != 0) return;
-         n = parseF.RemoveVoidChars(copy, null);
+          
+         n = parseF.CleanFile(copy);
          if(n != 0) return;
          
-         n = parseF.RemoveBlockComments(Parser.ReadmodeBlock.SingleEnd, copy, "/*", "*/", null);
-
-      //sintaxParsing r = new sintaxParsing();
-      
          return;        
     }
 }

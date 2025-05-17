@@ -1,7 +1,4 @@
 package AuxClass.Parser;
-//import AuxClass.sintax_parsing.sintax_parsing; // Import the sintax_parsing class from the AuxClass.sintax_parsing package
-                                               // importar la clase sintax_parsing del paquete AuxClass.sintax_parsing
-
 //****Call classes individuals not is necesary because we call java.io.*, this import all classes from this package
 //****Llamadas a clases individuales no son necesarias porque llamamos a java.io.*, esto importa todas las clases de este paquete
 
@@ -18,7 +15,9 @@ public class Parser {
 //FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 
 *************************************************------------------------------------------------*******************************-------------------------------
-
+    public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages)//method for search a string in a line
+                                                                                                                                         //método para buscar una cadena en una linea
+                                                                                                                                         
     public int RemoveString(String Read_File_In, String Delimiter);// This method is used to remove spaces from the input file(internal method)
                                                             // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
 
@@ -28,7 +27,7 @@ public class Parser {
     public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException;// This method is used to obtain the line number or completely line from the input file(internal method)
                                                             // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)
 
-   public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
+    public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
                                                                                                      // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)
 
     public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean NestedJobFlag, boolean itsMultiLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
@@ -85,9 +84,6 @@ public int CleanFile(String file_in){
     int n;
     n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
-
-    n = RemoveSimpleComments(file_in, "//");
-    if(n != 0) return n;
   
     n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
@@ -96,6 +92,9 @@ public int CleanFile(String file_in){
     if(n != 0) return n;
 
     n = RemoveBlockComments(ReadmodeBlock.NestedEnd, file_in, "/*", "*/", ' ');
+    if(n != 0) return n;
+    
+     n = RemoveSimpleComments(file_in, "//");
     if(n != 0) return n;
 
     n = RemoveNLine(file_in);
@@ -143,7 +142,7 @@ public int RemoveString(String Read_File_In, String Delimiter) {
     }
 }
 //--------------------------------------------------------------
-public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter) {
+public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages) {
     if (line == null || searchThis == null || startIndex < 0) {
         System.err.printf("Error: Invalid input parameters.\nDETAILS: line: %s, searchThis: %s, Index: %d, sizeOfLine: %d\n", line, searchThis, startIndex, line.length());
         return -2;
@@ -164,7 +163,7 @@ public int searchString(boolean searchAll, String line, String searchThis, int s
 
         if (match) {
             if (!searchAll) {
-                System.out.println("String found at index " + i);
+             if(WatchMessages)  System.out.println("String found at index " + i);
                 return i;
             }
             count++;
@@ -173,7 +172,7 @@ public int searchString(boolean searchAll, String line, String searchThis, int s
     }
 
     if (searchAll) return count;
-    System.out.println("String not found.");
+    if(WatchMessages) System.out.println("String not found.");
     return -1;
 }
 //--------------------------------------------------------------
@@ -188,7 +187,7 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
         while ((line = ReadFile.readLine()) != null) {
             // Buscar comentario en la línea actual
             //Search the delimiter in the actual line
-            int commentPosition = searchString(false, line, SimpleCommentIdent, 0, null);
+            int commentPosition = searchString(false, line, SimpleCommentIdent, 0, null, false);
             
             if (commentPosition != -1 && commentPosition != -2 && commentPosition != -3) {
                 // Si hay un comentario, escribir solo la parte antes del comentario
@@ -280,7 +279,7 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                 int n; 
                 //if find the delimiter that indicate the start of comment
                 //si encuentra el delimitador que indica el inicio de un comentario
-                if((n = searchString(false, line5.getValor(), Delimiter, 0, null)) != -1){
+                if((n = searchString(false, line5.getValor(), Delimiter, 0, null, false)) != -1){
                     if(n == -2 || n == -3) return -1; //Error
                     else{
                         //Get the number line
@@ -373,8 +372,8 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
       int n = 0, r = 0; //variables for watch the result of the search //variables para ver el resultado de la busqueda
       //search the delimiter that indicate the start of the comment
       //Buca el delimitador que indica el iniciio de un comentario
-      r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null); 
-     int m = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null);
+      r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null, false); 
+     int m = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null, false);
       //remove the delimiter readed and upload de line
       //eliminar el delimitador ya leido y actualizar la linea
         if(r >= 0 && (r+delimiter.length()) != (line.getValor().length()) && r != line.getValor().length()){ 
@@ -391,7 +390,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         }
         //search the delimiter in the uploading line, for search nested comments
         //buscar el delimitador en la linea actualizada, para buscar comentarios anidados
-    r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null);   
+    r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null, false);   
 
       //if has a nested comment block
       //Si tiene un comentario en bloque anidado
@@ -419,7 +418,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
     
     //Search the delimiter of end comment
     //buscar el delimitador de final de comentario
-    n = searchString(false, line.getValor(), delimiterEnd, indexActualLine.getValor(), null);
+    n = searchString(false, line.getValor(), delimiterEnd, indexActualLine.getValor(), null, false);
         //remove the delimiter after readed
         //eliminar el delimitador una vez leido
         if(NestedJobFlag != false && n >= 0 && (n+delimiterEnd.length()) != (line.getValor().length()) && n != line.getValor().length()){ 
