@@ -3,4 +3,14 @@ add
 pop local 0//simple comment
 ////simple comment
 /*this is a block comment*/
-/*hi/*this/*is/*a extra/*large/*yuca*/d*/d*/d*/*/
+/*hi/*this/*is/*a extra/*large/*yuca*/d*/d*/d*/d*/dfg*/
+/*
+estos es multil
+-inea 
+porque yolo*/
+/*esto
+/*es
+/*multilinea
+/*anidado
+*/d*/d*/d*/
+

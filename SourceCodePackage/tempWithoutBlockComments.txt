@@ -1,0 +1,8 @@
+pushconstant10
+add
+poplocal0
+
+
+
+
+

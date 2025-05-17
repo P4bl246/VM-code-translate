@@ -1,6 +1,16 @@
-push constant 10
+pushconstant10
 add
-pop local 0
+poplocal0
 
-/*this is a block comment*/
-/*hi/*this/*is/*a extra/*large/*yuca*/d*/d*/d*/*/
+/*thisisablockcomment*/
+/*hi/*this/*is/*aextra/*large/*yuca*/d*/d*/d*/d*/dfg*/
+/*
+estosesmultil
+-inea
+porqueyolo*/
+/*esto
+/*es
+/*multilinea
+/*anidado
+*/d*/d*/d*/
+
