@@ -25,16 +25,16 @@ public class Parser {
     public int RemoveSimpleComments(String Read_File_In, String Delmiter);// This method is used to remove simple comments from the input file(internal method)
                                                                            // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
 
-    public String get(Reader fileIn, Readmode mode, char forNumberLine_Delimiter) throws IOException;// This method is used to obtain the line number or completely line from the input file(internal method)
+    public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException;// This method is used to obtain the line number or completely line from the input file(internal method)
                                                             // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)
 
-    public int RemoveBlockComments(String Read_File_In, String Delimiter, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
+   public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
                                                                                                      // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)
 
-    public int RemoveNestedBlockComments(String line, Reader ReadFile, String nLine,String delimiter, String delmiterEnd, String DelimiterNumLine, int indexActualLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
+    public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean NestedJobFlag, boolean itsMultiLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
                                                                                                         // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
     
-    public int RemoveVoidChars(String Read_File_In, Character Delimiter);// This method is used to remove void lines or characters from the input file(internal method)
+    public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart);// This method is used to remove void lines or characters from the input file(internal method)
                                                         // Este método se utiliza para eliminar líneas vacías o caracteres del archivo de entrada(Método interno)
 
     public int RemoveNLine(String file_in);// This method is used to remove the number line from the input file(internal method)
@@ -97,8 +97,6 @@ public int CleanFile(String file_in){
 
     n = RemoveBlockComments(ReadmodeBlock.NestedEnd, file_in, "/*", "*/", ' ');
     if(n != 0) return n;
-    n = RemoveBlockComments(ReadmodeBlock.SingleEnd, file_in, "/*", "*/", ' ');
-    if (n != 0) return n;
 
     n = RemoveNLine(file_in);
     if(n != 0) return n;
@@ -233,6 +231,8 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
     return -1;
 }
 //--------------------------------------------------------------
+//class for simulate the pass for identify
+//clase para simular el paso por identificador
 public class MutableTypeData<T> {
     private T valor;
     
@@ -272,10 +272,14 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
     try (BufferedReader ReadFile = new BufferedReader(new FileReader(Read_File_in));
          BufferedWriter WritteFile = new BufferedWriter(new FileWriter("tempWithoutBlockComments.txt"))) {
             String line;
+            //search in the completely file and remove
+            //buscar en el archivo completo y eliminar
             while((line = ReadFile.readLine()) != null){
                 if(line.equals("") || line.equals("\n") || line.equals("\0")) continue;
                 line5.setValor(line);
                 int n; 
+                //if find the delimiter that indicate the start of comment
+                //si encuentra el delimitador que indica el inicio de un comentario
                 if((n = searchString(false, line5.getValor(), Delimiter, 0, null)) != -1){
                     if(n == -2 || n == -3) return -1; //Error
                     else{
@@ -285,8 +289,12 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                             int h = line5.getValor().indexOf(DelimiterNumLine);
                             nLine = line5.getValor().substring(0, h);
                         }
+                        //copy all before of the start of the delimiter 
+                        //copiar todo antes de el incio de el delimitador
                         String getString = line5.getValor().substring(0, n);
                         WritteFile.write(getString);
+                        //variables for upload the actual index and know the number of lines proccesed
+                        //variables para actualizar el inidce actual y saber cuantaas lineas fueron procesadas
                         MutableTypeData<Integer> index = new MutableTypeData<>(n);
                         MutableTypeData<Integer> LinesJump = new MutableTypeData<Integer>(0);
                         switch (mode){
@@ -299,16 +307,21 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                             default:
                                System.err.println("Error in the argument 'mode'\n");
                                return -1;
-                            }                        
+                            }
+                            //conseverd the structure of the file including the prosecced lines
+                            //conservar la estructure de el archivo incluyendo las lineas procesadas                        
                             for(int i= 0; i < LinesJump.getValor(); i++){
                             WritteFile.newLine();
                         }
-                       
+                       //get all the content after the end of comment
+                       //obtener todo lo que hay despues de el comentario
                         getString= line5.getValor().substring(index.getValor()+delimiterEnd.length(), line5.getValor().length());
                         WritteFile.write(getString);
                         
                     }
                 }
+                //write the completely line
+                //escribir la linea completa
                 else WritteFile.write(line5.getValor());//Escrbir la linea
                 WritteFile.newLine();
             } 
