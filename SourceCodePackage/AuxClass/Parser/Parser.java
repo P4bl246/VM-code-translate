@@ -9,6 +9,7 @@ package AuxClass.Parser;
 import java.io.*;
 //import java.io.FileReader;
 //import java.io.FileWriter;
+import java.util.ArrayList;
 
 public class Parser {
 /*
@@ -294,14 +295,15 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                         //variables para actualizar el inidce actual y saber cuantaas lineas fueron procesadas
                         MutableTypeData<Integer> index = new MutableTypeData<>(n);
                         MutableTypeData<Integer> LinesJump = new MutableTypeData<Integer>(0);
-                        MutableTypeData<String> between = new MutableTypeData<>("");
+                        ArrayList<String> between = new ArrayList<>();
                         MutableTypeData<Integer>last = new MutableTypeData<>(0);
+                        MutableTypeData<Boolean>lastCallFlag = new MutableTypeData<>(false);
                         switch (mode){
                             case NestedEnd:
-                               if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last) != 0) return -1;
+                               if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag) != 0) return -1;
                                break;
                             case SingleEnd: 
-                               if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last) != 0 ) return -1;
+                               if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag) != 0 ) return -1;
                                break;
                             default:
                                System.err.println("Error in the argument 'mode'\n");
@@ -312,24 +314,23 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                             for(int i= 0; i < LinesJump.getValor(); i++){
                             WritteFile.newLine();
                         }
-                        if(!(between.getValor().equals(""))) WritteFile.write(" "+between.getValor());
+                        for(String str : between){
+                            if(!str.equals("")) WritteFile.write(" " + str);
+                        }
                             
                        //get all the content after the end of comment
                        //obtener todo lo que hay despues de el comentario
                         if(mode == ReadmodeBlock.NestedEnd && line5.getValor().indexOf(last.getValor()) != '\n' && line5.getValor().indexOf(last.getValor()) != '\0') getString= line5.getValor().substring((last.getValor()+1), line5.getValor().length());
                         else if(mode == ReadmodeBlock.SingleEnd) getString = line5.getValor().substring((index.getValor()+1), line5.getValor().length());
-                        if(!getString.equals("")){
-                            WritteFile.write(" " + getString);//if are a void line(""), write a newLine
-                            WritteFile.newLine();
-                        }
+                        if(!getString.equals("")) WritteFile.write(" " + getString);//if are a void line(""), write a newLine
+                           
                     }
                 }
                 //write the completely line
                 //escribir la linea completa
-                else{
-                    WritteFile.write(line5.getValor());//Escrbir la linea
+                else WritteFile.write(line5.getValor());//Escrbir la linea
                     WritteFile.newLine();
-                }
+                
                 
             }
     } catch (IOException e) {
@@ -367,7 +368,12 @@ public enum ReadmodeBlock{
     SingleEnd
 }
 
-public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean itsMultiLine,  MutableTypeData<String> BetweenComments, MutableTypeData<Integer> LastEndOfcomment) throws IOException{
+public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean itsMultiLine,  ArrayList<String> BetweenComments, MutableTypeData<Integer> LastEndOfcomment, boolean recursiveCall, MutableTypeData<Boolean> lastCallFlag) throws IOException{
+    if(lastCallFlag == null){
+        System.err.println("Error: Need put a parameter 'lastCallFlag'\n");
+        return -1;
+    }
+    lastCallFlag.setValor(true);//initialize always in true
     MutableTypeData<Integer> actual = new MutableTypeData<>(0);
     //Read until the end of comment
     //Leer hasta el final del comentario
@@ -400,8 +406,8 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         //search the delimiter in the uploading line, for search nested comments
         //buscar el delimitador en la linea actualizada, para buscar comentarios anidados
     r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null, false); 
-
-        if(n == -2 || r == -2 || (n == -3 || r == -3)) return -1; //error in the parameters 
+        
+    if(n == -2 || r == -2 || (n == -3 || r == -3)) return -1; //error in the parameters 
          
         //if not find in this line
         //si no encuentra en esta line
@@ -435,7 +441,7 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         itsMultiLine = true;
         continue;
       } 
-
+      
       //if has a nested comment block
       //Si tiene un comentario en bloque anidado
       if(r >= 0 || (itsMultiLine && m >= 0)){
@@ -443,17 +449,17 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         //Dependiendo de el modo
         switch (mode){
           case NestedEnd:
-          if(BetweenComments != null && n >= 0){
+          if(!(n > r) && n >= 0 && !itsMultiLine){
             String newl;
             if(r != -1) newl = line.getValor().substring(n, r);//get the string between comments
             else newl = line.getValor().substring(n, line.getValor().length());
-            BetweenComments.setValor(newl);
+            BetweenComments.add(newl);
         }
-         if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  itsMultiLine,  null, LastEndOfcomment) != 0) return -1;
+         if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  itsMultiLine,  BetweenComments, LastEndOfcomment, true, lastCallFlag) != 0) return -1;
            break;
           case SingleEnd: 
 
-          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, itsMultiLine,  null, LastEndOfcomment) != 0 ) return -1;
+          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, itsMultiLine,  null, LastEndOfcomment, true, lastCallFlag) != 0 ) return -1;
           break;
           default:
           System.err.println("Error in the argument 'mode'\n");
@@ -461,7 +467,8 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
       }
     }
        if(n >= 0){
-       if(indexActualLine.getValor() != 0 && mode == ReadmodeBlock.NestedEnd)LastEndOfcomment.setValor(indexActualLine.getValor());//upload with the index of the las end comment delimiter
+       if( mode == ReadmodeBlock.NestedEnd && recursiveCall && (lastCallFlag.getValor() == true))LastEndOfcomment.setValor(n-1);//upload with the index of the las end comment delimiter
+       lastCallFlag.setValor(false);//set the value of flag in the last call recursive for stay his value
        indexActualLine.setValor(n-1);
         return 0;
       } 
