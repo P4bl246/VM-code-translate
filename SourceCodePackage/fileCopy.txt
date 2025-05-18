@@ -1,7 +1,6 @@
-pushconstant10
-add
-poplocal0
-
-
-
-dja
+1 /*Estonoseescribe*/Estoseescrbe/*estotampo*/
+2 /*efstono
+3 
+4 */estosimple/*
+5 adkjwonot
+6 */
