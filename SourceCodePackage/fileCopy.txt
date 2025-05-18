@@ -1,21 +1,7 @@
-1 pushconstant10
-2 add
-3 poplocal0//simplecomment
-4 ////simplecomment
-5 /*thisisablockcomment*/
-6 /*hi/*this/*is/*aextra/*large/*yuca*/d*/d*/d*/d*/dfg*/
-7 /*
-8 estosesmultil
-9 -inea
-10 porqueyolo*/
-11 /*esto
-12 /*es
-13 /*multilinea
-14 /*anidado
-15 */d*/d*/d*/
-16 Estoeslayuca
-17 /*esto//eseljamo*/juaj/*jaid*/
-18 dj/*djsldjie*/
-19 /*kd
-20 
-21 dja
+pushconstant10
+add
+poplocal0
+
+
+
+dja

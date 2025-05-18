@@ -15,9 +15,10 @@ public class executable {
          n= parseF.File_to_txt("Archivo.vm", copy); 
          if(n != 0) return;
           
+
          n = parseF.CleanFile(copy);
          if(n != 0) return;
-         
+
          return;        
     }
 }
