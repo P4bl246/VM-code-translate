@@ -368,7 +368,7 @@ public enum ReadmodeBlock{
     SingleEnd
 }
 
-public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean itsMultiLine,  ArrayList<String> BetweenComments, MutableTypeData<Integer> LastEndOfcomment, boolean recursiveCall, MutableTypeData<Boolean> lastCallFlag) throws IOException{
+public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean itsMultiLine,  ArrayList<String> BetweenComments, MutableTypeData<Integer> LastEndOfcomment, boolean recursiveCall, MutableTypeData<Boolean> lastCallFlag) throws IOException{ 
     if(lastCallFlag == null){
         System.err.println("Error: Need put a parameter 'lastCallFlag'\n");
         return -1;
@@ -447,14 +447,15 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
       if(r >= 0 || (itsMultiLine && m >= 0)){
         //Dependend the mode
         //Dependiendo de el modo
-        switch (mode){
-          case NestedEnd:
-          if(!(n > r) && n >= 0 && !itsMultiLine){
+        if(!(n > r) && n >= 0 && !itsMultiLine){
             String newl;
             if(r != -1) newl = line.getValor().substring(n, r);//get the string between comments
             else newl = line.getValor().substring(n, line.getValor().length());
             BetweenComments.add(newl);
         }
+        switch (mode){
+          case NestedEnd:
+          
          if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  itsMultiLine,  BetweenComments, LastEndOfcomment, true, lastCallFlag) != 0) return -1;
            break;
           case SingleEnd: 
