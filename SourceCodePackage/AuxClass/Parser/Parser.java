@@ -298,17 +298,9 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                         ArrayList<String> between = new ArrayList<>();
                         MutableTypeData<Integer>last = new MutableTypeData<>(0);
                         MutableTypeData<Boolean>lastCallFlag = new MutableTypeData<>(false);
-                        switch (mode){
-                            case NestedEnd:
-                               if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag) != 0) return -1;
-                               break;
-                            case SingleEnd: 
-                               if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag) != 0 ) return -1;
-                               break;
-                            default:
-                               System.err.println("Error in the argument 'mode'\n");
-                               return -1;
-                            }
+                        
+                        if(RemoveNestedBlockComments(mode, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag) != 0) return -1;
+                               
                             //conseverd the structure of the file including the prosecced lines
                             //conservar la estructure de el archivo incluyendo las lineas procesadas                        
                             for(int i= 0; i < LinesJump.getValor(); i++){
@@ -321,9 +313,15 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                        //get all the content after the end of comment
                        //obtener todo lo que hay despues de el comentario
                         if(mode == ReadmodeBlock.NestedEnd && line5.getValor().indexOf(last.getValor()) != '\n' && line5.getValor().indexOf(last.getValor()) != '\0') getString= line5.getValor().substring((last.getValor()+1), line5.getValor().length());
-                        else if(mode == ReadmodeBlock.SingleEnd) getString = line5.getValor().substring((index.getValor()+1), line5.getValor().length());
-                        if(!getString.equals("")) WritteFile.write(" " + getString);//if are a void line(""), write a newLine
-                           
+                        else if(mode == ReadmodeBlock.SingleEnd){
+                            String ischaracterofDel = line5.getValor().substring(last.getValor() + delimiterEnd.length(), line5.getValor().length());
+                            Character m = ischaracterofDel.charAt(0);
+                            if(m.equals(delimiterEnd.charAt(delimiterEnd.length()-1))){
+                                if(ischaracterofDel.length() > 1) getString = ischaracterofDel.substring(1, ischaracterofDel.length());
+                                else getString = "";
+                            }
+                        }
+                    if(!getString.equals("")) WritteFile.write(" " + getString);//if are a void line(""), write a newLine
                     }
                 }
                 //write the completely line
@@ -442,39 +440,78 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
         continue;
       } 
       
-      //if has a nested comment block
-      //Si tiene un comentario en bloque anidado
-      if(r >= 0 || (itsMultiLine && m >= 0)){
+        
+        //if has a nested comment block
+           //Si tiene un comentario en bloque anidado
+    if(r >= 0 || (itsMultiLine && m >= 0)){    
         //Dependend the mode
         //Dependiendo de el modo
-        if(!(n > r) && n >= 0 && !itsMultiLine){
+        switch (mode){
+          case NestedEnd:
+            //if has code between comments get it
+            //si tiene codigo entre comentarios extraerlo
+             if(!(n > r) && n >= 0 && !itsMultiLine){
             String newl;
             if(r != -1) newl = line.getValor().substring(n, r);//get the string between comments
             else newl = line.getValor().substring(n, line.getValor().length());
             BetweenComments.add(newl);
-        }
-        switch (mode){
-          case NestedEnd:
-          
+            }
+            
          if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  itsMultiLine,  BetweenComments, LastEndOfcomment, true, lastCallFlag) != 0) return -1;
-           break;
+         break;
           case SingleEnd: 
-
-          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, itsMultiLine,  null, LastEndOfcomment, true, lastCallFlag) != 0 ) return -1;
+          //if has code between comments get it
+        //si tiene codigo entre comentarios extraerlo
+        if(!(n > r) && n >= 0 && !itsMultiLine){
+            boolean edit = false;
+            String newl;
+            if(!(n+delimiterEnd.length() > line.getValor().length())){
+            if(r != -1 && !(n+delimiterEnd.length() >= r)) newl = line.getValor().substring(n+delimiterEnd.length(), r);//get the string between comments
+            else if(r != -1 && n + delimiterEnd.length() >= r){
+                newl = line.getValor().substring(r+delimiter.length(), line.getValor().length()); //if n+delimiterEnd length is equal or grether than r, stary r(priorize n(coment end delimiter))(thats appear when push something like '*/*/' because r starts in 2 and n in 1(in this example) in this mode)
+                  int s = searchString(false, newl, delimiter, 0, null, false);
+                  if(s != -1){
+                     int indexStart = s + (r+delimiter.length());
+                  newl = line.getValor().substring(r+delimiter.length(), indexStart);
+                  }
+                  edit = true;
+                }
+                 else newl = line.getValor().substring(n+delimiterEnd.length(), line.getValor().length());
+            BetweenComments.add(newl);
+            }
+            //if is in mode SingleEnd, upload n, because in this mode search only the first close
+                //remove the delimiter after readed
+               //eliminar el delimitador una vez leido
+               if(!(edit) && n >= 0 && n != line.getValor().length()){ 
+                  StringBuilder newLine = new StringBuilder(line.getValor());
+                   newLine.delete(n, n+delimiterEnd.length());
+                   line.setValor(newLine.toString());
+                   indexActualLine.setValor(0);
+                }
+                //if are editing the code because find a case like this example '*/*/'(conflict into delimiter end and delimiter start) remove this conflict after processed
+                else if(edit){
+                    StringBuilder newLine = new StringBuilder(line.getValor());
+                   newLine.delete(n, r+delimiterEnd.length());
+                   line.setValor(newLine.toString());
+                   indexActualLine.setValor(0);
+                }
+        }
+          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, itsMultiLine,  BetweenComments, LastEndOfcomment, true, lastCallFlag) != 0 ) return -1;
           break;
           default:
           System.err.println("Error in the argument 'mode'\n");
           return -1;
       }
     }
+
        if(n >= 0){
-       if( mode == ReadmodeBlock.NestedEnd && recursiveCall && (lastCallFlag.getValor() == true))LastEndOfcomment.setValor(n-1);//upload with the index of the las end comment delimiter
+       if(recursiveCall && (lastCallFlag.getValor() == true))LastEndOfcomment.setValor(n-1);//upload with the index of the las end comment delimiter
        lastCallFlag.setValor(false);//set the value of flag in the last call recursive for stay his value
        indexActualLine.setValor(n-1);
         return 0;
       } 
- }
-  // If find the end of file without closing the comment
+    }
+      // If find the end of file without closing the comment
     // Si encuentra el final del archivo sin cerrar el comentario
             System.err.println("Error in the line: "+ nLine +"\nDETAILS:Find the 'End of file' and don't closing a comment block\n");
             return -1;
