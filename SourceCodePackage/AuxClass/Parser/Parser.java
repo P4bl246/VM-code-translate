@@ -298,8 +298,8 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                         ArrayList<String> between = new ArrayList<>();
                         MutableTypeData<Integer>last = new MutableTypeData<>(0);
                         MutableTypeData<Boolean>lastCallFlag = new MutableTypeData<>(false);
-                        
-                        if(RemoveNestedBlockComments(mode, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag) != 0) return -1;
+                        ProccessBlockComments data = new ProccessBlockComments(mode, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag);
+                        if(RemoveNestedBlockComments(data) != 0) return -1;
                                
                             //conseverd the structure of the file including the prosecced lines
                             //conservar la estructure de el archivo incluyendo las lineas procesadas                        
@@ -366,12 +366,12 @@ public enum ReadmodeBlock{
     SingleEnd
 }
 
-public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean itsMultiLine,  ArrayList<String> BetweenComments, MutableTypeData<Integer> LastEndOfcomment, boolean recursiveCall, MutableTypeData<Boolean> lastCallFlag) throws IOException{ 
-    if(lastCallFlag == null){
+public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException{ 
+    if(dataForProccess.lastRecursiveCallFlag == null){
         System.err.println("Error: Need put a parameter 'lastCallFlag'\n");
         return -1;
     }
-    lastCallFlag.setValor(true);//initialize always in true
+    dataForProccess.lastRecursiveCallFlag.setValor(true);//initialize always in true
     MutableTypeData<Integer> actual = new MutableTypeData<>(0);
     //Read until the end of comment
     //Leer hasta el final del comentario
@@ -379,31 +379,31 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
       int n = 0, r = 0; //variables for watch the result of the search //variables para ver el resultado de la busqueda
       //search the delimiter that indicate the start of the comment
       //Buca el delimitador que indica el iniciio de un comentario
-      r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null, false); 
+      r = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterStart, dataForProccess.indexActualInTheLine.getValor(), null, false); 
      int m = r;
       //remove the delimiter readed and upload de line
       //eliminar el delimitador ya leido y actualizar la linea
-        if(r >= 0 && r != line.getValor().length()){ 
-            StringBuilder newLine = new StringBuilder(line.getValor());
-            newLine.delete(r, r+delimiter.length());
-            line.setValor(newLine.toString());
-            indexActualLine.setValor(0);
+        if(r >= 0 && r != dataForProccess.line.getValor().length()){ 
+            StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
+            newLine.delete(r, r+dataForProccess.DelimiterStart.length());
+            dataForProccess.line.setValor(newLine.toString());
+            dataForProccess.indexActualInTheLine.setValor(0);
         }
          //Search the delimiter of end comment
     //buscar el delimitador de final de comentario
-        n = searchString(false, line.getValor(), delimiterEnd, indexActualLine.getValor(), null, false);
+        n = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterEnd, dataForProccess.indexActualInTheLine.getValor(), null, false);
         
         //remove the delimiter after readed
         //eliminar el delimitador una vez leido
-        if(mode == ReadmodeBlock.NestedEnd && n >= 0 && n != line.getValor().length()){ 
-            StringBuilder newLine = new StringBuilder(line.getValor());
-            newLine.delete(n, n+delimiterEnd.length());
-            line.setValor(newLine.toString());
-            indexActualLine.setValor(0);
+        if(dataForProccess.mode == ReadmodeBlock.NestedEnd && n >= 0 && n != dataForProccess.line.getValor().length()){ 
+            StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
+            newLine.delete(n, n+dataForProccess.DelimiterEnd.length());
+            dataForProccess.line.setValor(newLine.toString());
+            dataForProccess.indexActualInTheLine.setValor(0);
         }
         //search the delimiter in the uploading line, for search nested comments
         //buscar el delimitador en la linea actualizada, para buscar comentarios anidados
-    r = searchString(false, line.getValor(), delimiter, indexActualLine.getValor(), null, false); 
+    r = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterStart, dataForProccess.indexActualInTheLine.getValor(), null, false); 
         
     if(n == -2 || r == -2 || (n == -3 || r == -3)) return -1; //error in the parameters 
          
@@ -414,89 +414,90 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
       else if(n == -1 && r == -1){
         //Get the number of line if it has
         //Obtener el numero de linea si lo tiene
-        actual.setValor((int)line.getValor().length());
+        actual.setValor((int)dataForProccess.line.getValor().length());
 
-        while((char)((int)actual.getValor()) == '\n') actual.setValor(ReadFile.read()); 
+        while((char)((int)actual.getValor()) == '\n') actual.setValor(dataForProccess.ReadFile.read()); 
         
-         if(DelimiterNumLine != null){
-            int h = line.getValor().indexOf(DelimiterNumLine);
-            nLine = line.getValor().substring(0, h);
+         if(dataForProccess.DelimiterNumLine != null){
+            int h = dataForProccess.line.getValor().indexOf(dataForProccess.DelimiterNumLine);
+            dataForProccess.NumberOfLine = dataForProccess.line.getValor().substring(0, h);
         }
         //Check if the character actual is the end of the before line
         //Revisar si el caracter actual es el final de la linea anteriror
         MutableTypeData<Boolean> contain = new MutableTypeData<>(false);
-        line.setValor(get(ReadFile, Readmode.CompletelyLine, DelimiterNumLine, actual, contain));
+        dataForProccess.line.setValor(get(dataForProccess.ReadFile, Readmode.CompletelyLine, dataForProccess.DelimiterNumLine, actual, contain));
             //If find EOF and not are content before
         //Si se llego a EOF y no habia contenido antes
-        if(line.getValor().equals("") || line.getValor().equals("\n") || line.getValor().equals("\0") && !contain.getValor()) break;
+        if(dataForProccess.line.getValor().equals("") || dataForProccess.line.getValor().equals("\n") || dataForProccess.line.getValor().equals("\0") && !contain.getValor()) break;
         //Upload the parameters, uploading the index
         //Actualizar los parametros, actualizando el indice
-        indexActualLine.setValor(0);
-        if(CountOfLinePass != null){
-        int moreLine = CountOfLinePass.getValor()+1;
-        CountOfLinePass.setValor(moreLine);
+        dataForProccess.indexActualInTheLine.setValor(0);
+        if(dataForProccess.countOfLineProcessed != null){
+        int moreLine = dataForProccess.countOfLineProcessed.getValor()+1;
+        dataForProccess.countOfLineProcessed.setValor(moreLine);
         }
-        itsMultiLine = true;
+        dataForProccess.itsMultiLine = true;
         continue;
       } 
       
         
         //if has a nested comment block
            //Si tiene un comentario en bloque anidado
-    if(r >= 0 || (itsMultiLine && m >= 0)){    
+    if(r >= 0 || (dataForProccess.itsMultiLine && m >= 0)){    
         //Dependend the mode
         //Dependiendo de el modo
-        switch (mode){
+        switch (dataForProccess.mode){
           case NestedEnd:
             //if has code between comments get it
             //si tiene codigo entre comentarios extraerlo
-             if(!(n > r) && n >= 0 && !itsMultiLine){
+             if(!(n > r) && n >= 0 && !dataForProccess.itsMultiLine){
             String newl;
-            if(r != -1) newl = line.getValor().substring(n, r);//get the string between comments
-            else newl = line.getValor().substring(n, line.getValor().length());
-            BetweenComments.add(newl);
+            if(r != -1) newl = dataForProccess.line.getValor().substring(n, r);//get the string between comments
+            else newl = dataForProccess.line.getValor().substring(n, dataForProccess.line.getValor().length());
+            dataForProccess.BetweenComments.add(newl);
             }
-            
-         if(RemoveNestedBlockComments(ReadmodeBlock.NestedEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass,  itsMultiLine,  BetweenComments, LastEndOfcomment, true, lastCallFlag) != 0) return -1;
+            dataForProccess.recursiveCall = true;
+         if(RemoveNestedBlockComments(dataForProccess) != 0) return -1;
          break;
           case SingleEnd: 
           //if has code between comments get it
         //si tiene codigo entre comentarios extraerlo
-        if(!(n > r) && n >= 0 && !itsMultiLine){
+        if(!(n > r) && n >= 0 && !dataForProccess.itsMultiLine){
             boolean edit = false;
             String newl;
-            if(!(n+delimiterEnd.length() > line.getValor().length())){
-            if(r != -1 && !(n+delimiterEnd.length() >= r)) newl = line.getValor().substring(n+delimiterEnd.length(), r);//get the string between comments
-            else if(r != -1 && n + delimiterEnd.length() >= r){
-                newl = line.getValor().substring(r+delimiter.length(), line.getValor().length()); //if n+delimiterEnd length is equal or grether than r, stary r(priorize n(coment end delimiter))(thats appear when push something like '*/*/' because r starts in 2 and n in 1(in this example) in this mode)
-                  int s = searchString(false, newl, delimiter, 0, null, false);
+            if(!(n+dataForProccess.DelimiterEnd.length() > dataForProccess.line.getValor().length())){
+            if(r != -1 && !(n+dataForProccess.DelimiterEnd.length() >= r)) newl = dataForProccess.line.getValor().substring(n+dataForProccess.DelimiterEnd.length(), r);//get the string between comments
+            else if(r != -1 && n + dataForProccess.DelimiterEnd.length() >= r){
+                newl = dataForProccess.line.getValor().substring(r+dataForProccess.DelimiterStart.length(), dataForProccess.line.getValor().length()); //if n+delimiterEnd length is equal or grether than r, stary r(priorize n(coment end delimiter))(thats appear when push something like '*/*/' because r starts in 2 and n in 1(in this example) in this mode)
+                  int s = searchString(false, newl, dataForProccess.DelimiterStart, 0, null, false);
                   if(s != -1){
-                     int indexStart = s + (r+delimiter.length());
-                  newl = line.getValor().substring(r+delimiter.length(), indexStart);
+                     int indexStart = s + (r+dataForProccess.DelimiterStart.length());
+                  newl = dataForProccess.line.getValor().substring(r+dataForProccess.DelimiterStart.length(), indexStart);
                   }
                   edit = true;
                 }
-                 else newl = line.getValor().substring(n+delimiterEnd.length(), line.getValor().length());
-            BetweenComments.add(newl);
+                 else newl = dataForProccess.line.getValor().substring(n+dataForProccess.DelimiterEnd.length(), dataForProccess.line.getValor().length());
+            dataForProccess.BetweenComments.add(newl);
             }
             //if is in mode SingleEnd, upload n, because in this mode search only the first close
                 //remove the delimiter after readed
                //eliminar el delimitador una vez leido
-               if(!(edit) && n >= 0 && n != line.getValor().length()){ 
-                  StringBuilder newLine = new StringBuilder(line.getValor());
-                   newLine.delete(n, n+delimiterEnd.length());
-                   line.setValor(newLine.toString());
-                   indexActualLine.setValor(0);
+               if(!(edit) && n >= 0 && n != dataForProccess.line.getValor().length()){ 
+                  StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
+                   newLine.delete(n, n+dataForProccess.DelimiterEnd.length());
+                   dataForProccess.line.setValor(newLine.toString());
+                   dataForProccess.indexActualInTheLine.setValor(0);
                 }
                 //if are editing the code because find a case like this example '*/*/'(conflict into delimiter end and delimiter start) remove this conflict after processed
                 else if(edit){
-                    StringBuilder newLine = new StringBuilder(line.getValor());
-                   newLine.delete(n, r+delimiterEnd.length());
-                   line.setValor(newLine.toString());
-                   indexActualLine.setValor(0);
+                    StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
+                   newLine.delete(n, r+dataForProccess.DelimiterEnd.length());
+                   dataForProccess.line.setValor(newLine.toString());
+                   dataForProccess.indexActualInTheLine.setValor(0);
                 }
         }
-          if(RemoveNestedBlockComments(ReadmodeBlock.SingleEnd, line, ReadFile, nLine, delimiter, delimiterEnd, DelimiterNumLine, indexActualLine, CountOfLinePass, itsMultiLine,  BetweenComments, LastEndOfcomment, true, lastCallFlag) != 0 ) return -1;
+        dataForProccess.recursiveCall = true;
+          if(RemoveNestedBlockComments(dataForProccess) != 0 ) return -1;
           break;
           default:
           System.err.println("Error in the argument 'mode'\n");
@@ -505,15 +506,15 @@ public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String>
     }
 
        if(n >= 0){
-       if(recursiveCall && (lastCallFlag.getValor() == true))LastEndOfcomment.setValor(n-1);//upload with the index of the las end comment delimiter
-       lastCallFlag.setValor(false);//set the value of flag in the last call recursive for stay his value
-       indexActualLine.setValor(n-1);
+       if(dataForProccess.recursiveCall && (dataForProccess.lastRecursiveCallFlag.getValor() == true))dataForProccess.lastEndofCommentDelimiter.setValor(n-1);//upload with the index of the las end comment delimiter
+       dataForProccess.lastRecursiveCallFlag.setValor(false);//set the value of flag in the last call recursive for stay his value
+       dataForProccess.indexActualInTheLine.setValor(n-1);
         return 0;
       } 
     }
       // If find the end of file without closing the comment
     // Si encuentra el final del archivo sin cerrar el comentario
-            System.err.println("Error in the line: "+ nLine +"\nDETAILS:Find the 'End of file' and don't closing a comment block\n");
+            System.err.println("Error in the line: "+ dataForProccess.NumberOfLine +"\nDETAILS:Find the 'End of file' and don't closing a comment block\n");
             return -1;
 }
 //--------------------------------------------------------------
