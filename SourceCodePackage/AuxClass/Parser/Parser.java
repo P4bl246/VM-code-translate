@@ -31,7 +31,7 @@ public class Parser {
     public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
                                                                                                      // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)
 
-    public int RemoveNestedBlockComments(ReadmodeBlock mode, MutableTypeData<String> line, Reader ReadFile, String nLine,String delimiter, String delimiterEnd, Character DelimiterNumLine, MutableTypeData<Integer> indexActualLine, MutableTypeData<Integer> CountOfLinePass, boolean NestedJobFlag, boolean itsMultiLine) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
+    public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
                                                                                                         // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
     
     public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart);// This method is used to remove void lines or characters from the input file(internal method)
@@ -229,8 +229,8 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
     return -1;
 }
 //--------------------------------------------------------------
-//class for simulate the pass for identify
-//clase para simular el paso por identificador
+//class for simulate the pass for reference
+//clase para simular el paso por referencia
 public class MutableTypeData<T> {
     private T valor;
     
