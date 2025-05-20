@@ -70,7 +70,7 @@ public int parser_Sintaxis(String File_in) {
     CreateHashTable(null, 1, args, argsTable, null);
     //Starts the sintx parsing
     //Empieza el analisisi sintactico
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant32768", "popthis0", null);
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant-32768", "popthis0", null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
