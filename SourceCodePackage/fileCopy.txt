@@ -1,1 +1,6 @@
-SI
+add
+popconstant10
+pushconstant5
+sub
+gt
+eq

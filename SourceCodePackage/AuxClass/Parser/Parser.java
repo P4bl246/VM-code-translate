@@ -631,7 +631,7 @@ public int NumLines(String Read_File_in) {
         File temp = new File("fileWithNumLines.txt");
         if (temp.renameTo(infile)) {
             System.out.printf("The file 'fileWithNumLines.txt' is rename to '%s'\n", Read_File_in);
-            System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID LINES\n", Read_File_in);
+            System.out.printf("\nTHE FILE '%s' ARE NUMERATED\n", Read_File_in);
             return 0;
         }
         System.out.printf("Error to try rename file 'fileWithNumLines.txt' to '%s'\n", Read_File_in);

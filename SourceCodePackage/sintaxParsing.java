@@ -48,10 +48,11 @@ public void HashTablePreDet();// This method is used to create a hash table with
 */
 //FUNCTIONS FOR PARSING SINTAX (FUNCIONES PARA EL ANÁLISIS SINTÁCTICO)----------------------------------------------------------------------------
 public int parser_Sintaxis(String File_in) {
+    System.out.println("\nSTARTS THE SINTAX PARSING PROCESS\n");
     int n;
     Parser parserf = new Parser();
     parserf.NumLines(File_in);
-    try(Reader readFilein = new FileReader(File_in)) {
+    try(BufferedReader readFilein = new BufferedReader(new FileReader(File_in))) {
     String line;
     String nLine;
     //Create the table for arguments for this vm translator
@@ -72,11 +73,12 @@ public int parser_Sintaxis(String File_in) {
     CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant32768", "popthis0", null);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
-    while((nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null)) != null) {
-       readFilein.read();// Skip the number line String and the space
-                         // Omitir la cadena de número de línea y el espacio
-        line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0', null, null);
-        
+    while(true) {
+        nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null);
+        if(nLine.equals(""))break;
+        Parser.MutableTypeData<Boolean> contains = parserf.new MutableTypeData<>(false);
+        line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0', null, contains);
+        if(line.equals("") && !contains.getValor()) break;
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false);
@@ -92,7 +94,7 @@ public int parser_Sintaxis(String File_in) {
         }
         continue;
      }
-    return 0;
+     
     }
     catch (FileNotFoundException e) {
         System.out.println("File not found: " + File_in);
@@ -101,15 +103,18 @@ public int parser_Sintaxis(String File_in) {
         System.out.println("Error reading file: " + File_in);
         return -1;
     }
+    parserf.RemoveNLine(File_in, ' ');
+    System.out.println("\nSINTAX PARSING COMPLETELY WITHOUT ERRORS\n");
+    return 0;
 }
 //------------------------------------------------------
-private HashMap<String, Integer> hashTableArith = new HashMap<>(); // Create a hash table for arithmetic operations
+public HashMap<String, Integer> hashTableArith = new HashMap<>(); // Create a hash table for arithmetic operations
                                                                   // Crear una tabla hash para operaciones aritméticas
 
-private HashMap<String, Integer> hashTableBool = new HashMap<>(); // Create a hash table for boolean operations
+public HashMap<String, Integer> hashTableBool = new HashMap<>(); // Create a hash table for boolean operations
                                                                       //Crear una tabla hash para operaciones booleanas
 
-private HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a hash table for functions
+public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a hash table for functions
                                                                     // Crear una tabla hash para funciones
 //constructor function for create the PreDeterminate hash tables
 // función constructora para crear las tablas hash predefinidas
@@ -148,8 +153,8 @@ public enum TableHash{
 }
 
 public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, TableHash AddToPreDefined) {
-    if(hashTable == null) {
-        System.err.println("Error: Hash table is null and AddToPreDefined is 0");
+    if(hashTable == null && AddToPreDefined == null) {
+        System.err.println("Error: Hash table is null and AddToPreDefined is null");
         return;
     }
     else if(element == null && NewElements == null) {
@@ -171,7 +176,7 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
             for (int i = 0; i < element2.length(); i++) {
                 hash += element2.charAt(i);
             }
-            hashTable.put(element2, hash);
+           if(hashTable != null) hashTable.put(element2, hash);
             if(AddToPreDefined == TableHash.Arithmetics) {
                 // Add to the arithmetic hash table
                 // Agregar a la tabla hash aritmética
@@ -296,9 +301,10 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         }
         if(n != 0) return -1;
         else return 0;
-        }
+      }
     }
-    return -3;//especial value, this never must be the out
+    System.err.println("Fatal ERROR Debug for see the error\n");
+    return -3; //especial value, this never must be the out
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------  
@@ -311,7 +317,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
         if (hashTableForCompare.containsKey(element) && !withArgumets) {
             // Verificar que no haya caracteres inesperados después del tercer carácter
             // Check that there are no unexpected characters after the third character
-            String remaining = line.substring(CharsNumToCompare_SRING_MORE_LONG); // Tomamos lo que sigue //Take the rest of line 
+            String remaining = line.substring(element.length(), line.length()); // Tomamos lo que sigue //Take the rest of line 
             remaining = remaining.trim();//ignore the spaces and tab
                              //ignorar esapcios y tabulaciones
             if (!remaining.isEmpty()) {
@@ -321,7 +327,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             return 0;
         }
         else{
-             iEspecial.setValor(1);
+             if(iEspecial != null)iEspecial.setValor(1);
             int i = 1;
             int sub;
             //Iterater until found a conincidence 
@@ -329,9 +335,11 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
                 element = GetNchars(element, sub);             
-                iEspecial.setValor(sub);
+                if(iEspecial != null) iEspecial.setValor(sub);
                 i++;
             }
+            if(i == 1) if(iEspecial != null) iEspecial.setValor(CharsNumToCompare_SRING_MORE_LONG);//if is the comand more long
+        
             // Check if the string is a invalid expression (not found in the table)
            // Verificar si la cadena es una expresión no válida (no encontrada en la tabla)
             if(i > CharsNumToCompare_SRING_MORE_LONG){
@@ -418,17 +426,16 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
             return -1;
         }
     }
-
+    String newLine = line;
     // Eliminar delimitadores
     //Delete delimiters
+    if(Delimiters != null){
     StringBuilder WithoutDel = new StringBuilder();
     for (char c : line.toCharArray()) {
-        if (!Delimiters.contains(c)) {
-            WithoutDel.append(c);
-        }
+        if (!Delimiters.contains(c)) WithoutDel.append(c);
     }
-    String newLine = WithoutDel.toString();
-
+    newLine = WithoutDel.toString();
+}
     // Comparar comando
     // Compare the comand
     //Create a mutable value variable for upload his value in call in diferents functions
@@ -441,7 +448,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 
     // Comparar argumentos (lo que sobra después del comando)
     //compare the arguments (the rest after the comand)
-    String remainingNewLine = newLine.substring(LengthOfCommand.getValor());
+    String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());
     if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfCommand, true)) != 0) {
         return -1;
     }
