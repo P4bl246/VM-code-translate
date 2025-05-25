@@ -1,7 +1,7 @@
 
 import java.util.*;
 import java.io.*;
-
+import AuxClass.Parser.*;
 public class TranslateToAssembly {
 public int transalte(String file_in){
     int n;
@@ -12,6 +12,7 @@ public int transalte(String file_in){
     CreatePredefindArrays(commands, representationAssembly, state, repeatCode);
     n= CreateHash(commands, representationAssembly, predet);
     if(n != 0) return -1;
+    return 0;
 }
 private HashMap<String, String>predet = new HashMap<>();
 //------------------------------------------------------------------------
@@ -73,13 +74,15 @@ public int replace(String line, HashMap<String, String> RelaseKeyValue, String n
         sintaxParsing n  = new sintaxParsing();
         HashMap<String, Integer> forUse = new HashMap<>();
         ArrayList<String>values = new ArrayList<>();
+        Parser k = new Parser();
+        Parser.MutableTypeData<Integer> lenghtofCommand = k.new MutableTypeData<>(0);
         for (Map.Entry<String, String> entry : RelaseKeyValue.entrySet()) {
             String key = entry.getKey();
             n.CreateHashTable(key, 0, null, forUse, null);  
             values.add(entry.getValue());
         }
-        if(n.CompareWithHashTable(line, nLine, 4, forUse, null, true) != 0) return -1;
-            
+        if(n.CompareWithHashTable(line, nLine, 4, forUse, null, true, lenghtofCommand) != 0) return -1;
+          
         return 0;
     }
 }
