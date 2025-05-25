@@ -15,5 +15,9 @@ public class executable {
          
        sintaxParsing sintax = new sintaxParsing();
        n = sintax.parser_Sintaxis(copy);
+       TranslateToAssembly assembly = new TranslateToAssembly();
+       n = assembly.transalte(copy);
+       if(n!= 0)return;
+       return;
     }
 }

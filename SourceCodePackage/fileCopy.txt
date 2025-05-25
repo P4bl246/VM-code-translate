@@ -1,5 +1,5 @@
 add
-popconstant10
+poplocal10
 pushconstant5
 sub
 gt

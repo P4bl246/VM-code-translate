@@ -55,19 +55,6 @@ public int parser_Sintaxis(String File_in) {
     try(BufferedReader readFilein = new BufferedReader(new FileReader(File_in))) {
     String line;
     String nLine;
-    //Create the table for arguments for this vm translator
-    //Crear la tabla de argumentos para esta traductor vm
-    ArrayList<String> args = new ArrayList<>();
-    args.add("constant");
-    args.add("local");
-    args.add("argument");
-    args.add("static");
-    args.add("this");
-    args.add("that");
-    args.add("temp");
-    args.add("pointer");
-    HashMap<String, Integer>argsTable = new HashMap<>();
-    CreateHashTable(null, 1, args, argsTable, null);
     //Starts the sintx parsing
     //Empieza el analisisi sintactico
     CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant-32768", "popthis0", null);
@@ -113,6 +100,8 @@ public int parser_Sintaxis(String File_in) {
     return 0;
 }
 //------------------------------------------------------
+public HashMap<String, Integer>argsTable = new HashMap<>();
+
 public HashMap<String, Integer> hashTableArith = new HashMap<>(); // Create a hash table for arithmetic operations
                                                                   // Crear una tabla hash para operaciones aritméticas
 
@@ -147,6 +136,18 @@ public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a
     NewElements.add("pop");
     NewElements.add("push");
     CreateHashTable(null, 1, NewElements, null, TableHash.POP_PUSH);
+    //Create the table for arguments for this vm translator
+    //Crear la tabla de argumentos para esta traductor vm
+    ArrayList<String> args = new ArrayList<>();
+    args.add("constant");
+    args.add("local");
+    args.add("argument");
+    args.add("static");
+    args.add("this");
+    args.add("that");
+    args.add("temp");
+    args.add("pointer");
+    CreateHashTable(null, 1, args, argsTable, null);
   }
 //------------------------------------------------------
 // This method is used to create a hash table with the pre-determined elements
