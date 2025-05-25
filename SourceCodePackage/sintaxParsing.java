@@ -83,7 +83,11 @@ public int parser_Sintaxis(String File_in) {
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false);
           if (n != 0) {
-          n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null);
+            //Create a mutable value variable for upload his value in call in diferents functions
+            //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
+            Parser.MutableTypeData<Integer>LengthOfCommand = parserf.new MutableTypeData<>(0);
+            Parser.MutableTypeData<Integer>LengthOfArg = parserf.new MutableTypeData<>(0);
+          n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null, LengthOfCommand, LengthOfArg);
           if (n != 0){
             System.err.printf("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
@@ -359,14 +363,16 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters) {
+public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int SensibleToMayus, ArrayList<Character> Delimiters, Parser.MutableTypeData<Integer>LengthOfCommand, Parser.MutableTypeData<Integer>LengthOfArg){
 
-    Parser hpar = new Parser();
-
-    // Verifica que no se usen ambos tipos de formato al mismo tiempo
+    //Verifica que no se usen ambos tipos de formato al mismo tiempo
     //Check if is use both types of format to the same time
     if (ArgsInputRule.multipleFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null || (ArgsInputRule.multipleFormatsPatterns == null && ArgsInputRule.formatPatternMostLong == null)) {
         System.err.println("Error\nDETAILS: You can only select one: 'multipleFormatsPatterns' or 'formatPatternMostLong'\n");
+        return -1;
+    }
+    if(LengthOfCommand == null || LengthOfArg == null){
+        System.err.println("Error: Need put a arguemnts in the parameters 'LenghtOfCommand' and 'LengthOfArg'\n");
         return -1;
     }
 
@@ -438,9 +444,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 }
     // Comparar comando
     // Compare the comand
-    //Create a mutable value variable for upload his value in call in diferents functions
-    //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
-    Parser.MutableTypeData<Integer>LengthOfCommand = hpar.new MutableTypeData<>(0);
+
     LengthOfCommand.setValor(0);
     if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
         return -1;
@@ -449,7 +453,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Comparar argumentos (lo que sobra después del comando)
     //compare the arguments (the rest after the comand)
     String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());
-    if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfCommand, true)) != 0) {
+    if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfArg, true)) != 0) {
         return -1;
     }
 
