@@ -78,7 +78,8 @@ public int replace(String line, HashMap<String, String> RelaseKeyValue, String n
             n.CreateHashTable(key, 0, null, forUse, null);  
             values.add(entry.getValue());
         }
-        if(n.CompareWithHashTable(line, nLine, 4, forUse, null, null) != 0)    
+        if(n.CompareWithHashTable(line, nLine, 4, forUse, null, true) != 0) return -1;
+            
         return 0;
     }
 }

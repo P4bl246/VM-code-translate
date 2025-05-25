@@ -79,9 +79,10 @@ public int parser_Sintaxis(String File_in) {
         Parser.MutableTypeData<Boolean> contains = parserf.new MutableTypeData<>(false);
         line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0', null, contains);
         if(line.equals("") && !contains.getValor()) break;
-        n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false);
+        Parser.MutableTypeData<Integer> i =  parserf.new MutableTypeData<>(0);
+        n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false, i);
         if (n != 0){
-          n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false);
+          n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false, i);
           if (n != 0) {
             //Create a mutable value variable for upload his value in call in diferents functions
             //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
@@ -248,11 +249,7 @@ public String GetNchars(String input, int n) {
     return input.substring(0, n);
 }
 //-------------------------------------------------------
-public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs) {
-    //Create a mutable value variable for upload his value in call in diferents functions
-    //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
-    Parser hpar = new Parser();
-    Parser.MutableTypeData<Integer> i =  hpar.new MutableTypeData<>(0);
+public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs, MutableTypeData<Integer>iEspecial) {
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
         System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
         return -1;
@@ -265,13 +262,13 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         int n;
         switch (CompareWithPreDefined) {
             case POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i, true);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, iEspecial, true);
                 break;
             case Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i, false);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, iEspecial, false);
                 break;
             case Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i, false);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, iEspecial, false);
                break;
             default:
             n = -1;
@@ -281,23 +278,23 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         else return 0;
     }
     else if(hashTableForCompare != null && CompareWithPreDefined == null){
-       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i, withArgs);
+       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, iEspecial, withArgs);
        if(n != 0) return -1;
        else return 0;
     }
     else{
         int n;
-        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, i, withArgs);
+        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, iEspecial, withArgs);
         if(n != 0){
             switch (CompareWithPreDefined) {
             case POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, i, true);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, iEspecial, true);
                 break;
             case Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, i, false);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, iEspecial, false);
                 break;
             case Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, i, false);
+                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, iEspecial, false);
                break;
             default:
             n = -1;
