@@ -62,14 +62,14 @@ public int CreateHash(ArrayList<String>keys, ArrayList<String>values, HashMap<St
    return 0;
 }
 //------------------------------------------------------------------------
-public int replace(String line, HashMap<String, String> RelaseKeyValue, String nLine){
+public String replace(String line, HashMap<String, String> RelaseKeyValue, String nLine, String NumberLinedelimieter){
         if(RelaseKeyValue == null){
             System.err.println("Error: Need put an argument in 'RealseKeyValue' parameter\n");
-            return -1;
+            return null;
         }
         if(line == null){
             System.err.println("Error: Need put an argument in a 'line' parameter\n");
-            return -1;
+            return null;
         }
         sintaxParsing n  = new sintaxParsing();
         HashMap<String, Integer> forUse = new HashMap<>();
@@ -81,9 +81,10 @@ public int replace(String line, HashMap<String, String> RelaseKeyValue, String n
             n.CreateHashTable(key, 0, null, forUse, null);  
             values.add(entry.getValue());
         }
-        if(n.CompareWithHashTable(line, nLine, 4, forUse, null, true, lenghtofCommand) != 0) return -1;
-          
-        return 0;
+        if(n.CompareWithHashTable(line, nLine, 4, forUse, null, true, lenghtofCommand) != 0) return null;
+        String command = line.substring(line.indexOf(NumberLinedelimieter+NumberLinedelimieter.length()), lenghtofCommand.getValor());
+        command = command.trim();//remove de spaces and tab //eliminar los espaicos y tabulaciones
+        return RelaseKeyValue.get(command);
     }
 }
 
