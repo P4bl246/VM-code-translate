@@ -2,7 +2,7 @@ package AuxClass.Parser;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.*;
 // Esta es una clase especial pensada para una función de la clase 'sintax_parsing', llamada 'CompareCommandsWithArgs'
 public class CommandArgRule {
     public HashMap<String, Integer> commandTable;
@@ -16,9 +16,10 @@ public class CommandArgRule {
 
     // Múltiples patrones permitidos (por nombre)
     public Map<String, String> multipleFormatsPatterns = new HashMap<>();
-
+    //excpeciones(instrucciones que no son permitidas)
+    public ArrayList<String> exceptions = new ArrayList<>();
     // Constructor completo
-    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns) {
+    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns, ArrayList<String> exceptions) {
         this.commandTable = commandTable;
         this.argTable = argTable;
         this.commandLength = commandLength;
@@ -26,5 +27,6 @@ public class CommandArgRule {
         this.formatPatternMostLong = formatPatternMostLong;
         this.formatPatternLessLong = formatPatternLessLong;
         this.multipleFormatsPatterns = multipleFormatsPatterns;
+        this.exceptions = exceptions;
     }
 }

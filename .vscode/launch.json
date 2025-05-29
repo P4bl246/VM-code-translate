@@ -3,6 +3,8 @@
     // Mantenga el puntero para ver las descripciones de los existentes atributos.
     // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
+    //this is the setup for debug the code, need change the directoy to 'SourceCodePackage' for debug with this configuration
+    //Esta es la configuración para depurar el código, nececita cambiar el directoria a 'SourceCodePackage' para depurar con esta configuración
     "configurations": [
 
         {

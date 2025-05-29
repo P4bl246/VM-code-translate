@@ -57,7 +57,9 @@ public int parser_Sintaxis(String File_in) {
     String nLine;
     //Starts the sintx parsing
     //Empieza el analisisi sintactico
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant-32768", "popthis0", null);
+    ArrayList<String>excep = new ArrayList<>();
+    excep.add("popconstant");
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant-32768", "popthis0", null, excep);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
@@ -428,6 +430,22 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
         if (!(r >= n2 && r <= n)) {
             System.err.printf("Error in line %s\nDETAILS: Format is invalid. Expected between: '%s' and '%s'\n", nLine, ArgsInputRule.formatPatternLessLong, ArgsInputRule.formatPatternMostLong);
             return -1;
+        }
+    }
+    //check if are an exception (ilegal instruction)
+    //revisar si es una exepción(instrucción no perimitda)
+    if(ArgsInputRule.exceptions != null){
+        for(String compare:ArgsInputRule.exceptions){
+            int siz = line.length();
+            String forComprobate = line;
+            while(siz != 0){
+             forComprobate = GetNchars(forComprobate, siz);
+            if(forComprobate.equals(compare)){
+                System.err.printf("Error in line %s\nDETAILS: line '%s' is a excpetion(can writter this instruction)'%s'", nLine, line, compare);
+                return -1;
+            }
+            siz--;
+          }
         }
     }
     String newLine = line;

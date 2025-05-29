@@ -1,0 +1,36 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffbd97de4b3, pid=9800, tid=9820
+#
+# JRE version: OpenJDK Runtime Environment Temurin-21.0.7+6 (21.0.7+6) (build 21.0.7+6-LTS)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-21.0.7+6 (21.0.7+6-LTS, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, parallel gc, windows-amd64)
+# Problematic frame:
+# V  [jvm.dll+0x3de4b3]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: --add-modules=ALL-SYSTEM --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/sun.nio.fs=ALL-UNNAMED -Declipse.application=org.eclipse.jdt.ls.core.id1 -Dosgi.bundles.defaultStartLevel=4 -Declipse.product=org.eclipse.jdt.ls.core.product -Djava.import.generatesMetadataFilesAtProjectRoot=false -DDetectVMInstallationsJob.disabled=true -Dfile.encoding=utf8 -XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -Xlog:disable -javaagent:c:\Users\cr1pt\.vscode\extensions\redhat.java-1.42.0-win32-x64\lombok\lombok-1.18.36.jar -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=c:\Users\cr1pt\AppData\Roaming\Code\User\workspaceStorage\ec620979f059dd4a66f3828b7cc21fc8\redhat.java -Daether.dependencyCollector.impl=bf c:\Users\cr1pt\.vscode\extensions\redhat.java-1.42.0-win32-x64\server\plugins\org.eclipse.equinox.launcher_1.7.0.v20250424-1814.jar -configuration c:\Users\cr1pt\AppData\Roaming\Code\User\globalStorage\redhat.java\1.42.0\config_win -data c:\Users\cr1pt\AppData\Roaming\Code\User\workspaceStorage\ec620979f059dd4a66f3828b7cc21fc8\redhat.java\jdt_ws --pipe=\\.\pipe\lsp-67ce49067e719cf775ea58880135f377-sock
+
+Host: AMD A6-9225 RADEON R4, 5 COMPUTE CORES 2C+3G   , 2 cores, 3G,  Windows 10 , 64 bit Build 19041 (10.0.19041.5198)
+Time: Wed May 28 19:35:48 2025 Hora est. Pacífico, Sudamérica elapsed time: 835.737026 seconds (0d 0h 13m 55s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000024feb2576e0):  JavaThread "Thread-224"        [_thread_in_vm, id=9820, stack(0x000000ba59d00000,0x000000ba59e00000) (1024K)]
+
+Stack: [0x000000ba59d00000,0x000000ba59e00000],  sp=0x000000ba59dff860,  free space=1022k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x3de4b3]
+V  [jvm.dll+0x6ce032]
+V  [jvm.dll+0x3df13b]
+V  [jvm.dll+0x3df3c7]
+V  [jvm.dll+0x472b45]
+V  [jvm.dll+0x3f03f6]
+V  [jvm.dll+0x851f6b]

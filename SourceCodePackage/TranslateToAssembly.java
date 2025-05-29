@@ -23,11 +23,12 @@ public int transalte(String file_in){
        Parser.MutableTypeData<String> arg = function.new MutableTypeData<>(""); 
        Parser.MutableTypeData<Integer>lengthArg = function.new MutableTypeData<>(0);
        Parser.MutableTypeData<Integer>lengthCommand = function.new MutableTypeData<>(0);
+       Parser.MutableTypeData<Integer>staticlabel = function.new MutableTypeData<>(0);
        HashMap<String, String>segments = new HashMap<>();
-       segments.put("constant", "");
+       segments.put("constant", "@SP");
        segments.put("local","@LCL" );
        segments.put("argument", "@ARG");
-       segments.put("static", "");
+       segments.put("static", "fof."+staticlabel.getValor());
        segments.put("this", "@THIS");
        segments.put("that", "@THAT");
        segments.put("temp", "");
@@ -60,6 +61,7 @@ public int transalte(String file_in){
        else if(isArgCommand.getValor()){
           assembly = assembly.replaceFirst("RPI", "@"+valueArg.getValor());
           assembly = assembly.replaceFirst("RARG", segments.get(arg.getValor()));
+          if(arg.getValor() == "static") staticlabel.setValor(staticlabel.getValor()+1);//incremet the static label value for generete a new label
        }
        writteFile.write(assembly);
        writteFile.newLine();
@@ -163,7 +165,7 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
             //if has been commands with args
             //si tiene comandos con argumetos
             if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && withArgsCommands){
-                    CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 4, 8, "pushconstant-32768", "popthis0", null);
+                    CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 4, 8, "pushconstant-32768", "popthis0", null, null);
                 if(n.CompareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg) != 0) return null;
                 else if(argCommand != null)argCommand.setValor(true);
                 
