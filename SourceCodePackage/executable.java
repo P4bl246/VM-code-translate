@@ -7,7 +7,7 @@ public class executable {
 
          int n;
          String copy = "fileCopy.txt";
-         n= parseF.File_to_txt("Archivo.vm", copy); 
+         n= parseF.File_to("Archivo.vm", copy); 
          if(n != 0) return;
     
          n = parseF.CleanFile(copy);

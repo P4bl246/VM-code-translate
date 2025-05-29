@@ -11,56 +11,72 @@ import java.io.*;
 //import java.io.FileWriter;
 import java.util.ArrayList;
 
-public class Parser {
-/*
-//FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
+/**
+<p><b>FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)</b>---------------------------------------------------------------------------------</p>
 
-*************************************************------------------------------------------------*******************************-------------------------------
-    public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages)//method for search a string in a line
-                                                                                                                                         //método para buscar una cadena en una linea
+<b>IMPORTANT:</b>All market like a label 'internal method' refer this function are used for the principal(CleanFile) o other functions
+<p><b>*************************************************------------------------------------------------*******************************-------------------------------</b></p>
+    <p><b>public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages);</b>//method for search a string in a line
+                                                                                                                                         //método para buscar una cadena en una linea</p>
 
-    public int RemoveString(String Read_File_In, String Delimiter);// This method is used to remove spaces from the input file(internal method)
-                                                            // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
+    <p><b>public int RemoveString(String Read_File_In, String Delimiter);</b>// This method is used to remove spaces from the input file(internal method)<br>
+                                                            // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)</p>
 
-    public int RemoveSimpleComments(String Read_File_In, String Delmiter);// This method is used to remove simple comments from the input file(internal method)
-                                                                           // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
+    <p><b>public int RemoveSimpleComments(String Read_File_In, String Delmiter);</b>// This method is used to remove simple comments from the input file(internal method)<br>
+                                                                           // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)</p>
 
-    public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException;// This method is used to obtain the line number or completely line from the input file(internal method)
-                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)
+    <p><b>public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException;</b>// This method is used to obtain the line number or completely line from the input file(internal method)<br>
+                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)</p>
 
-    public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
-                                                                                                     // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)
+    <p><b>public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);</b>// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
+                                                                                                     // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)</p>
 
-    public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException;// This method is used to remove nested block comments from the input file(internal method)
-                                                                                                        // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
+    <p><b>public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException;</b>// This method is used to remove nested block comments from the input file(internal method)<br>
+                                                                                                        // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)</p>
     
-    public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart);// This method is used to remove void lines or characters from the input file(internal method)
-                                                        // Este método se utiliza para eliminar líneas vacías o caracteres del archivo de entrada(Método interno)
+    <p><b>public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart);</b>// This method is used to remove void lines or characters from the input file(internal method)<br>
+                                                        // Este método se utiliza para eliminar líneas vacías o caracteres del archivo de entrada(Método interno)</p>
 
-    public int RemoveNLine(String file_in);// This method is used to remove the number line from the input file(internal method)
-                                                // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)
+    <p><b>public int RemoveNLine(String file_in);</b>// This method is used to remove the number line from the input file(internal method)<br>
+                                                // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)</p>
 
-    public int CleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines')
-                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'
+    <p><b>public int CleanFile(String file_in);</b>// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'<br>
+                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'</p>
 
-*************************************************------------------------------------------------*******************************------------------------------
-    public int NumLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)
-                                                            // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)
+<p><b>*************************************************------------------------------------------------*******************************------------------------------</b></p>
+    <p><b>public int NumLines(File Read_File_in, File Writte_File_out);</b>// This method is used to add the line number to the input file(internal method)<br>
+                                                            // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)</p>
 ------------------------------------------------------------------------------------------------------------------------------
-    public int File_to_txt(String file_In, String nameOfNewFileWithFormat);// This method is used to convert the file to txt format(internal method)
-                                             // Este método se utiliza para convertir el archivo a formato txt(Método interno)
-------------------------------------------------------------------------------------------------------------------------------
-    public int PrepareFiles();
-
-//END OF FUCNTION TO PREPARE FILES(FIN DE LAS FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
+    <p><b>public int File_to(String file_In, String nameOfNewFileWithFormat);</b>// This method is used to convert the file to other format(internal method)<br>
+                                             // Este método se utiliza para convertir el archivo a otro formato(Método interno)</p>
+<p>------------------------------------------------------------------------------------------------------------------------------</p>
+<p>
+<b>END OF FUCNTION TO PREPARE FILES(FIN DE LAS FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)</b>---------------------------------------------------------------------------------</p>
 */
-
-
-
+public class Parser {
 //STARTS THE PROCESS OF PREPARE FILES (INICIA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)----------------------------------------------------------------- 
+//Enum for return 
+public enum Return {
+    ERROR(-1),
+    SUCCESS(0);
 
-public int File_to_txt(String file_In, String nameOfNewFileWithFormat) {
-    
+    private final int value;
+
+    Return(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+/**
+ * This function pass content of a file to other
+ * @param file_In File to convert or pass, path or name(if are in the same path of the class)
+ * @param nameOfNewFileWithFormat The file where you want to convert or pass
+ * @return 0 = SUCCESS,  -1 = ERROR
+ */
+public int File_to(String file_In, String nameOfNewFileWithFormat) {  
     // Open the file_In in reading and create a temporary file for writing
     // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
     try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter(nameOfNewFileWithFormat)) {
@@ -70,16 +86,21 @@ public int File_to_txt(String file_In, String nameOfNewFileWithFormat) {
         while ((c = fileP.read()) != -1) {
             tempFile.write((char)c);
         }
-        return 0; // Éxito
+        return Return.SUCCESS.getValue(); // Éxito
         }
       catch (IOException e) {
         // Manejar errores de entrada/salida
         // Handle input/output errors
         System.out.println("Error: " + e.getMessage());
-        return -1; // Error
+        return Return.ERROR.getValue(); // Error
         }
   }
 //--------------------------------------------------------------
+/**
+ * This function are an orchestrator of other functions, creating a cleaner
+ * @param file_in File to clean
+ * @return 0 = SUCCESS, -1 = ERROR
+ */
 public int CleanFile(String file_in){
     System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
     int n;
@@ -103,9 +124,15 @@ public int CleanFile(String file_in){
     if(n != 0) return n;
 
     System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_in);
-    return 0;
+    return Return.SUCCESS.getValue();
 }
 //--------------------------------------------------------------
+/**
+ * Remove all the appears of a String in a file
+ * @param Read_File_In File to clean of Strings
+ * @param Delimiter String to remove from the file
+ * @return 0 = SUCCESS, -1 = ERROR
+ */
 public int RemoveString(String Read_File_In, String Delimiter) {
     System.out.printf("\nREMOVING STRING '%s' FROM THE FILE: '%s'...\n\n", Delimiter, Read_File_In);
 
@@ -121,7 +148,7 @@ public int RemoveString(String Read_File_In, String Delimiter) {
 
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
-        return -1;
+        return Return.ERROR.getValue();
     }
 
     File originalFile = new File(Read_File_In);
@@ -130,23 +157,36 @@ public int RemoveString(String Read_File_In, String Delimiter) {
     if (originalFile.delete()) {
         if (tempFile.renameTo(originalFile)) {
             System.out.printf("The file was cleaned and renamed to '%s'\n", Read_File_In);
-            return 0;
+            return Return.SUCCESS.getValue();
         } else {
             System.out.println("Error renaming temp file.");
-            return -1;
+            return Return.ERROR.getValue();
         }
     } else {
         System.out.println("Error deleting original file.");
-        return -1;
+        return Return.ERROR.getValue();
     }
 }
 //--------------------------------------------------------------
+/**
+ * Search a String in a line
+ * @param searchAll Indicate if you want search all iterations and return the index of the first find, if is 'false', or how much are in the line
+ * @param line Line to check
+ * @param searchThis String to search in the line
+ * @param startIndex Index in the line where start the searching
+ * @param delimiter Stop to search when find this delimiter
+ * @param WatchMessages For debug
+ * @return >=0 = SUCCESS, -1 = NOT FIND, -2 = ERROR IN THE PARAMETERS, -3 = ERROR IN THE INDEX PARAMETER
+ */
 public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages) {
     if (line == null || searchThis == null || startIndex < 0) {
         System.err.printf("Error: Invalid input parameters.\nDETAILS: line: %s, searchThis: %s, Index: %d, sizeOfLine: %d\n", line, searchThis, startIndex, line.length());
         return -2;
     }
-   if (startIndex >= line.length()) return -3;
+   if (startIndex >= line.length()){ 
+      if(WatchMessages) System.err.println("Error: The index start is greather than the line");
+      return -3;
+    }
 
     int count = 0;
     for (int i = startIndex; i <= line.length() - searchThis.length(); i++) {
@@ -172,9 +212,15 @@ public int searchString(boolean searchAll, String line, String searchThis, int s
 
     if (searchAll) return count;
     if(WatchMessages) System.out.println("String not found.");
-    return -1;
+    return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
+/**
+ * Remove simple comments from a file. Delete all before delimiter and the delimiter (not delete after)
+ * @param Read_File_In File to check
+ * @param SimpleCommentIdent Idetinficator for Simple comments start
+ * @return 0 = SUCCESS, -1 = ERROR 
+ */
 public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) {
     
     System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
@@ -210,7 +256,7 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
 
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
-        return -1; // Error
+        return Return.ERROR.getValue(); // Error
     }
      //Upload the input file
     // Actualizar el archivo de entrada
@@ -220,17 +266,20 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
         if (temp.renameTo(infile)) {
             System.out.printf("The file 'tempwithoutSimpleComments.txt' is renamed to '%s'\n", Read_File_In);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF SIMPLE COMMENTS\n", Read_File_In);
-            return 0;
+            return Return.SUCCESS.getValue();
         }
         System.out.printf("Error trying to rename file 'tempwithoutSimpleComments.txt' to '%s'\n", Read_File_In);
-        return -1;
+        return Return.ERROR.getValue();
     }
     System.out.printf("Error trying to delete the file '%s'\n", Read_File_In);
-    return -1;
+    return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
 //class for simulate the pass for reference
 //clase para simular el paso por referencia
+/**
+ * Class for simulate the 'pass for reference'
+ */
 public class MutableTypeData<T> {
     private T valor;
     
@@ -250,20 +299,30 @@ public class MutableTypeData<T> {
         return valor.getClass();
     }
 }
-
+/**
+ * This function have or can have 2 "functions", the first is cordinate(similar to an orchestrator)the search and delete proccess to remove block comments in the file, and the second, be an API to the user of the function 'RemoveNestedBlockComments'
+ * @param mode mode for know how proccess the block comments, both preserve the struct of the file and the code between block comments
+<p>SingleEnd: search only the first close of the comment, independent if are nested block comments(not check the content, not are important)</p>
+<p>NestedEnd: search and verify that all nested comments are closed correctly(check the content and are important)</p>
+ * @param Read_File_in File to proccess
+ * @param Delimiter Delimiter or Identificator to indicate the Start of a Block Comment
+ * @param delimiterEnd Delimiter or Identificator to indicate the End of a Block Comment
+ * @param DelimiterNumLine Optional parameter for ignore or get some String before delimiter and not proccess this(thinked for somethings like the numberofLine)
+ * @return 0 = SUCCESS, -1 = ERROR
+ */
 public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine) {
 
   MutableTypeData<String>line5 = new MutableTypeData<>("");
-  //Globals variables to store the actual character and line (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
-  //Variables globales para almacenar el carácter actual y linea (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
+  // variable to store the actual character and line (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
+  //Variable para almacenar el carácter actual y linea (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
    System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
    if(Delimiter == null){
      System.err.println("Error: Need put a delimiter\n");
-     return -1;
+     return Return.ERROR.getValue();
    }
   if (delimiterEnd == null) {
     System.err.println("Error: delimiterEnd is required.\n");
-    return -1;
+    return Return.ERROR.getValue();
 }
     line5.setValor(null);
     String nLine = null;
@@ -279,7 +338,7 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                 //if find the delimiter that indicate the start of comment
                 //si encuentra el delimitador que indica el inicio de un comentario
                 if((n = searchString(false, line5.getValor(), Delimiter, 0, null, false)) != -1){
-                    if(n == -2 || n == -3) return -1; //Error
+                    if(n == -2 || n == -3) return Return.ERROR.getValue(); //Error
                     else{
                         //Get the number line
                         //obtener el numero de linea
@@ -299,7 +358,7 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                         MutableTypeData<Integer>last = new MutableTypeData<>(0);
                         MutableTypeData<Boolean>lastCallFlag = new MutableTypeData<>(false);
                         ProccessBlockComments data = new ProccessBlockComments(mode, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag);
-                        if(RemoveNestedBlockComments(data) != 0) return -1;
+                        if(RemoveNestedBlockComments(data) != 0) return Return.ERROR.getValue();
                                
                             //conseverd the structure of the file including the prosecced lines
                             //conservar la estructure de el archivo incluyendo las lineas procesadas                        
@@ -333,7 +392,7 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
             }
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
-        return -1; // Error
+        return Return.ERROR.getValue(); // Error
     }
 
     // Actualizar el archivo de entrada
@@ -344,13 +403,13 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
         if (temp.renameTo(infile)) {
             System.out.printf("The file 'tempWithoutBlockComments.txt' is renamed to '%s'\n", Read_File_in);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF BLOCK COMMENTS\n", Read_File_in);
-            return 0;
+            return Return.SUCCESS.getValue();
         }
         System.out.printf("Error trying to rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_in);
-        return -1;
+        return Return.ERROR.getValue();
     }
     System.out.printf("Error trying to delete the file '%s'\n", Read_File_in);
-    return -1;
+    return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
 /*mode for know how proccess the block comments
@@ -366,52 +425,58 @@ public enum ReadmodeBlock{
     SingleEnd
 }
 
+/**
+ * This function remove the block comments and nested block comments if are setup for make this, this change his configuratino depende of the mode proporcionated flexibility and adaptability
+ * @param dataForProccess Datas for porccess the block comments thats are wrapper in the class 'ProccessBlockComments'
+ * @return 0 = SUCCES, -1 = ERROR
+ */
+//All in this function are a proccess you can divide that in aux functions but not is necesary because just reduce a little bit the number of lines, but not is necesary, and this in this implementation are used aux functions too
 public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException{ 
     if(dataForProccess.lastRecursiveCallFlag == null){
         System.err.println("Error: Need put a parameter 'lastCallFlag'\n");
-        return -1;
+        return Return.ERROR.getValue();
     }
-    dataForProccess.lastRecursiveCallFlag.setValor(true);//initialize always in true
+    dataForProccess.lastRecursiveCallFlag.setValor(true);//initialize always in true //incializar siempre en verdadero
     MutableTypeData<Integer> actual = new MutableTypeData<>(0);
     //Read until the end of comment
     //Leer hasta el final del comentario
     while(true){
-      int n = 0, r = 0; //variables for watch the result of the search //variables para ver el resultado de la busqueda
+      int endDelIndex = 0, startDelIndex = 0; //variables for watch the result of the search //variables para ver el resultado de la busqueda
       //search the delimiter that indicate the start of the comment
       //Buca el delimitador que indica el iniciio de un comentario
-      r = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterStart, dataForProccess.indexActualInTheLine.getValor(), null, false); 
-     int m = r;
+      startDelIndex = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterStart, dataForProccess.indexActualInTheLine.getValor(), null, false); 
+     int m = startDelIndex;
       //remove the delimiter readed and upload de line
       //eliminar el delimitador ya leido y actualizar la linea
-        if(r >= 0 && r != dataForProccess.line.getValor().length()){ 
+        if(startDelIndex >= 0 && startDelIndex != dataForProccess.line.getValor().length()){ 
             StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
-            newLine.delete(r, r+dataForProccess.DelimiterStart.length());
+            newLine.delete(startDelIndex, startDelIndex+dataForProccess.DelimiterStart.length());
             dataForProccess.line.setValor(newLine.toString());
             dataForProccess.indexActualInTheLine.setValor(0);
         }
          //Search the delimiter of end comment
     //buscar el delimitador de final de comentario
-        n = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterEnd, dataForProccess.indexActualInTheLine.getValor(), null, false);
+        endDelIndex = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterEnd, dataForProccess.indexActualInTheLine.getValor(), null, false);
         
         //remove the delimiter after readed
         //eliminar el delimitador una vez leido
-        if(dataForProccess.mode == ReadmodeBlock.NestedEnd && n >= 0 && n != dataForProccess.line.getValor().length()){ 
+        if(dataForProccess.mode == ReadmodeBlock.NestedEnd && endDelIndex >= 0 && endDelIndex != dataForProccess.line.getValor().length()){ 
             StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
-            newLine.delete(n, n+dataForProccess.DelimiterEnd.length());
+            newLine.delete(endDelIndex, endDelIndex+dataForProccess.DelimiterEnd.length());
             dataForProccess.line.setValor(newLine.toString());
             dataForProccess.indexActualInTheLine.setValor(0);
         }
         //search the delimiter in the uploading line, for search nested comments
         //buscar el delimitador en la linea actualizada, para buscar comentarios anidados
-    r = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterStart, dataForProccess.indexActualInTheLine.getValor(), null, false); 
+    startDelIndex = searchString(false, dataForProccess.line.getValor(), dataForProccess.DelimiterStart, dataForProccess.indexActualInTheLine.getValor(), null, false); 
         
-    if(n == -2 || r == -2 || (n == -3 || r == -3)) return -1; //error in the parameters 
+    if(endDelIndex == -2 || startDelIndex == -2 || (endDelIndex == -3 || startDelIndex == -3)) return Return.ERROR.getValue(); //error in the parameters 
          
         //if not find in this line
         //si no encuentra en esta line
       //Upload the parameters, uploading the line, the index, and the number of line actual
       //Actualizar los parametros, actualizando la linea, el indice y el numbero de linea actual
-      else if(n == -1 && r == -1){
+      else if(endDelIndex == -1 && startDelIndex == -1){
         //Get the number of line if it has
         //Obtener el numero de linea si lo tiene
         actual.setValor((int)dataForProccess.line.getValor().length());
@@ -443,81 +508,92 @@ public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) thro
         
         //if has a nested comment block
            //Si tiene un comentario en bloque anidado
-    if(r >= 0 || (dataForProccess.itsMultiLine && m >= 0)){    
+    if(startDelIndex >= 0 || (dataForProccess.itsMultiLine && m >= 0)){    
         //Dependend the mode
         //Dependiendo de el modo
         switch (dataForProccess.mode){
           case NestedEnd:
             //if has code between comments get it
             //si tiene codigo entre comentarios extraerlo
-             if(!(n > r) && n >= 0 && !dataForProccess.itsMultiLine){
+             if(!(endDelIndex > startDelIndex) && endDelIndex >= 0 && !dataForProccess.itsMultiLine){
             String newl;
-            if(r != -1) newl = dataForProccess.line.getValor().substring(n, r);//get the string between comments
-            else newl = dataForProccess.line.getValor().substring(n, dataForProccess.line.getValor().length());
+            if(startDelIndex != -1) newl = dataForProccess.line.getValor().substring(endDelIndex, startDelIndex);//get the string between comments
+            else newl = dataForProccess.line.getValor().substring(endDelIndex, dataForProccess.line.getValor().length());
             dataForProccess.BetweenComments.add(newl);
             }
             dataForProccess.recursiveCall = true;
-         if(RemoveNestedBlockComments(dataForProccess) != 0) return -1;
+         if(RemoveNestedBlockComments(dataForProccess) != 0) return Return.ERROR.getValue();
          break;
           case SingleEnd: 
           //if has code between comments get it
         //si tiene codigo entre comentarios extraerlo
-        if(!(n > r) && n >= 0 && !dataForProccess.itsMultiLine){
+        if(!(endDelIndex > startDelIndex) && endDelIndex >= 0 && !dataForProccess.itsMultiLine){
             boolean edit = false;
             String newl;
-            if(!(n+dataForProccess.DelimiterEnd.length() > dataForProccess.line.getValor().length())){
-            if(r != -1 && !(n+dataForProccess.DelimiterEnd.length() >= r)) newl = dataForProccess.line.getValor().substring(n+dataForProccess.DelimiterEnd.length(), r);//get the string between comments
-            else if(r != -1 && n + dataForProccess.DelimiterEnd.length() >= r){
-                newl = dataForProccess.line.getValor().substring(r+dataForProccess.DelimiterStart.length(), dataForProccess.line.getValor().length()); //if n+delimiterEnd length is equal or grether than r, stary r(priorize n(coment end delimiter))(thats appear when push something like '*/*/' because r starts in 2 and n in 1(in this example) in this mode)
+            if(!(endDelIndex+dataForProccess.DelimiterEnd.length() > dataForProccess.line.getValor().length())){
+            if(startDelIndex != -1 && !(endDelIndex+dataForProccess.DelimiterEnd.length() >= startDelIndex)) newl = dataForProccess.line.getValor().substring(endDelIndex+dataForProccess.DelimiterEnd.length(), startDelIndex);//get the string between comments
+            else if(startDelIndex != -1 && endDelIndex + dataForProccess.DelimiterEnd.length() >= startDelIndex){
+                newl = dataForProccess.line.getValor().substring(startDelIndex+dataForProccess.DelimiterStart.length(), dataForProccess.line.getValor().length()); //if n+delimiterEnd length is equal or grether than r, stary r(priorize n(coment end delimiter))(thats appear when push something like '*/*/' because r starts in 2 and n in 1(in this example) in this mode)
                   int s = searchString(false, newl, dataForProccess.DelimiterStart, 0, null, false);
                   if(s != -1){
-                     int indexStart = s + (r+dataForProccess.DelimiterStart.length());
-                  newl = dataForProccess.line.getValor().substring(r+dataForProccess.DelimiterStart.length(), indexStart);
+                     int indexStart = s + (startDelIndex+dataForProccess.DelimiterStart.length());
+                  newl = dataForProccess.line.getValor().substring(startDelIndex+dataForProccess.DelimiterStart.length(), indexStart);
                   }
                   edit = true;
                 }
-                 else newl = dataForProccess.line.getValor().substring(n+dataForProccess.DelimiterEnd.length(), dataForProccess.line.getValor().length());
+                 else newl = dataForProccess.line.getValor().substring(endDelIndex+dataForProccess.DelimiterEnd.length(), dataForProccess.line.getValor().length());
             dataForProccess.BetweenComments.add(newl);
             }
             //if is in mode SingleEnd, upload n, because in this mode search only the first close
                 //remove the delimiter after readed
                //eliminar el delimitador una vez leido
-               if(!(edit) && n >= 0 && n != dataForProccess.line.getValor().length()){ 
+               if(!(edit) && endDelIndex >= 0 && endDelIndex != dataForProccess.line.getValor().length()){ 
                   StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
-                   newLine.delete(n, n+dataForProccess.DelimiterEnd.length());
+                   newLine.delete(endDelIndex, endDelIndex+dataForProccess.DelimiterEnd.length());
                    dataForProccess.line.setValor(newLine.toString());
                    dataForProccess.indexActualInTheLine.setValor(0);
                 }
                 //if are editing the code because find a case like this example '*/*/'(conflict into delimiter end and delimiter start) remove this conflict after processed
                 else if(edit){
                     StringBuilder newLine = new StringBuilder(dataForProccess.line.getValor());
-                   newLine.delete(n, r+dataForProccess.DelimiterEnd.length());
+                   newLine.delete(endDelIndex, startDelIndex+dataForProccess.DelimiterEnd.length());
                    dataForProccess.line.setValor(newLine.toString());
                    dataForProccess.indexActualInTheLine.setValor(0);
                 }
         }
         dataForProccess.recursiveCall = true;
-          if(RemoveNestedBlockComments(dataForProccess) != 0 ) return -1;
+          if(RemoveNestedBlockComments(dataForProccess) != 0 ) return Return.ERROR.getValue();
           break;
           default:
           System.err.println("Error in the argument 'mode'\n");
-          return -1;
+          return Return.ERROR.getValue();
       }
     }
 
-       if(n >= 0){
-       if(dataForProccess.recursiveCall && (dataForProccess.lastRecursiveCallFlag.getValor() == true))dataForProccess.lastEndofCommentDelimiter.setValor(n-1);//upload with the index of the las end comment delimiter
+       if(endDelIndex >= 0){
+        //Si es una llamda recursiva, y hay un delimitador final actualziar el parametro 'lastEndofCommentDelimiter', need be a recursive call, because if not are that proccess not is necessary, because after of that 'indexActualInTheLine' upload with index of the first appear of Delimiter End commentBlock
+        //If are a recursive call, and have a final delimiter upload the parameter 'lastEndofCommentDelimiter', nesecita ser una llamda recursiva porque sino es una este proceso no es necesario, porque despues de esto 'IndexActualInTheLine' se actualiza con el indice de la primera aparacion de un delimitador de final de comentario en bloque 
+       if(dataForProccess.recursiveCall && (dataForProccess.lastRecursiveCallFlag.getValor() == true) && endDelIndex >= 0){
+        if(endDelIndex > 0) dataForProccess.lastEndofCommentDelimiter.setValor(endDelIndex-1);//upload with the index of the las end comment delimiter
+        else if(endDelIndex == 0) dataForProccess.lastEndofCommentDelimiter.setValor(endDelIndex);
        dataForProccess.lastRecursiveCallFlag.setValor(false);//set the value of flag in the last call recursive for stay his value
-       dataForProccess.indexActualInTheLine.setValor(n-1);
-        return 0;
+       }
+       dataForProccess.indexActualInTheLine.setValor(endDelIndex-1);
+        return Return.SUCCESS.getValue();
       } 
     }
       // If find the end of file without closing the comment
     // Si encuentra el final del archivo sin cerrar el comentario
             System.err.println("Error in the line: "+ dataForProccess.NumberOfLine +"\nDETAILS:Find the 'End of file' and don't closing a comment block\n");
-            return -1;
+            return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
+/**
+ * Remove chars considerateds 'void' in a file like tabs and others
+ * @param Read_File_In, File to search and remove void characters
+ * @param VoidCharacterStart Remove a character considerated 'void'
+ * @return 0 = SUCCESS, -1 = ERROR
+ */
 public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
     System.out.printf("\nREMOVING VOID CHARS FROM THE FILE: '%s'...\n\n", Read_File_In);
     // Open the file for reading
@@ -566,7 +642,7 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
  }
  catch(IOException e){
         System.out.println("Error: " + e.getMessage());
-        return -1; // Error
+        return Return.ERROR.getValue(); // Error
     }
     //Upload the input file
     //Actualizar el archivo de entrada
@@ -576,15 +652,20 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempWithoutVoidLines.txt' is rename to '%s'\n", Read_File_In);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID CHARS\n", Read_File_In);
-            return 0;
+            return Return.SUCCESS.getValue();
         }
         System.out.printf("Error to try rename file 'tempWithoutVoidLines.txt' to '%s'\n", Read_File_In);
-        return -1;
+        return Return.ERROR.getValue();
     }
     System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
-    return -1;
+    return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
+/**
+ * Numerate lines from 1-n (where n are the num of lines in the file)
+ * @param Read_File_in File to numerate his lines
+ * @return 0 = SUCCESS, -1 = ERROR
+ */
 public int NumLines(String Read_File_in) {
     System.out.printf("\nADDING LINE NUMBERS TO THE FILE: '%s'...\n\n", Read_File_in);
     // Open the file for reading and the file for writing
@@ -621,7 +702,7 @@ public int NumLines(String Read_File_in) {
 
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
-        return -1;
+        return Return.ERROR.getValue();
     }
     // Upload the input file
     // Actualizar el archivo de entrada
@@ -632,13 +713,13 @@ public int NumLines(String Read_File_in) {
         if (temp.renameTo(infile)) {
             System.out.printf("The file 'fileWithNumLines.txt' is rename to '%s'\n", Read_File_in);
             System.out.printf("\nTHE FILE '%s' ARE NUMERATED\n", Read_File_in);
-            return 0;
+            return Return.SUCCESS.getValue();
         }
         System.out.printf("Error to try rename file 'fileWithNumLines.txt' to '%s'\n", Read_File_in);
-        return -1;
+        return Return.ERROR.getValue();
     }
     System.out.printf("Error to try delte the file '%s'\n", Read_File_in);
-    return -1;
+    return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
 //This enum is used to define the read mode of the file for the method get
@@ -647,6 +728,17 @@ public enum Readmode{
     NumberLine,
     CompletelyLine
 }
+/**
+ * Get a String or a line in a file can be type 'Reader'(uploading too the index in the reader file), this get or search in a line not in all the file
+ * @param fileIn File open in Reader mode
+ * @param mode  mode type 'Readmode', thats have 2 modes
+ * <p>NumberLine: get the "numberofLine" or a String before delimiter for number line from the file and return this</p>
+ * <p>CompletelyLine: get a completely line from the file and return this</p>
+ * @param forNumberLine_Delimiter If select the mode 'NumberLine' need put this parameter, else don't put
+ * @param actual If you want get and mantain informated about the index in the file cand put a actual parameter to upload this in real time
+ * @param containsBeforeEOForEndLine If you want know if before EOF(End of File) or End of Line have characters 
+ * @return NULL = VOID LINE, ERROR = ERROR IN THE PARAMETERS
+ */
 public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException {
     if(fileIn == null){ 
         System.err.println("Error: Need put a argument in parameter 'fileIn'\n");
@@ -704,6 +796,12 @@ public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimite
     return null;
 }
 //--------------------------------------------------------------
+/**
+ * Remove a String before the delimiter, and the delimimter, thinked for remove numberofLines, but can use for remove a string before a delimiter
+ * @param file_in File to clear 
+ * @param delimiter Delimiter that indicate the start of writte in the temp file, for last rename or upload the input file
+ * @return 0 = SUCCESS, -1 = ERROR
+ */
 public int RemoveNLine(String file_in, Character delimiter){
     System.out.printf("\nFINAL CLEANING THE FILE: '%s'...\n\n", file_in);
     // open the file for reading and the file for writing
@@ -741,7 +839,7 @@ public int RemoveNLine(String file_in, Character delimiter){
     }
     catch(IOException e){
         System.out.println("Error: " + e.getMessage());
-        return -1; // Error
+        return Return.ERROR.getValue(); // Error
     }
     //Upload the input file
     //Actualizar el archivo de entrada
@@ -751,18 +849,16 @@ public int RemoveNLine(String file_in, Character delimiter){
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempFinalClean.txt' is rename to '%s'\n", file_in);
             System.out.printf("\nTHE FILE '%s' IS CLEAN TO THE VOID LINES AND NUMBER LINE\n", file_in);
-            return 0;
+            return Return.SUCCESS.getValue();
         }
         System.out.printf("Error to try rename file 'tempFinalClean.txt' to '%s'\n", file_in);
-        return -1;
+        return Return.ERROR.getValue();
     }
     System.out.printf("Error to try delte the file '%s'\n", file_in);
-    return -1;
+    return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
 //END THE PROCCES TO PREPARE FILES(TERMINA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)--------------------------------------------------------------
 
-
-//STARTS THE PROCESS OF PARSING SINTAX (INICIA EL PROCESO DE ANÁLISIS SINTÁCTICO)-----------------------------------------------------------------
 }
 
