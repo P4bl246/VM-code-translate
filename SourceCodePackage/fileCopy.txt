@@ -1,7 +1,10 @@
-
-add
-poplocal10
-pushconstant5
-sub
-gt
-eq
+1 pushpointer10
+2 pushpointer01
+3 pushpointer100
+4 popconstant234
+5 add
+6 poplocal10
+7 pushconstant5
+8 sub
+9 gt
+10 eq

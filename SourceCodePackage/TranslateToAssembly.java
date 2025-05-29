@@ -28,11 +28,10 @@ public int transalte(String file_in){
        segments.put("constant", "@SP");
        segments.put("local","@LCL" );
        segments.put("argument", "@ARG");
-       segments.put("static", "fof."+staticlabel.getValor());
-       segments.put("this", "@THIS");
-       segments.put("that", "@THAT");
-       segments.put("temp", "");
-       segments.put("pointer", "");
+       segments.put("static", "Foof."+staticlabel.getValor());
+       segments.put("pointer0", "@THIS");
+       segments.put("pointer1", "@THAT");
+       segments.put("temp", "temp");
        int i = 0, c = 0;
       while((line = file.readLine()) != null){
        String  nLine = null;

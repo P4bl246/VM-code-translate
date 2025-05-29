@@ -72,6 +72,7 @@ public int parser_Sintaxis(String File_in) {
         n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false, i);
         if (n != 0){
           n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false, i);
+          
           if (n != 0) {
             //Create a mutable value variable for upload his value in call in diferents functions
             //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
@@ -82,11 +83,19 @@ public int parser_Sintaxis(String File_in) {
             System.err.printf("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
             }
+             String arg = line.substring(LengthOfCommand.getValor(), (LengthOfArg.getValor()+LengthOfCommand.getValor()));
+            if(arg.equals("pointer")){
+             arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
+             if(!(arg.equals("0") || arg.equals("1"))){
+                System.err.println("Error in the line "+nLine+" the 'pointer' argument can has just 2 values '0'(THIS) or '1'(THAT)\n");
+                return -1;
+               }
+             } 
+            continue;
+          }
             continue;
           }
           continue;
-        }
-        continue;
      }
      
     }
