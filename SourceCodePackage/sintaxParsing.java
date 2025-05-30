@@ -59,7 +59,10 @@ public int parser_Sintaxis(String File_in) {
     //Empieza el analisisi sintactico
     ArrayList<String>excep = new ArrayList<>();
     excep.add("popconstant");
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 4, 8, "pushconstant-32768", "popthis0", null, excep);
+    ArrayList<String>withouthPattern = new ArrayList<>();
+    withouthPattern.add("label");
+    withouthPattern.add("goto");
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 5, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
@@ -79,18 +82,21 @@ public int parser_Sintaxis(String File_in) {
             Parser.MutableTypeData<Integer>LengthOfCommand = parserf.new MutableTypeData<>(0);
             Parser.MutableTypeData<Integer>LengthOfArg = parserf.new MutableTypeData<>(0);
           n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null, LengthOfCommand, LengthOfArg);
-          if (n != 0){
+          if (n < 0){
             System.err.printf("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
             }
-             String arg = line.substring(LengthOfCommand.getValor(), (LengthOfArg.getValor()+LengthOfCommand.getValor()));
+             if(n != 2){
+                String arg = line.substring(LengthOfCommand.getValor(), (LengthOfArg.getValor()+LengthOfCommand.getValor()));
             if(arg.equals("pointer")){
              arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
              if(!(arg.equals("0") || arg.equals("1"))){
                 System.err.println("Error in the line "+nLine+" the 'pointer' argument can has just 2 values '0'(THIS) or '1'(THAT)\n");
                 return -1;
                }
-             } 
+             
+            }
+          } 
             continue;
           }
             continue;
@@ -146,6 +152,8 @@ public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a
     // comandos POP y PUSH
     NewElements.add("pop");
     NewElements.add("push");
+    NewElements.add("label");
+    NewElements.add("goto");
     CreateHashTable(null, 1, NewElements, null, TableHash.POP_PUSH);
     //Create the table for arguments for this vm translator
     //Crear la tabla de argumentos para esta traductor vm
@@ -340,10 +348,10 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             iEspecial.setValor(line.length());
             return 0;
         }
-        else{
+        if(withArgumets){
              if(iEspecial != null)iEspecial.setValor(1);
             int i = 1;
-            int sub;
+            int sub = CharsNumToCompare_SRING_MORE_LONG;
             //Iterater until found a conincidence 
             //Iterar hasta encontrar una conincidencia
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
@@ -352,16 +360,25 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
                 if(iEspecial != null) iEspecial.setValor(sub);
                 i++;
             }
-            if(i == 1) if(iEspecial != null) iEspecial.setValor(CharsNumToCompare_SRING_MORE_LONG);//if is the comand more long
-        
+            if(i == 1){ 
+                if(iEspecial != null) iEspecial.setValor(CharsNumToCompare_SRING_MORE_LONG);//if is the comand more long
+                i = CharsNumToCompare_SRING_MORE_LONG;
+            }
+            
             // Check if the string is a invalid expression (not found in the table)
            // Verificar si la cadena es una expresión no válida (no encontrada en la tabla)
             if(i > CharsNumToCompare_SRING_MORE_LONG){
                 System.err.printf("Error in the line %s\nDETAILS: Invalid Expression, not found in the Hash Table\n", nLine);
                 return -1;
             }
+            if(sub == line.length()){
+                System.err.println("Error in the line %s\nDETAILS: Without args after of the command\n");
+                return -1;
+            }
             return 0;
         }
+        System.err.println("Error in the line "+nLine+"\nDETAILS: Invalid Expression, not find in the Hash Table\n");
+            return -1;
     }
     // If the input string is null, print an error message
     // Si la cadena de entrada es nula, imprime un mensaje de error
@@ -432,7 +449,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 
     // Validar con formato único
     //Check for singular format the line
-    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null) {
+    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.commandsWithoutPatterns == null) {
         n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
         n2 = identifyTheFormat(ArgsInputRule.formatPatternLessLong, SensibleToMayus);
         r = identifyTheFormat(line, SensibleToMayus);
@@ -442,21 +459,22 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
             return -1;
         }
     }
+    boolean without = false;
+   
     //check if are an exception (ilegal instruction)
     //revisar si es una exepción(instrucción no perimitda)
     if(ArgsInputRule.exceptions != null){
-        for(String compare:ArgsInputRule.exceptions){
+
             int siz = line.length();
             String forComprobate = line;
             while(siz != 0){
              forComprobate = GetNchars(forComprobate, siz);
-            if(forComprobate.equals(compare)){
-                System.err.printf("Error in line %s\nDETAILS: line '%s' is a excpetion(can writter this instruction)'%s'", nLine, line, compare);
+            if(ArgsInputRule.exceptions.contains(forComprobate)){
+                System.err.printf("Error in line %s\nDETAILS: line '%s' is a excpetion(can writter this instruction)", nLine, line);
                 return -1;
             }
             siz--;
           }
-        }
     }
     String newLine = line;
     // Eliminar delimitadores
@@ -472,10 +490,18 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Compare the comand
 
     LengthOfCommand.setValor(0);
-    if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0) {
-        return -1;
+    if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0)  return -1;
+    if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
+    if(without){
+        if(ArgsInputRule.commandsWithoutPatterns.contains(line.substring(0, LengthOfCommand.getValor()))){
+            LengthOfArg.setValor(0);
+            return 2;
+        }
+        else{
+            System.err.println("Error in the line "+nLine+" not find in the without commands list\n");
+            return -1;
+        }
     }
-
     // Comparar argumentos (lo que sobra después del comando)
     //compare the arguments (the rest after the comand)
     String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());

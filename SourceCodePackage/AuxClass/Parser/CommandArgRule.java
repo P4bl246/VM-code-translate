@@ -27,6 +27,8 @@ public class CommandArgRule {
     //excpeciones(instrucciones que no son permitidas)
     //excepcions (instruction not accepted)
     public ArrayList<String> exceptions = new ArrayList<>();
+    
+    public ArrayList<String>commandsWithoutPatterns = new ArrayList<>();
     //Constructor
     /**
      * <p>This is a **constructor** for this class</p>
@@ -56,21 +58,21 @@ public class CommandArgRule {
      * ArrayList<String>excep = new ArrayList<>();
      * excep.add("BYEMARIO"); //that is possible but I don't want accepted this, want defined like a "ilegal" instruction
      * //Now create the objetc with this class
-     * CommandArgRule rules = new CommandArgRule(acceptedCommands, acceptedArgs, 3(BYE is the most long), "BYELUIGI12"(because this have the max of characters without spaces, what I want accepted), "HIMARIO"(because this have the less of characteres without spaces, what I want accpeted), null(not use multiple formats), excep);
+     * CommandArgRule rules = new CommandArgRule(acceptedCommands, acceptedArgs, 3, 7, "BYELUIGI12", "HIMARIO", null, excep);
      *
      * //if you use multiple formats can make something like this. And if you implemtation accpeted both are fine(in my case the function what use this class dont support both "modes"(multples and singles formats))
      * Map<String, String> patterns = new Map<>();
      * patterns.("BYELUIGI12HIMARIO", "BYELUIGIMARIO");
      * patterns.("HIMARIOHILUIGI", "HILUIGI"); //and others if you want
      * //so now just need put in the constructor in the space for 'multiplesFormatsPatterns' "patterns", and thats it
-     * CommandArgrule rules = new CommandArgRule(...,BYELUIGI12, "HIMARIO", patterns,...);
+     * CommandArgrule rules = new CommandArgRule(...,"BYELUIGI12", "HIMARIO", patterns,...);
      * //OR
      * CommandArgRule rules = new CokmmandArgRule(..., null, null, patterns,...);
      * //AND OTHERS...
      * </code>
      * </pre>
      */
-    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns, ArrayList<String> exceptions) {
+    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns, ArrayList<String> exceptions, ArrayList<String>commandsWithoutPatterns) {
         this.commandTable = commandTable;
         this.argTable = argTable;
         this.commandLength = commandLength;
@@ -79,5 +81,6 @@ public class CommandArgRule {
         this.formatPatternLessLong = formatPatternLessLong;
         this.multipleFormatsPatterns = multipleFormatsPatterns;
         this.exceptions = exceptions;
+        this.commandsWithoutPatterns = commandsWithoutPatterns;
     }
 }

@@ -71,10 +71,12 @@ public int transalte(String file_in){
              arg.setValor(arg.getValor()+valueArg.getValor());
               valueArg.setValor("0");
             }
-           
+           if(line.substring(0, lengthCommand.getValor()).equals("label") || line.substring(0, lengthCommand.getValor()).equals("goto")) assembly = assembly.replaceFirst("LBL", arg.getValor());
+           else{
           assembly = assembly.replaceFirst("RPI", "@"+valueArg.getValor());
           assembly = assembly.replaceFirst("RARG", segments.get(arg.getValor()));
           if(arg.getValor() == "static") staticlabel.setValor(staticlabel.getValor()+1);//incremet the static label value for generete a new label
+         }
        }
        writteFile.write(assembly);
        writteFile.newLine();
@@ -115,6 +117,10 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     representationAssembly.add("\n//or command\n@2\nD=A\n@SP\nA=M-1\nA=A-1\nD=D-M\n@SP\nA=M-1\nD=M-D\nD=D-1\nct\nD;JLE\ncf\nD;JGT\n");
     commands.add("not");
     representationAssembly.add("\n//not command\n@SP\nA=M-1\nM=-M\n");
+    commands.add("label");
+    representationAssembly.add("\n//label command\n(LBL)\n");
+    commands.add("goto");
+    representationAssembly.add("\n//goto command\n@LBL\n0;JMP\n");
     
     //constant code
     //codigo constante
@@ -176,15 +182,21 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         //identificar el tipo de comando
         sintaxParsing n  = new sintaxParsing();
         n.HashTablePreDet();
+        boolean withoutPattern = false;
         if(argCommand != null) argCommand.setValor(false);
         if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Booleans, false, lengthofCommand) != 0){
             if(BoolCommand != null)BoolCommand.setValor(false);
             //if has been commands with args
             //si tiene comandos con argumetos
             if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && withArgsCommands){
-                    CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 4, 8, "pushconstant-32768", "popthis0", null, null);
-                if(n.CompareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg) != 0) return null;
+                ArrayList<String>commandswithoutFormat = new ArrayList<>();
+                commandswithoutFormat.add("label");
+                commandswithoutFormat.add("goto");
+                   int f = 0;
+                CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 5, 8, "pushconstant-32768", "popthis0", null, null, commandswithoutFormat);
+                if((f = n.CompareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg)) != 0 && f != 2) return null;
                 else if(argCommand != null)argCommand.setValor(true);
+                if(f == 2) withoutPattern = true;
                 
             }
             else if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && !withArgsCommands) return null;
@@ -198,10 +210,15 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         //si es un comando con argumentos
         if(argCommand != null){ 
             if(argCommand.getValor() == true){
+                if(withoutPattern){
+                 arg.setValor(command.substring(lengthofCommand.getValor(), command.length()));
+                }
+                else{
                 arg.setValor(command.substring(lengthofCommand.getValor(), lengthofarg.getValor()+lengthofCommand.getValor()));
                 String h = command.substring(lengthofarg.getValor()+lengthofCommand.getValor(), command.length());
                  h =h.trim();
                 ivalue.setValor(h);
+                }
             }
         }
         command = line.substring(0, lengthofCommand.getValor());

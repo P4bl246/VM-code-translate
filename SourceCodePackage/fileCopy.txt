@@ -1,7 +1,4 @@
-popstatic3
-poppointer0
-pushpointer1
-pushthat5
+labelhola1234
 add
 poplocal10
 pushconstant5
