@@ -446,10 +446,15 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
             return -1;
         }
     }
-
+    boolean isWithoutPattern = false;
+    if(ArgsInputRule.commandsWithoutPatterns != null){
+        String line2 = line.trim();
+        n = CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
+        if(ArgsInputRule.commandsWithoutPatterns.contains(line2.substring(0, LengthOfCommand.getValor()))) isWithoutPattern = true;
+    }
     // Validar con formato único
     //Check for singular format the line
-    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.commandsWithoutPatterns == null) {
+    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null && !isWithoutPattern) {
         n = identifyTheFormat(ArgsInputRule.formatPatternMostLong, SensibleToMayus);
         n2 = identifyTheFormat(ArgsInputRule.formatPatternLessLong, SensibleToMayus);
         r = identifyTheFormat(line, SensibleToMayus);
@@ -464,17 +469,15 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     //check if are an exception (ilegal instruction)
     //revisar si es una exepción(instrucción no perimitda)
     if(ArgsInputRule.exceptions != null){
-
-            int siz = line.length();
+      for(String excep : ArgsInputRule.exceptions){
+            int siz = excep.length();
             String forComprobate = line;
-            while(siz != 0){
              forComprobate = GetNchars(forComprobate, siz);
             if(ArgsInputRule.exceptions.contains(forComprobate)){
                 System.err.printf("Error in line %s\nDETAILS: line '%s' is a excpetion(can writter this instruction)", nLine, line);
                 return -1;
             }
-            siz--;
-          }
+        }
     }
     String newLine = line;
     // Eliminar delimitadores
@@ -493,7 +496,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0)  return -1;
     if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
     if(without){
-        if(ArgsInputRule.commandsWithoutPatterns.contains(line.substring(0, LengthOfCommand.getValor()))){
+        if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))){
             LengthOfArg.setValor(0);
             return 2;
         }

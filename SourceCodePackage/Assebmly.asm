@@ -1,5 +1,5 @@
 
-//lable command
+//label command
 (hola1234)
 
 
