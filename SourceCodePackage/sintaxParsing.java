@@ -337,6 +337,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
                 System.out.printf("Error in the line %s\nDETAILS: Unexpected characters after instruction\n", nLine);
                 return -1;
             }
+            iEspecial.setValor(line.length());
             return 0;
         }
         else{

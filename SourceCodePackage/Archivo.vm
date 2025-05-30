@@ -1,4 +1,7 @@
-
+pop static 3
+pop pointer 0
+push pointer 1
+push that 5
 add
 p/*this is a pop operations/*not are puhs*/NO*/op local 10
 push constant 5

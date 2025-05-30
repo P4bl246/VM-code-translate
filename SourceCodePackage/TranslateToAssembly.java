@@ -5,6 +5,8 @@ import AuxClass.Parser.*;
 public class TranslateToAssembly {
 public int transalte(String file_in){
     System.out.println("\nGENERATING ASSEMBLY FILE...\n");
+    Parser function = new Parser();
+    function.RemoveVoidChars(file_in, null);
     int n;
     ArrayList<String>commands = new ArrayList<>();
     ArrayList<String>representationAssembly = new ArrayList<>();
@@ -16,7 +18,7 @@ public int transalte(String file_in){
     try(BufferedReader file = new BufferedReader( new FileReader(file_in));
     BufferedWriter writteFile = new BufferedWriter(new FileWriter("Assebmly.asm"))){
         String line;
-        Parser function = new Parser();
+        
         Parser.MutableTypeData<String> valueArg = function.new MutableTypeData<>("");
         Parser.MutableTypeData<Boolean> isBoolCommand = function.new MutableTypeData<>(false);
         Parser.MutableTypeData<Boolean> isArgCommand = function.new MutableTypeData<>(false);
@@ -24,16 +26,23 @@ public int transalte(String file_in){
        Parser.MutableTypeData<Integer>lengthArg = function.new MutableTypeData<>(0);
        Parser.MutableTypeData<Integer>lengthCommand = function.new MutableTypeData<>(0);
        Parser.MutableTypeData<Integer>staticlabel = function.new MutableTypeData<>(0);
+       Parser.MutableTypeData<Boolean>flag = function.new MutableTypeData<>(false);
        HashMap<String, String>segments = new HashMap<>();
        segments.put("constant", "@SP");
        segments.put("local","@LCL" );
        segments.put("argument", "@ARG");
-       segments.put("static", "Foof."+staticlabel.getValor());
+       String nameOfFile = file_in.substring(0, file_in.indexOf('.'));
+       segments.put("static", "@"+nameOfFile+"."+staticlabel.getValor());
+       segments.put("this", "@THIS");
+       segments.put("that", "@THAT");
        segments.put("pointer0", "@THIS");
        segments.put("pointer1", "@THAT");
        segments.put("temp", "temp");
+       ArrayList<String>excep = new ArrayList<>();
+       excep.add("pointer");
        int i = 0, c = 0;
       while((line = file.readLine()) != null){
+      flag.setValor(false);
        String  nLine = null;
        String  tr = "(true" +i+")";
        String fs = "(false"+i+")";
@@ -41,7 +50,7 @@ public int transalte(String file_in){
        String continueHCall = "@Continue"+c+"\n0;JMP";
        String trCall = "@true"+i;
        String fsCall = "@false"+i;
-        String assembly = replace(line, predet, nLine, lengthCommand, arg, isBoolCommand, true, lengthArg, valueArg, isArgCommand);
+        String assembly = replace(line, predet, nLine, lengthCommand, arg, isBoolCommand, true, lengthArg, valueArg, isArgCommand, excep, flag);
         if(isBoolCommand.getValor()){
         assembly = assembly.replace("ct", trCall);
         assembly = assembly.replace("cf", fsCall);
@@ -58,6 +67,11 @@ public int transalte(String file_in){
            continue;
         }
        else if(isArgCommand.getValor()){
+          if(flag.getValor()){
+             arg.setValor(arg.getValor()+valueArg.getValor());
+              valueArg.setValor("0");
+            }
+           
           assembly = assembly.replaceFirst("RPI", "@"+valueArg.getValor());
           assembly = assembly.replaceFirst("RARG", segments.get(arg.getValor()));
           if(arg.getValor() == "static") staticlabel.setValor(staticlabel.getValor()+1);//incremet the static label value for generete a new label
@@ -92,9 +106,9 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("eq");
     representationAssembly.add("\n//eq command\n@SP\nA=M-1\nA=A-1\nD=M-D\nct\nD;JEQ\ncf\nD;JLG\n");
     commands.add("pop");
-    representationAssembly.add("\n//pop command\nRPI\nD=A\nRARG\nD=A+D\n@SP\nA=M\nM=D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\nM=0\n@SP\nA=M\nA=M\nM=D\n@SP\nM=M-1\n");
+    representationAssembly.add("\n//pop command\nRPI\nD=A\nRARG\nD=A+D\n@SP\nA=M\nM=D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\nM=0\n@SP\nA=M\nM=D\n@SP\nM=M-1\n");
     commands.add("push");
-    representationAssembly.add("\n//push command\nRPI\nD=A\nRPARG\nA=A+D\nD=M\nM=0\n@SP\nA=M\nM=D\n@SP\nM=M+1\n");
+    representationAssembly.add("\n//push command\nRPI\nD=A\nRARG\nA=A+D\nD=M\nM=0\n@SP\nA=M\nM=D\n@SP\nM=M+1\n");
     commands.add("and");
     representationAssembly.add("\n//and command\n@SP\nA=M-1\nA=A-1\nD=M\n@SP\nA=M-1\nD=M-D\nct\nD;JEQ\ncf\nD;JGL\n");
     commands.add("or");
@@ -136,7 +150,7 @@ public int CreateHash(ArrayList<String>keys, ArrayList<String>values, HashMap<St
  * @param ivalue value of argument.
  * @return The result of the replace or null if appears an error.
  */
-public String replace(String line, HashMap<String, String> RelaseKeyValue, String nLine, Parser.MutableTypeData<Integer> lengthofCommand, Parser.MutableTypeData<String> arg,  Parser.MutableTypeData<Boolean> BoolCommand, boolean withArgsCommands, Parser.MutableTypeData<Integer> lengthofarg, Parser.MutableTypeData<String> ivalue, Parser.MutableTypeData<Boolean>argCommand){
+public String replace(String line, HashMap<String, String> RelaseKeyValue, String nLine, Parser.MutableTypeData<Integer> lengthofCommand, Parser.MutableTypeData<String> arg,  Parser.MutableTypeData<Boolean> BoolCommand, boolean withArgsCommands, Parser.MutableTypeData<Integer> lengthofarg, Parser.MutableTypeData<String> ivalue, Parser.MutableTypeData<Boolean>argCommand, ArrayList<String>excpetionsArgs, Parser.MutableTypeData<Boolean>exceptionFlag){
     //Check the parameters    
     if(RelaseKeyValue == null){
             System.err.println("Error: Need put an argument in 'RealseKeyValue' parameter\n");
@@ -152,6 +166,10 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         }
         if(lengthofCommand == null){
             System.err.println("Error: Need put something in the parameter 'lengthofCommand'\n");
+            return null;
+        }
+        if(exceptionFlag != null && excpetionsArgs == null || excpetionsArgs != null && exceptionFlag == null){
+            System.err.println("Error: Need put both parameter if you have exceptions (exceptionFlag and exceptionArgs)\n");
             return null;
         }
         //identify the type of command
@@ -180,18 +198,14 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         //si es un comando con argumentos
         if(argCommand != null){ 
             if(argCommand.getValor() == true){
-                StringBuilder i = new StringBuilder(line);
-                //remove the command and arg for the line for get just de value of arg(ivalue)
-                //eliminar el comando y argumento de la linea para tener solo el valor de argumento(ivalue)
-                command = line.substring(0, lengthofCommand.getValor());
-                i.delete(0, lengthofCommand.getValor());
-                arg.setValor(i.toString().substring(0, lengthofarg.getValor()));
-                i.delete(0, lengthofarg.getValor());
-                String h = i.toString();
+                arg.setValor(command.substring(lengthofCommand.getValor(), lengthofarg.getValor()+lengthofCommand.getValor()));
+                String h = command.substring(lengthofarg.getValor()+lengthofCommand.getValor(), command.length());
                  h =h.trim();
                 ivalue.setValor(h);
             }
         }
+        command = line.substring(0, lengthofCommand.getValor());
+        if(excpetionsArgs != null && excpetionsArgs.contains(arg.getValor())) exceptionFlag.setValor(true);
         return RelaseKeyValue.get(command);
 }
 }
