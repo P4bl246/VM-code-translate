@@ -73,7 +73,7 @@ public int parser_Sintaxis(String File_in) {
         removeThis.put('L', 0);
         removeThis.put('P', 0);
         removeThis.put('W', 0);
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, null, '|', '^', removeThis);
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, withoutPatternButWithivalue, '|', '^', removeThis, 'S');
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
@@ -495,11 +495,12 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     ArrayList<Integer>indexSpecialChars = new ArrayList<>();
     if(ArgsInputRule.formatPatternFlexible != null && isFlexiblePattern){
         Parser.MutableTypeData<String> formatOfline = p.new MutableTypeData<>("");
-        Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>("");
+        Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>(ArgsInputRule.formatPatternFlexible);
        if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat,ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars) != 0) return -1;
+        temp = line.substring(0, LengthOfCommand.getValor());
        if(!coincidence.getValor() && ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){ 
         
-        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.mapForFlexible, ArgsInputRule.stopForFlexible, ArgsInputRule.ORgateForFlexible)!= 0) return -1;
+        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.mapForFlexible, ArgsInputRule.stopForFlexibleForConflicts, ArgsInputRule.ORgateForFlexible)!= 0) return -1;
        else{
        if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars) != 0) return -1;
        if(!coincidence.getValor()){
@@ -549,7 +550,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
 
     }
     if(flexible){
-       if(!indexSpecialChars.isEmpty())LengthOfArg.setValor(newLine.substring(LengthOfCommand.getValor(), indexSpecialChars.get(indexSpecialChars.size())).length());
+       if(!indexSpecialChars.isEmpty())LengthOfArg.setValor(newLine.substring(LengthOfCommand.getValor(), indexSpecialChars.get(indexSpecialChars.size()-1)).length());
        else LengthOfArg.setValor(0); 
        return 3;
     }
@@ -602,6 +603,8 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
 }
 //-------------------------------------------------------
 public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String>formatLine, Parser.MutableTypeData<String>formatOfPattern, ArrayList<String> multiplesPatterns, String singlePattern, ArrayList<Character> specialsCharactersForIdentify, Character indicateORgateInThePatterns, Parser.MutableTypeData<Boolean> matchWitSingle, Parser.MutableTypeData<Boolean> matchWithMultiples, int sensibleToUppercase, boolean thePatternsAreTheFormatExpectedOrNeedBeConvert, ArrayList<Integer>indexWhereFindTheSpecialCharsInTheLine) {
+    //Check the inputs
+    //Revisar las entradas
     if (lineToCheck == null) {
         System.err.println("Error in the parameters, need put the line to check in 'lineToCheck' parameter");
         return -1;
@@ -623,12 +626,15 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
         return -1;
     }
     // Validar que no haya conflicto entre delimitadores especiales y OR
+    //Check if have conflicts between special chars and OR character delimiter
     if (specialsCharactersForIdentify != null && indicateORgateInThePatterns != null) {
             if (specialsCharactersForIdentify.contains(indicateORgateInThePatterns)) {
                 System.err.println("Error: Conflict between special delimiters and OR gate characters: '" + indicateORgateInThePatterns + "'");
                 return -1;
             }
     }
+    //Verificar que el delimitador de OR no se alguna letra que se use en la creacion de el patron flexible
+    //Verified that delimiter for OR gate not be some letter or character use in the creation of the flexible creation
     if(thePatternsAreTheFormatExpectedOrNeedBeConvert && (indicateORgateInThePatterns == 'N' || indicateORgateInThePatterns== 'L') && sensibleToUppercase == 0){
         System.err.println("Error: Conflict between indicate OR gate and characters of the format, change for other different to 'N' and 'L'\n");
         return -1;
@@ -638,22 +644,36 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
         System.err.println("Error: conflict between indicate OR gate and characters of the format, change for other different to 'N', 'L', 'P' and 'W'\n");
       return -1;
     }
-
+     
     boolean coincidence = false;
+    //Chekc for multiples pattern
+    //Revision para patrones múltiples
     if (multiplesPatterns != null) {
+        //make and get the format for the line to check
+        //hacer y obtener el formato para la linea a revisar
         String linePattern = identifyTheFlexibleFormat(lineToCheck, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
-        if(linePattern.equals(null)) return -1;
-        if(formatLine != null) formatLine.setValor(linePattern);
+        if(linePattern.equals(null)) return -1; //error 
+        if(formatLine != null) formatLine.setValor(linePattern);//upload the format of line //actualizar el formato de la linea
+        //get the pattern for compare
+        //obtener el patron para comparar
         for (String pattern : multiplesPatterns) {
             boolean match;
+            //if the pattern need be convert to a format (because is an example)
+            //si el patron nesecita ser convertido a el formato (porque es un ejemplo)
             if (!thePatternsAreTheFormatExpectedOrNeedBeConvert) {
                 pattern = identifyTheFlexibleFormat(pattern, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
                 if(pattern.equals(null)) return -1;
                 if(formatOfPattern != null) formatOfPattern.setValor(pattern);
+                //search a single and simple match because just can put OR gates when the pattern are in the format expected, because the "convert" don't make that and don't can't recognize this, and just identify like other letter
+                //buscar un coincidencia simple y unica porque solo puede poner compuertas OR cuando el patrón es el esperado, porque el "convertidor" no hace esto y no puede reconocer estos, y solo los identifica o trata como otra letra
                 match = pattern.equals(linePattern);
             } else {
+                //if the pattern are in the expected format, check if have OR gates and search match
+                //si el patron es el esperado, revisr si tiene compuertar OR y buscar una coincidencia 
                 match = flexiblePatternMatchWithOR(linePattern, pattern, indicateORgateInThePatterns);
             }
+            //si hay alguna conincidencia
+            //if match
             if (match) {
                 coincidence = true;
                 if (matchWithMultiples != null) matchWithMultiples.setValor(true);
@@ -662,6 +682,8 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
         }
         if (!coincidence && matchWithMultiples != null) matchWithMultiples.setValor(false);
     }
+    //for sigle pattern
+    //para un solo pátron
     if (singlePattern != null) {
         String linePattern = identifyTheFlexibleFormat(lineToCheck, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
         if(linePattern.equals(null)) return -1;
@@ -684,9 +706,9 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
     }
     return 0;
 }
-
+//-------------------------------------------------------
 /**
- * Compara un patrón con OR gates (por ejemplo, AL|NS) contra un formato de línea.
+ * Compara un patrón con OR gates (por ejemplo, AL|NS, entonces sera "ALS" o "ANS") contra un formato de línea.
  * Devuelve true si hay coincidencia con alguna de las opciones separadas por OR.
  */
 private boolean flexiblePatternMatchWithOR(String linePattern, String pattern, Character orGates) {
@@ -694,10 +716,21 @@ private boolean flexiblePatternMatchWithOR(String linePattern, String pattern, C
         return linePattern.equals(pattern);
     }
     // Solo soporta un caracter OR, por ejemplo '|'
+    //Just support a character OR, for example '|'
     char orChar = orGates;
     // Separar las opciones por el caracter OR
+    // Merch the options for the OR character
     String[] options = pattern.split("\\" + orChar);
+    int i = 0;
     for (String option : options) {
+        //Tomar el caracter OR y unirlo con el resto corespondiente, es deicr si tenemos M|SNW entonces si el OR es '|' entonces lo que haremos sera agregar a el ArrayLlist "MNW" y "SNW", porque son las 2 posibilidades separadas por la compuerta OR
+        //Get the OR character and match whit the correnspodent rest, for example if we have M|SNW when '|' is the OR indicator, so we make with this is add for the ArrayList "MNW" and "SNW", because are all the permutations merch for the OR gate
+        if(i != options.length-1){
+            StringBuilder option2 = new StringBuilder(options[options.length-1]);
+            option2.replace(0, option.length(), option);
+            option = option2.toString();
+            i++;
+        } 
         if (linePattern.equals(option)) {
             return true;
         }
@@ -756,16 +789,17 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
     ArrayList<ArrayList<Character>> ORgatesOptionsAppears = new ArrayList<>();
     int n2;
     ArrayList<Integer>indexOfORgatesStart = new ArrayList<>();
-    while((n2 = formatForResolve.indexOf(indicateORgateInFormatForResolve))!=-1){
+    while((n2 = p.searchString(false, formatForResolve, indicateORgateInFormatForResolve.toString(), 0, stopToAnalizeWhenFindThis, false))!=-1){
         Parser.MutableTypeData<String> formatForResolve2 = p.new MutableTypeData<>(formatForResolve);
         ArrayList<Character> ORoptions = new ArrayList<>();
-        createArrayForORLetters(formatForResolve2, ORoptions, stopToAnalizeWhenFindThis);
+        createArrayForORLetters(formatForResolve2, ORoptions, stopToAnalizeWhenFindThis, indicateORgateInFormatForResolve);
         ORgatesOptionsAppears.add(ORoptions);
         formatForResolve = formatForResolve2.getValor();
         indexOfORgatesStart.add(n2);
     }
           
      StringBuilder newFormatToR = new StringBuilder(formatToResolve.getValor());
+     int index2 = 0;
  if(forReomveAndStayInTheEndOfFormatForTheFinalResult != null && !forReomveAndStayInTheEndOfFormatForTheFinalResult.isEmpty()){
         
         StringBuilder newFormatToR2 = new StringBuilder();
@@ -775,12 +809,12 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
         Character charForRemove = entry.getKey();
         charsToDelete.add(charForRemove);
         int toStayinTheFormat = (int)entry.getValue();
-
-        int deleteNAppearsOfThisChar = p.searchString(true, newFormatToR.toString(), charForRemove.toString(), formatForResolve.substring(0, stopToAnalizeWhenFindThis).length(), stopToAnalizeWhenFindThis, false)-toStayinTheFormat;
+        index2 = formatForResolve.indexOf(stopToAnalizeWhenFindThis);
+        int deleteNAppearsOfThisChar = p.searchString(true, newFormatToR.toString(), charForRemove.toString(),index2, stopToAnalizeWhenFindThis, false)-toStayinTheFormat;
         deleteOfThisChar.add(deleteNAppearsOfThisChar);
     }
-    String stringBetween = newFormatToR.substring(formatForResolve.substring(0, stopToAnalizeWhenFindThis).length(), newFormatToR.toString().indexOf(stopToAnalizeWhenFindThis));
-    newFormatToR2.append(newFormatToR.substring(formatForResolve.substring(0, stopToAnalizeWhenFindThis).length(), newFormatToR.toString().indexOf(stopToAnalizeWhenFindThis)));
+    String stringBetween = newFormatToR.substring(index2, newFormatToR.toString().indexOf(stopToAnalizeWhenFindThis));
+    newFormatToR2.append(stringBetween);
     newFormatToR.setLength(0);
     newFormatToR.append(newFormatToR2.toString());
     for(int i = 0; i <=newFormatToR2.toString().length();i++){
@@ -808,8 +842,15 @@ public String identifyTheFlexibleFormat(String forGetTheFormat, int sensibleToUp
         System.err.println("Error in the parameters, need put a string for get his format\n");
         return null;
     }
+    if(forGetTheFormat != null){
+        if(forGetTheFormat.equals("")){
+        System.err.println("Error in the parameters, need put a string for get his format\n");
+        return null;
+    }
+    }
     StringBuilder format = new StringBuilder("");
     boolean first = true;
+    int before = 0;
     for(int i = 0; i < forGetTheFormat.length(); i++){ 
         int actualCharType = identifyTypeIntOrChar(forGetTheFormat.charAt(i), sensibleToUppercase);
     if(first){
@@ -832,8 +873,10 @@ public String identifyTheFlexibleFormat(String forGetTheFormat, int sensibleToUp
             else format.append("L");
         }
         first = false;
+        before = actualCharType;
+        continue;
         } 
-        if((char)actualCharType != format.toString().charAt(format.toString().length())){
+        if(before != actualCharType){
         if(actualCharType == 1) format.append("N");//add N for Number 
         else if(actualCharType == 2) format.append("L");//add L for Letter 
         else if(actualCharType == 3) format.append("W");//add W for lowercaseLetter if are sensible to uppercase
@@ -854,23 +897,33 @@ public String identifyTheFlexibleFormat(String forGetTheFormat, int sensibleToUp
             else{
                      if((char)actualCharType != 'L') format.append("L");
                  }
+         continue;
         }
+        before = actualCharType;
     }
   }
   return format.toString();
 }
-///-------------------------------------------------------
-public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, ArrayList<Character> forEdit, Character indicateORgate) {
+//-------------------------------------------------------
+public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, ArrayList<Character> forEdit, Character stopWhenFindThis, Character indicateORgate) {
     if (formatForIdentify == null || forEdit == null || indicateORgate == null) return;
     StringBuilder sb = new StringBuilder(formatForIdentify.getValor());
     int i = 0;
     boolean foundOR = false;
     while (i < sb.length()) {
         char c = sb.charAt(i);
+        if(stopWhenFindThis != null){
+        if(c == stopWhenFindThis){
+            formatForIdentify.setValor(sb.toString());
+            return;
+            }
+        }
         if (c == indicateORgate) {
             if(i != 0){
                 char beforeC = sb.charAt(i-1);
-                forEdit.add(beforeC);
+                if (Character.isLetter(beforeC) && !forEdit.contains(beforeC)) {
+                    forEdit.add(beforeC);
+                }
             }
             // Solo considerar si hay una letra después del OR y no es otro OR
             if (i + 1 < sb.length() && sb.charAt(i + 1) != indicateORgate) {
@@ -883,6 +936,7 @@ public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, A
                 sb.delete(i, i + 2);
                 foundOR = true;
                 // No incrementar i porque la cadena se ha reducido
+                i=1;
                 continue;
             } else {
                 // Si el siguiente no es letra o es otro OR, solo eliminar el OR
