@@ -73,7 +73,7 @@ public int parser_Sintaxis(String File_in) {
         removeThis.put('L', 0);
         removeThis.put('P', 0);
         removeThis.put('W', 0);
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, null, '^', '|', removeThis);
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, null, '|', '^', removeThis);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
@@ -344,13 +344,13 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
 //-------------------------------------------------------  
 public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, MutableTypeData<Integer> iEspecial, boolean withArgumets){
     if(line != null){
-    // Get the first three characters of the input string
-        // Obtener los primeros tres caracteres de la cadena de entrada
+    // Get the first N characters of the input string
+        // Obtener los primeros N caracteres de la cadena de entrada
         String element = GetNchars(line, CharsNumToCompare_SRING_MORE_LONG);
         if(element == null) return -1;
         if (hashTableForCompare.containsKey(element) && !withArgumets) {
-            // Verificar que no haya caracteres inesperados después del tercer carácter
-            // Check that there are no unexpected characters after the third character
+            // Verificar que no haya caracteres inesperados después del  carácter
+            // Check that there are no unexpected characters after the  character
             String remaining = line.substring(element.length(), line.length()); // Tomamos lo que sigue //Take the rest of line 
             remaining = remaining.trim();//ignore the spaces and tab
                              //ignorar esapcios y tabulaciones
@@ -448,7 +448,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
         return -1;
     }
 
-    int n = 0;
+
     Parser p = new Parser();
     Parser.MutableTypeData<Boolean>coincidence = p.new MutableTypeData<>(false);
     String temp = "";
@@ -457,7 +457,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     boolean isWithoutPattern = false;
     if(ArgsInputRule.commandsWithoutPatterns != null){
         String line2 = line.trim();
-        n = CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
+        CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
         if(ArgsInputRule.commandsWithoutPatterns.contains(line2.substring(0, LengthOfCommand.getValor()))) isWithoutPattern = true;
     }
     //validar si es un tipo especial de comando con formato flexible
@@ -465,7 +465,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     boolean isFlexiblePattern = false;
     if(ArgsInputRule.commandsWithFlexiblePattern != null && !isWithoutPattern){
         String line2 = line.trim();
-        n = CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
+        CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
         if(ArgsInputRule.commandsWithFlexiblePattern.contains(line2.substring(0, LengthOfCommand.getValor()))) isFlexiblePattern = true;
     }
     if(isFlexiblePattern && isWithoutPattern){
@@ -539,7 +539,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Compare the comand
 
     LengthOfCommand.setValor(0);
-    if ((n = CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true)) != 0)  return -1;
+    if (CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true) != 0)  return -1;
     if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
     if(ArgsInputRule.commandsWithFlexiblePattern.contains(newLine.substring(0, LengthOfCommand.getValor()))) flexible = true;
     if(without){
@@ -556,7 +556,7 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Comparar argumentos (lo que sobra después del comando)
     //compare the arguments (the rest after the comand)
     String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());
-    if ((n = CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfArg, true)) != 0) {
+    if (CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfArg, true) != 0) {
         return -1;
     }
 
@@ -606,8 +606,20 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
         System.err.println("Error in the parameters, need put the line to check in 'lineToCheck' parameter");
         return -1;
     }
-    if (multiplesPatterns == null && singlePattern == null || multiplesPatterns.isEmpty() && singlePattern.equals("")) {
-        System.err.println("Error in the parameter, need put something in the 'multiplesPatterns' or 'singlePatternMostLong and singlePatternLessLong");
+    if (multiplesPatterns == null && singlePattern == null) {
+        System.err.println("Error in the parameter, need put something in the 'multiplesPatterns' or 'singlePattern'\n");
+        return -1;
+    }
+    boolean multiples = false;
+    if(multiplesPatterns != null){
+        if( multiplesPatterns.isEmpty() ){
+    System.err.println("Error in the parameter, need put something in the 'multiplesPatterns' or 'singlePattern'\n");
+        return -1;
+    }
+    multiples = true;
+    }
+    if(singlePattern.equals("") && !multiples){
+    System.err.println("Error in the parameter, need put something in the 'multiplesPatterns' or 'singlePattern'\n");
         return -1;
     }
     // Validar que no haya conflicto entre delimitadores especiales y OR
