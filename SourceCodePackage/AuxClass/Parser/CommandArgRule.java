@@ -1,7 +1,5 @@
 package AuxClass.Parser;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.*;
 /**
  * <p>Esta es una clase especial pensada para una función de la clase 'sintaxParsing', llamada 'CompareCommandsWithArgs', funciona como un encapsulador de argumentos</p>
@@ -29,6 +27,16 @@ public class CommandArgRule {
     public ArrayList<String> exceptions = new ArrayList<>();
     
     public ArrayList<String>commandsWithoutPatterns = new ArrayList<>();
+    //for flexibles commands
+    public ArrayList<String>commandsWithFlexiblePattern = new ArrayList<>();
+    public String formatPatternFlexible;
+    public ArrayList<String>multiplesFlexiblesFormatsPatterns = new ArrayList<>();
+    public ArrayList<Character>specialCharsForIdentifyInTheFlexibleFormat = new ArrayList<>();
+    public ArrayList<String> commandsWithFlexiblePatternForResultConflicts;
+    public boolean thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns;
+    public Character ORgateForFlexible;
+    public Character stopForFlexible;
+    public Map<Character, Integer> mapForFlexible = new HashMap<>();
     //Constructor
     /**
      * <p>This is a **constructor** for this class</p>
@@ -72,7 +80,11 @@ public class CommandArgRule {
      * </code>
      * </pre>
      */
-    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns, ArrayList<String> exceptions, ArrayList<String>commandsWithoutPatterns) {
+    public CommandArgRule(HashMap<String, Integer> commandTable, HashMap<String, Integer> argTable, int commandLength, int argLength, String formatPatternMostLong, String formatPatternLessLong, Map<String, String> multipleFormatsPatterns, ArrayList<String> exceptions, ArrayList<String>commandsWithoutPatterns,
+    ArrayList<String> commandsWithFlexiblePattern, String formatPatternFlexible, ArrayList<String> multiplesFlexiblesFormatsPatterns,
+    ArrayList<Character> specialCharsForIdentifyInTheFlexibleFormat, boolean thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns,
+    ArrayList<String>commandsWithFlexiblePatternForResultConflicts, Character ORgateForFlexible, Character stopForFlexible,
+    Map<Character, Integer> mapForFlexible) {
         this.commandTable = commandTable;
         this.argTable = argTable;
         this.commandLength = commandLength;
@@ -82,5 +94,15 @@ public class CommandArgRule {
         this.multipleFormatsPatterns = multipleFormatsPatterns;
         this.exceptions = exceptions;
         this.commandsWithoutPatterns = commandsWithoutPatterns;
+        this.commandsWithFlexiblePattern = commandsWithFlexiblePattern;
+        this.formatPatternFlexible = formatPatternFlexible;
+        this.multiplesFlexiblesFormatsPatterns = multiplesFlexiblesFormatsPatterns;
+        this.specialCharsForIdentifyInTheFlexibleFormat = specialCharsForIdentifyInTheFlexibleFormat;
+        this.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns = thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns;
+        this.commandsWithFlexiblePatternForResultConflicts = commandsWithFlexiblePatternForResultConflicts;
+        this.ORgateForFlexible = ORgateForFlexible;
+        this.stopForFlexible = stopForFlexible;
+        this.mapForFlexible = mapForFlexible;
+
     }
 }

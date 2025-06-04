@@ -1,4 +1,12 @@
 
+//if-goto command
+@SP
+A=M-1
+D=M
+@hola1234
+D;JGT
+
+
 //label command
 (hola1234)
 

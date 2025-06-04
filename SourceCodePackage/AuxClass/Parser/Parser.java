@@ -104,6 +104,8 @@ public int File_to(String file_In, String nameOfNewFileWithFormat) {
 public int CleanFile(String file_in){
     System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
     int n;
+    n = trateSpecialsStrings("function", file_in);
+    if(n!= 0) return n;
 
     n = RemoveVoidChars(file_in, null);
     if(n != 0) return n;
@@ -858,6 +860,76 @@ public int RemoveNLine(String file_in, Character delimiter){
     return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
+public int trateSpecialsStrings(String lineToidentify, String inputFile) {
+    if (lineToidentify == null || lineToidentify.isEmpty()) {
+        System.err.println("Error: Need put some value in the string of input.");
+        return -1;
+    }
+    String tempFile = "tempSpecialsStrings.txt";
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            StringBuilder newLine = new StringBuilder(line);
+
+            // Construir la línea sin espacios ni caracteres vacíos
+            StringBuilder withoutSpaces = new StringBuilder();
+            for (int i = 0; i < newLine.length(); i++) {
+                char c = newLine.charAt(i);
+                if (c != ' ' && c != '\t' && c != '\r' && c != '\f' && c != '\u000B' && c != '\u2028' && c != '\0') {
+                    withoutSpaces.append(c);
+                }
+                else{
+                    if(c == ' ' || c == '\t' || c == '\r') newLine.deleteCharAt(i);
+                    break;
+                }
+            }
+
+            // Si la línea sin espacios es igual a la cadena de entrada
+            if (withoutSpaces.toString().equals(lineToidentify)) {
+                int indexOfSpace = newLine.indexOf(" ");
+                if (indexOfSpace != -1) {
+                    newLine.setCharAt(indexOfSpace, '^');
+                }
+            }
+
+            // Eliminar todos los espacios y caracteres vacíos (incluyendo el ^ si lo pusimos)
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < newLine.length(); i++) {
+                char c = newLine.charAt(i);
+                if (c != ' ' && c != '\t' && c != '\r' && c != '\f' && c != '\u000B' && c != '\u2028' && c != '\0') {
+                    result.append(c);
+                }
+            }
+
+            writer.write(result.toString());
+            writer.newLine();
+        }
+
+    } catch (IOException e) {
+        System.out.println("Error: " + e.getMessage());
+        return -1;
+    }
+
+    // Reemplaza el archivo original por el temporal
+    File original = new File(inputFile);
+    File temporal = new File(tempFile);
+
+    if (original.delete()) {
+        if (temporal.renameTo(original)) {
+            System.out.printf("THE FILE '%s' ARE BE CLEANING AND UPLOAD.\n", inputFile);
+            return 0;
+        } else {
+            System.out.println("Error to try rename the file.");
+            return -1;
+        }
+    } else {
+        System.out.println("Error to try remove the original file.");
+        return -1;
+    }
+}
 //END THE PROCCES TO PREPARE FILES(TERMINA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)--------------------------------------------------------------
 
 }

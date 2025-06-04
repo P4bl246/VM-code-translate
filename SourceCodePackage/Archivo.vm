@@ -1,3 +1,5 @@
+function hello 1234
+if-goto hola1234
 label hola1234
 add
 p/*this is a pop operations/*not are puhs*/NO*/op local 10

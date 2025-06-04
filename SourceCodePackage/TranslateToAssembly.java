@@ -37,7 +37,7 @@ public int transalte(String file_in){
        segments.put("that", "@THAT");
        segments.put("pointer0", "@THIS");
        segments.put("pointer1", "@THAT");
-       segments.put("temp", "temp");
+       segments.put("temp", "@temp");
        ArrayList<String>excep = new ArrayList<>();
        excep.add("pointer");
        int i = 0, c = 0;
@@ -71,7 +71,8 @@ public int transalte(String file_in){
              arg.setValor(arg.getValor()+valueArg.getValor());
               valueArg.setValor("0");
             }
-           if(line.substring(0, lengthCommand.getValor()).equals("label") || line.substring(0, lengthCommand.getValor()).equals("goto")) assembly = assembly.replaceFirst("LBL", arg.getValor());
+           if(line.substring(0, lengthCommand.getValor()).equals("label") || line.substring(0, lengthCommand.getValor()).equals("goto") ||
+           line.substring(0, lengthCommand.getValor()).equals("if-goto")) assembly = assembly.replaceFirst("LBL", arg.getValor());
            else{
           assembly = assembly.replaceFirst("RPI", "@"+valueArg.getValor());
           assembly = assembly.replaceFirst("RARG", segments.get(arg.getValor()));
@@ -121,6 +122,8 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     representationAssembly.add("\n//label command\n(LBL)\n");
     commands.add("goto");
     representationAssembly.add("\n//goto command\n@LBL\n0;JMP\n");
+    commands.add("if-goto");
+    representationAssembly.add("\n//if-goto command\n@SP\nA=M-1\nD=M\n@LBL\nD;JGT\n");
     
     //constant code
     //codigo constante
@@ -192,8 +195,9 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
                 ArrayList<String>commandswithoutFormat = new ArrayList<>();
                 commandswithoutFormat.add("label");
                 commandswithoutFormat.add("goto");
+                commandswithoutFormat.add("if-goto");
                    int f = 0;
-                CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 5, 8, "pushconstant-32768", "popthis0", null, null, commandswithoutFormat);
+                CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 7, 8, "pushconstant-32768", "popthis0", null, null, commandswithoutFormat);
                 if((f = n.CompareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg)) != 0 && f != 2) return null;
                 else if(argCommand != null)argCommand.setValor(true);
                 if(f == 2) withoutPattern = true;
