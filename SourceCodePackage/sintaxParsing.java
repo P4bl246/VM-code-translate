@@ -73,7 +73,7 @@ public int parser_Sintaxis(String File_in) {
         removeThis.put('L', 0);
         removeThis.put('P', 0);
         removeThis.put('W', 0);
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, withoutPatternButWithivalue, '|', '^', removeThis, 'S');
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, withoutPatternButWithivalue, '|', '^', removeThis, 'S', false);
     HashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
@@ -97,7 +97,7 @@ public int parser_Sintaxis(String File_in) {
             System.err.printf("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
             }
-             if(n != 2){
+             if(n != 2 && n!=3){
                 String arg = line.substring(LengthOfCommand.getValor(), (LengthOfArg.getValor()+LengthOfCommand.getValor()));
             if(arg.equals("pointer")){
              arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
@@ -496,13 +496,13 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
     if(ArgsInputRule.formatPatternFlexible != null && isFlexiblePattern){
         Parser.MutableTypeData<String> formatOfline = p.new MutableTypeData<>("");
         Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>(ArgsInputRule.formatPatternFlexible);
-       if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat,ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars) != 0) return -1;
+       if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat,ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, ArgsInputRule.theLineAreInTheFormatExpected) != 0) return -1;
         temp = line.substring(0, LengthOfCommand.getValor());
        if(!coincidence.getValor() && ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){ 
         
         if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.mapForFlexible, ArgsInputRule.stopForFlexibleForConflicts, ArgsInputRule.ORgateForFlexible)!= 0) return -1;
        else{
-       if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars) != 0) return -1;
+       if(checkFlexibleFormat(formatOfline.getValor(), formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, true) != 0) return -1;
        if(!coincidence.getValor()){
        System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
         return -1;
@@ -602,7 +602,7 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
     return 0;
 }
 //-------------------------------------------------------
-public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String>formatLine, Parser.MutableTypeData<String>formatOfPattern, ArrayList<String> multiplesPatterns, String singlePattern, ArrayList<Character> specialsCharactersForIdentify, Character indicateORgateInThePatterns, Parser.MutableTypeData<Boolean> matchWitSingle, Parser.MutableTypeData<Boolean> matchWithMultiples, int sensibleToUppercase, boolean thePatternsAreTheFormatExpectedOrNeedBeConvert, ArrayList<Integer>indexWhereFindTheSpecialCharsInTheLine) {
+public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String>formatLine, Parser.MutableTypeData<String>formatOfPattern, ArrayList<String> multiplesPatterns, String singlePattern, ArrayList<Character> specialsCharactersForIdentify, Character indicateORgateInThePatterns, Parser.MutableTypeData<Boolean> matchWitSingle, Parser.MutableTypeData<Boolean> matchWithMultiples, int sensibleToUppercase, boolean thePatternsAreTheFormatExpectedOrNeedBeConvert, ArrayList<Integer>indexWhereFindTheSpecialCharsInTheLine, boolean lineToCheckHasBeFormat) {
     //Check the inputs
     //Revisar las entradas
     if (lineToCheck == null) {
@@ -651,8 +651,10 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
     if (multiplesPatterns != null) {
         //make and get the format for the line to check
         //hacer y obtener el formato para la linea a revisar
-        String linePattern = identifyTheFlexibleFormat(lineToCheck, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
-        if(linePattern.equals(null)) return -1; //error 
+        String linePattern = "";
+        if(!lineToCheckHasBeFormat)identifyTheFlexibleFormat(lineToCheck, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
+        else linePattern = lineToCheck;
+        if(linePattern.equals("")) return -1; //error 
         if(formatLine != null) formatLine.setValor(linePattern);//upload the format of line //actualizar el formato de la linea
         //get the pattern for compare
         //obtener el patron para comparar
@@ -662,7 +664,7 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
             //si el patron nesecita ser convertido a el formato (porque es un ejemplo)
             if (!thePatternsAreTheFormatExpectedOrNeedBeConvert) {
                 pattern = identifyTheFlexibleFormat(pattern, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
-                if(pattern.equals(null)) return -1;
+                if(pattern.equals("")) return -1;
                 if(formatOfPattern != null) formatOfPattern.setValor(pattern);
                 //search a single and simple match because just can put OR gates when the pattern are in the format expected, because the "convert" don't make that and don't can't recognize this, and just identify like other letter
                 //buscar un coincidencia simple y unica porque solo puede poner compuertas OR cuando el patrón es el esperado, porque el "convertidor" no hace esto y no puede reconocer estos, y solo los identifica o trata como otra letra
@@ -685,7 +687,9 @@ public int checkFlexibleFormat(String lineToCheck, Parser.MutableTypeData<String
     //for sigle pattern
     //para un solo pátron
     if (singlePattern != null) {
-        String linePattern = identifyTheFlexibleFormat(lineToCheck, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
+        String linePattern = "";
+        if(!lineToCheckHasBeFormat) linePattern= identifyTheFlexibleFormat(lineToCheck, sensibleToUppercase, specialsCharactersForIdentify, indexWhereFindTheSpecialCharsInTheLine);
+        else linePattern = lineToCheck;
         if(linePattern.equals(null)) return -1;
         if(formatLine != null) formatLine.setValor(linePattern);
         String pattern = singlePattern;
@@ -800,9 +804,10 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
           
      StringBuilder newFormatToR = new StringBuilder(formatToResolve.getValor());
      int index2 = 0;
+     StringBuilder newFormatToR2 = new StringBuilder();
  if(forReomveAndStayInTheEndOfFormatForTheFinalResult != null && !forReomveAndStayInTheEndOfFormatForTheFinalResult.isEmpty()){
         
-        StringBuilder newFormatToR2 = new StringBuilder();
+        
         ArrayList<Character> charsToDelete = new ArrayList<>();
         ArrayList<Integer> deleteOfThisChar = new ArrayList<>();
        for(Map.Entry<Character, Integer>entry : forReomveAndStayInTheEndOfFormatForTheFinalResult.entrySet()){
@@ -815,9 +820,9 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
     }
     String stringBetween = newFormatToR.substring(index2, newFormatToR.toString().indexOf(stopToAnalizeWhenFindThis));
     newFormatToR2.append(stringBetween);
-    newFormatToR.setLength(0);
-    newFormatToR.append(newFormatToR2.toString());
-    for(int i = 0; i <=newFormatToR2.toString().length();i++){
+    int i = 0;
+    while(true){
+        if(i == newFormatToR2.toString().length()) break;
        if(charsToDelete.contains(newFormatToR2.toString().charAt(i))){
         int index = charsToDelete.indexOf(newFormatToR2.toString().charAt(i));
          int deleteNAppears = deleteOfThisChar.get(index);
@@ -830,8 +835,12 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
          i=0;
          continue;
        }
+       i++;
     }
-    newFormatToR.toString().replace(stringBetween, newFormatToR2);
+   
+    String upload = newFormatToR.toString().replace(stringBetween, newFormatToR2);
+    newFormatToR.setLength(0);
+    newFormatToR.append(upload);
   }
    formatToResolve.setValor(newFormatToR.toString());
     return 0;

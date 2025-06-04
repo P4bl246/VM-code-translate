@@ -38,6 +38,7 @@ public class CommandArgRule {
     public Character stopForFlexible;
     public Map<Character, Integer> mapForFlexible = new HashMap<>();
     public Character stopForFlexibleForConflicts;
+    public boolean theLineAreInTheFormatExpected;
     //Constructor
     /**
      * <p>This is a **constructor** for this class</p>
@@ -85,7 +86,7 @@ public class CommandArgRule {
     ArrayList<String> commandsWithFlexiblePattern, String formatPatternFlexible, ArrayList<String> multiplesFlexiblesFormatsPatterns,
     ArrayList<Character> specialCharsForIdentifyInTheFlexibleFormat, boolean thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns,
     ArrayList<String>commandsWithFlexiblePatternForResultConflicts, Character ORgateForFlexible, Character stopForFlexible,
-    Map<Character, Integer> mapForFlexible, Character stopForFlexibleForConflicts) {
+    Map<Character, Integer> mapForFlexible, Character stopForFlexibleForConflicts, boolean theLineAreInTheFormatExpected) {
         this.commandTable = commandTable;
         this.argTable = argTable;
         this.commandLength = commandLength;
@@ -105,5 +106,6 @@ public class CommandArgRule {
         this.stopForFlexible = stopForFlexible;
         this.mapForFlexible = mapForFlexible;
         this.stopForFlexibleForConflicts = stopForFlexibleForConflicts;
+        this.theLineAreInTheFormatExpected = theLineAreInTheFormatExpected;
     }
 }
