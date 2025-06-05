@@ -975,8 +975,10 @@ int n = 0; //Get the format in a integer number
         for (int i = 0; i < FormatExample.length(); i++) {
         char actualChar = FormatExample.charAt(i);
             int characterValue = identifyTypeIntOrChar(actualChar, sensibleToUppercase);
-             if(characterValue == 1 || characterValue == 2 || characterValue == 3 || characterValue == 4)n += characterValue + i; 
-             else n +=characterValue*2+i;
+            //in both operations sum +1 because this function for convert match nums to no-match nums, and no-match nums to match nums, and the multiply help, because if the num are match or not-match affected, because match*match=match
+            //en ambas operaciones suma +1 porque esto funciona para convertir numeros pares a impares y viceversa, y la multiplicacion ayuda, porque si el numero es par o no par afecta, porque par*par=par
+             if(characterValue == 1 || characterValue == 2 || characterValue == 3 || characterValue == 4)n+=((characterValue+characterValue)+1)*((((i+i)*i)+(characterValue+characterValue))+1); 
+             else n +=(((characterValue+characterValue)+(i+i))+1)*((characterValue+characterValue)+(i*i));
          }
  return n;
 }
