@@ -975,7 +975,8 @@ int n = 0; //Get the format in a integer number
         for (int i = 0; i < FormatExample.length(); i++) {
         char actualChar = FormatExample.charAt(i);
             int characterValue = identifyTypeIntOrChar(actualChar, sensibleToUppercase);
-             n += characterValue + i; 
+             if(characterValue == 1 || characterValue == 2 || characterValue == 3 || characterValue == 4)n += characterValue + i; 
+             else n +=characterValue*2+i;
          }
  return n;
 }
