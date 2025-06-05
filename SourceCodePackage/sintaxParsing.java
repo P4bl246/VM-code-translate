@@ -971,11 +971,12 @@ int n = 0; //Get the format in a integer number
             //Obtener el formato en un número entero
 
 //iterate until the end of the FormatExample
-//Recorrer la cadena FromatExample
+//Recorrer la cadena FormatExample
         for (int i = 0; i < FormatExample.length(); i++) {
         char actualChar = FormatExample.charAt(i);
-        n += identifyTypeIntOrChar(actualChar, sensibleToUppercase);
-    }
+            int characterValue = identifyTypeIntOrChar(actualChar, sensibleToUppercase);
+             n += characterValue + i; 
+         }
  return n;
 }
 //-------------------------------------------------------
