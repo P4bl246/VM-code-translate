@@ -104,7 +104,10 @@ public int File_to(String file_In, String nameOfNewFileWithFormat) {
 public int CleanFile(String file_in){
     System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
     int n;
-    n = trateSpecialsStrings("function", file_in);
+    ArrayList<String> specialsForIdentify = new ArrayList<>();
+    specialsForIdentify.add("function");
+    specialsForIdentify.add("call");
+    n = trateSpecialsStrings(specialsForIdentify, file_in);
     if(n!= 0) return n;
 
     n = RemoveVoidChars(file_in, null);
@@ -860,7 +863,7 @@ public int RemoveNLine(String file_in, Character delimiter){
     return Return.ERROR.getValue();
 }
 //--------------------------------------------------------------
-public int trateSpecialsStrings(String lineToidentify, String inputFile) {
+public int trateSpecialsStrings(ArrayList<String> lineToidentify, String inputFile) {
     if (lineToidentify == null || lineToidentify.isEmpty()) {
         System.err.println("Error: Need put some value in the string of input.");
         return -1;
@@ -888,7 +891,7 @@ public int trateSpecialsStrings(String lineToidentify, String inputFile) {
             }
 
             // Si la línea sin espacios es igual a la cadena de entrada
-            if (withoutSpaces.toString().equals(lineToidentify)) {
+            if (lineToidentify.contains(withoutSpaces.toString())) {
                 int indexOfSpace = newLine.indexOf(" ");
                 if (indexOfSpace != -1) {
                     newLine.setCharAt(indexOfSpace, '^');

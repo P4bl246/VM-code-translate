@@ -577,10 +577,10 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
     //Check for multiples formats the line
     boolean coincidence = false;
     if (multiplesPatterns != null) {
-        int linePattern= identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
+        double linePattern= identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
         for (HashMap.Entry<String, String> entry : multiplesPatterns.entrySet()) {
-            int mostLong = identifyTheStrictFormat(entry.getKey(), sensibleToUppercase);
-            int lessLong = identifyTheStrictFormat(entry.getValue(), sensibleToUppercase);
+            double mostLong = identifyTheStrictFormat(entry.getKey(), sensibleToUppercase);
+            double lessLong = identifyTheStrictFormat(entry.getValue(), sensibleToUppercase);
             if (linePattern >= lessLong && linePattern <= mostLong) {
                 coincidence = true;
                 if(matchWithMultiples != null) matchWithMultiples.setValor(true);
@@ -590,9 +590,9 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
         if(!coincidence) if(matchWithMultiples != null) matchWithMultiples.setValor(false);
     }
     if(singlePatternMostLong != null && singlePatternLessLong != null){
-        int mostLong = identifyTheStrictFormat(singlePatternMostLong, sensibleToUppercase);
-        int lessLong= identifyTheStrictFormat(singlePatternLessLong, sensibleToUppercase);
-        int linePattern = identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
+        double mostLong = identifyTheStrictFormat(singlePatternMostLong, sensibleToUppercase);
+        double lessLong= identifyTheStrictFormat(singlePatternLessLong, sensibleToUppercase);
+        double linePattern = identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
 
         if (!(linePattern >= lessLong && linePattern <= mostLong)) {
             if(matchWithSingle != null)matchWithSingle.setValor(false);
@@ -966,20 +966,24 @@ public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, A
     formatForIdentify.setValor(sb.toString());
 }
 //-------------------------------------------------------
-public int identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
-int n = 0; //Get the format in a integer number
+private double identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
+double n = 0; //Get the format in a integer number
             //Obtener el formato en un número entero
 
 //iterate until the end of the FormatExample
 //Recorrer la cadena FormatExample
+int characterValueBefore = 0;
         for (int i = 0; i < FormatExample.length(); i++) {
         char actualChar = FormatExample.charAt(i);
             int characterValue = identifyTypeIntOrChar(actualChar, sensibleToUppercase);
-            //in both operations sum +1 because this function for convert match nums to no-match nums, and no-match nums to match nums, and the multiply help, because if the num are match or not-match affected, because match*match=match
+            double merchCharacter = i/((i*2)+1); //para dividir el caracter actual por su indice multiplicado por 2, +1
+            double x = (i+((characterValue*2)+characterValueBefore))*merchCharacter;
+            //in both operations sum +1 because this function for convert pairs nums to inpairs nums, and inpairs nums to pairs nums, and the multiply help, because if the num are pairs or inpairs affected, because pair*pair=pair
             //en ambas operaciones suma +1 porque esto funciona para convertir numeros pares a impares y viceversa, y la multiplicacion ayuda, porque si el numero es par o no par afecta, porque par*par=par
-             if(characterValue == 1 || characterValue == 2 || characterValue == 3 || characterValue == 4)n+=((characterValue+characterValue)+1)*((((i+i)*i)+(characterValue+characterValue))+1); 
-             else n +=(((characterValue+characterValue)+(i+i))+1)*((characterValue+characterValue)+(i*i));
-         }
+             if(characterValue == 1 || characterValue == 2 || characterValue == 3 || characterValue == 4)n+= ((((i+1)*i+x)*merchCharacter)*characterValue)+1; 
+             else n += (((i+1)*i+x)*merchCharacter)+1;//integral f(x)*dx == ((i+1)*i+x)*dx)
+            characterValueBefore = characterValue;
+            }
  return n;
 }
 //-------------------------------------------------------
