@@ -66,15 +66,21 @@ public int parser_Sintaxis(String File_in) {
     withouthPattern.add("if-goto");
     ArrayList<String>withoutPatternButWithivalue = new ArrayList<>();
     withoutPatternButWithivalue.add("function");
+    withoutPatternButWithivalue.add("call");
     ArrayList<Character>specials = new ArrayList<>();
-    specials.add('^');
-    Map<Character, Integer> removeThis = new HashMap<>();
-        removeThis.put('N', 0);
-        removeThis.put('L', 0);
-        removeThis.put('P', 0);
-        removeThis.put('W', 0);
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, withoutPatternButWithivalue, "W|N|L|PSN", null, specials, true, withoutPatternButWithivalue, '|', '^', removeThis, 'S', false);
-    HashTablePreDet(); // Create the hash table with the pre-determined elements
+    specials.add('~');
+    Map<Character, Integer> removeAllAppearsOfThisChars = new HashMap<>();
+        removeAllAppearsOfThisChars.put('N', 0);
+        removeAllAppearsOfThisChars.put('L', 0);
+        removeAllAppearsOfThisChars.put('P', 0);
+        removeAllAppearsOfThisChars.put('W', 0);
+
+    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, 
+    "pushconstant-32768", "popthis0", null, excep, withouthPattern, 
+    withoutPatternButWithivalue, "W|N|L|PSN", null, 
+    specials, true, withoutPatternButWithivalue, '|', '~', removeAllAppearsOfThisChars, 'S', false);
+
+    hashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
     while(true) {
         nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null);
@@ -83,16 +89,16 @@ public int parser_Sintaxis(String File_in) {
         line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0', null, contains);
         if(line.equals("") && !contains.getValor()) break;
         Parser.MutableTypeData<Integer> i =  parserf.new MutableTypeData<>(0);
-        n = CompareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false, i);
+        n = compareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false, i);
         if (n != 0){
-          n= CompareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false, i);
+          n= compareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false, i);
           
           if (n != 0) {
             //Create a mutable value variable for upload his value in call in diferents functions
             //Crear una vairalbe de valor mutable para actualizar su valor en las llamadas a otras funciones 
             Parser.MutableTypeData<Integer>LengthOfCommand = parserf.new MutableTypeData<>(0);
             Parser.MutableTypeData<Integer>LengthOfArg = parserf.new MutableTypeData<>(0);
-          n = CompareCommandsWithArg(line, nLine, argsCommands, 1, null, LengthOfCommand, LengthOfArg);
+          n = compareCommandsWithArg(line, nLine, argsCommands, 1, null, LengthOfCommand, LengthOfArg);
           if (n < 0){
             System.err.printf("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
@@ -106,6 +112,14 @@ public int parser_Sintaxis(String File_in) {
                 return -1;
                }
              
+            }
+          }
+          if(n == 3){
+            // If the command is a flexible pattern, check if it has arguments
+            // Si el comando es un patrón flexible, verificar si tiene argumentos
+            if(LengthOfArg.getValor() == 0){
+                System.err.printf("Error in the line %s\nDETAILS: The command '%s' must have arguments\n", nLine, line.substring(0, LengthOfCommand.getValor()));
+                return -1;
             }
           } 
             continue;
@@ -140,14 +154,14 @@ public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a
                                                                     // Crear una tabla hash para funciones
 //constructor function for create the PreDeterminate hash tables
 // función constructora para crear las tablas hash predefinidas
-  public void HashTablePreDet(){
+  public void hashTablePreDet(){
     ArrayList<String> NewElements = new ArrayList<>();
     //Arithmetic operations
     // Operaciones aritméticas
     NewElements.add("add");
     NewElements.add("sub"); 
     NewElements.add("neg");
-    CreateHashTable(null, 1, NewElements, null, TableHash.Arithmetics);
+    createHashTable(null, 1, NewElements, null, TableHash.Arithmetics);
     NewElements.clear();
     //Boolean operations
     // Operaciones booleanas
@@ -157,7 +171,7 @@ public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a
     NewElements.add("eq");
     NewElements.add("lt");
     NewElements.add("gt");
-    CreateHashTable(null, 1, NewElements, null, TableHash.Booleans);
+    createHashTable(null, 1, NewElements, null, TableHash.Booleans);
     NewElements.clear();
     //POP and PUSH comands
     // comandos POP y PUSH
@@ -167,7 +181,8 @@ public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a
     NewElements.add("goto");
     NewElements.add("if-goto");
     NewElements.add("function");
-    CreateHashTable(null, 1, NewElements, null, TableHash.POP_PUSH);
+    NewElements.add("call");
+    createHashTable(null, 1, NewElements, null, TableHash.POP_PUSH);
     //Create the table for arguments for this vm translator
     //Crear la tabla de argumentos para esta traductor vm
     ArrayList<String> args = new ArrayList<>();
@@ -179,7 +194,7 @@ public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a
     args.add("that");
     args.add("temp");
     args.add("pointer");
-    CreateHashTable(null, 1, args, argsTable, null);
+    createHashTable(null, 1, args, argsTable, null);
   }
 //------------------------------------------------------
 // This method is used to create a hash table with the pre-determined elements
@@ -190,7 +205,7 @@ public enum TableHash{
     POP_PUSH
 }
 
-public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, TableHash AddToPreDefined) {
+public void createHashTable(String element, int SimpleOrMultiples, ArrayList<String> NewElements, HashMap<String, Integer> hashTable, TableHash AddToPreDefined) {
     if(hashTable == null && AddToPreDefined == null) {
         System.err.println("Error: Hash table is null and AddToPreDefined is null");
         return;
@@ -263,7 +278,7 @@ public void CreateHashTable(String element, int SimpleOrMultiples, ArrayList<Str
     return;
 }
 //-------------------------------------------------------
-public String GetNchars(String input, int n) {
+public String getNchars(String input, int n) {
     if (input == null) {
         System.out.println("Error: input string is null");
         return null;
@@ -282,7 +297,7 @@ public String GetNchars(String input, int n) {
     return input.substring(0, n);
 }
 //-------------------------------------------------------
-public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs, MutableTypeData<Integer>iEspecial) {
+public int compareWithHashTable(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, TableHash CompareWithPreDefined, boolean withArgs, MutableTypeData<Integer>iEspecial) {
     if(CharsNumToCompare_SRING_MORE_LONG <= 0){
         System.out.printf("Error\nDETAILS: Expected a long of string  > 0\n");
         return -1;
@@ -295,13 +310,13 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         int n;
         switch (CompareWithPreDefined) {
             case POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, iEspecial, true);
+                n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, iEspecial, true);
                 break;
             case Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, iEspecial, false);
+                n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, iEspecial, false);
                 break;
             case Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, iEspecial, false);
+                n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, iEspecial, false);
                break;
             default:
             n = -1;
@@ -311,23 +326,23 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
         else return 0;
     }
     else if(hashTableForCompare != null && CompareWithPreDefined == null){
-       int n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, iEspecial, withArgs);
+       int n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, iEspecial, withArgs);
        if(n != 0) return -1;
        else return 0;
     }
     else{
         int n;
-        n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, iEspecial, withArgs);
+        n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableForCompare, iEspecial, withArgs);
         if(n != 0){
             switch (CompareWithPreDefined) {
             case POP_PUSH:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, iEspecial, true);
+                n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTablePOP_PUSH, iEspecial, true);
                 break;
             case Arithmetics:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, iEspecial, false);
+                n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableArith, iEspecial, false);
                 break;
             case Booleans:
-                n = CompareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, iEspecial, false);
+                n = compareTableImplement(line, nLine, CharsNumToCompare_SRING_MORE_LONG, hashTableBool, iEspecial, false);
                break;
             default:
             n = -1;
@@ -342,11 +357,11 @@ public int CompareWithHashTable(String line, String nLine, int CharsNumToCompare
              //Valor especial, esto nunca deberia salir
 }
 //-------------------------------------------------------  
-public int CompareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, MutableTypeData<Integer> iEspecial, boolean withArgumets){
+public int compareTableImplement(String line, String nLine, int CharsNumToCompare_SRING_MORE_LONG, HashMap<String, Integer> hashTableForCompare, MutableTypeData<Integer> iEspecial, boolean withArgumets){
     if(line != null){
     // Get the first N characters of the input string
         // Obtener los primeros N caracteres de la cadena de entrada
-        String element = GetNchars(line, CharsNumToCompare_SRING_MORE_LONG);
+        String element = getNchars(line, CharsNumToCompare_SRING_MORE_LONG);
         if(element == null) return -1;
         if (hashTableForCompare.containsKey(element) && !withArgumets) {
             // Verificar que no haya caracteres inesperados después del  carácter
@@ -369,7 +384,7 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
             //Iterar hasta encontrar una conincidencia
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
-                element = GetNchars(element, sub);             
+                element = getNchars(element, sub);             
                 if(iEspecial != null) iEspecial.setValor(sub);
                 i++;
             }
@@ -403,38 +418,115 @@ public int CompareTableImplement(String line, String nLine, int CharsNumToCompar
     }
 }
 //-------------------------------------------------------
-public int CompareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int sensibleToUppercase, ArrayList<Character> Delimiters, Parser.MutableTypeData<Integer>LengthOfCommand, Parser.MutableTypeData<Integer>LengthOfArg){
+public int compareCommandsWithArg(String line, String nLine, CommandArgRule ArgsInputRule , int sensibleToUppercase, ArrayList<Character> Delimiters, Parser.MutableTypeData<Integer>LengthOfCommand, Parser.MutableTypeData<Integer>LengthOfArg){
 
-    //Verifica que no se usen ambos tipos de formato al mismo tiempo
-    //Check if is use both types of format to the same time
-    if (ArgsInputRule.multipleFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null || (ArgsInputRule.multipleFormatsPatterns == null && ArgsInputRule.formatPatternMostLong == null)) {
-        System.err.println("Error\nDETAILS: You can only select one: 'multipleFormatsPatterns' or 'formatPatternMostLong'\n");
-        return -1;
-    }
+
     if(LengthOfCommand == null || LengthOfArg == null){
         System.err.println("Error: Need put a arguemnts in the parameters 'LenghtOfCommand' and 'LengthOfArg'\n");
         return -1;
     }
-
-    // Validación para múltiples formatos
-    //If select multiples format, check this
-    if (ArgsInputRule.multipleFormatsPatterns != null) {
-        for (HashMap.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
-            String lessLong = entry.getKey();
-            String mostLong = entry.getValue();
-            if (lessLong == null || mostLong == null) {
-                System.err.printf("Error in format pattern: formatPatternMostLong: %s, formatPatternLessLong: %s\nDETAILS: All formats must define both a most long and less long pattern.\n", mostLong, lessLong);
-                return -1;
-            }
-        }
+    if(ArgsInputRule == null){
+        System.err.println("Error: Need put a arguemnts in the parameter 'ArgsInputRule'\n");
+        return -1;
+    }
+    //check if are an exception (ilegal instruction)
+    //revisar si es una exepción(instrucción no perimitda)
+    if(ArgsInputRule.exceptions != null){
+        int r = checkExcep(line, ArgsInputRule.exceptions);
+        if(r == -1) return -1;
+      if(r == 1){
+        System.out.printf("Error in the line %s\nThe instruction is an ilegal instruction find in this list %s\n", nLine, ArgsInputRule.exceptions);
+        return -1;
+      }
     }
 
-    // Validación para formato único
-    //Check if is just one format
-    if ((ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null) ||
-        (ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null)) {
-        System.err.printf("Error in format pattern:\nMost long: %s\nLess long: %s\nDETAILS: Both formatPatternMostLong and formatPatternLessLong must be defined.\n",
-                          ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
+    Parser p = new Parser();
+    Parser.MutableTypeData<Boolean>coincidence = p.new MutableTypeData<>(false);
+    String temp = "";
+    //validar si es un tipo especial de comando sin formato
+    //Check if its a comand withouth format
+    boolean isWithoutPattern = false;
+    if(ArgsInputRule.commandsWithoutPatterns != null){
+        String line2 = line.trim();
+        compareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
+        if(ArgsInputRule.commandsWithoutPatterns.contains(line2.substring(0, LengthOfCommand.getValor()))) isWithoutPattern = true;
+    }
+    //validar si es un tipo especial de comando con formato flexible
+    //check if its a speacial command with flexible format
+    boolean isFlexiblePattern = false;
+    if(ArgsInputRule.commandsWithFlexiblePattern != null && !isWithoutPattern){
+        String line2 = line.trim();
+        compareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
+        if(ArgsInputRule.commandsWithFlexiblePattern.contains(line2.substring(0, LengthOfCommand.getValor()))) isFlexiblePattern = true;
+    }
+    //if its a flexible pattern and without pattern, print an error
+    //Si es un patrón flexible y sin patrón, imprimir un error
+    if(isFlexiblePattern && isWithoutPattern){
+        String line2 = line.trim();
+        temp = line2.substring(0, LengthOfCommand.getValor());
+        System.err.printf("Error in the command %s\nDETAILS:The command can't match in both types of commands 'commandsWithoutPatterns' and 'commandsWithFlexiblePattern'\n",temp);
+        return -1;
+    }
+
+    // Si hay múltiples formatos, validar si la línea entra en alguno
+    //Check for multiples formats the line
+    if(!isFlexiblePattern && !isWithoutPattern) if(orchestratorForStrictFormat(line, nLine, ArgsInputRule, sensibleToUppercase, LengthOfCommand, LengthOfArg, coincidence) != 0) return -1;
+
+    ArrayList<Integer>indexSpecialChars = new ArrayList<>();
+    if(isFlexiblePattern) if(orchestratorForFlexibleFormat(line, nLine, ArgsInputRule, sensibleToUppercase, LengthOfCommand, LengthOfArg, coincidence, indexSpecialChars) != 0) return -1;
+    
+    boolean without = false;
+    boolean flexible = false;
+    
+    String newLine = line;
+    // Eliminar delimitadores
+    //Delete delimiters
+    if(Delimiters != null){
+    StringBuilder WithoutDel = new StringBuilder();
+    for (char c : line.toCharArray()) {
+        if (!Delimiters.contains(c)) WithoutDel.append(c);
+    }
+    newLine = WithoutDel.toString();
+ }
+    // Comparar comando
+    // Compare the comand
+
+    LengthOfCommand.setValor(0);
+    if (compareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true) != 0)  return -1;
+    if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
+    if(ArgsInputRule.commandsWithFlexiblePattern.contains(newLine.substring(0, LengthOfCommand.getValor()))) flexible = true;
+    if(without){
+            LengthOfArg.setValor(0);
+            return 2;
+    }
+    if(flexible){
+       if(!indexSpecialChars.isEmpty())LengthOfArg.setValor(newLine.substring(LengthOfCommand.getValor(), indexSpecialChars.get(indexSpecialChars.size()-1)).length());
+       else LengthOfArg.setValor(0); 
+       return 3;
+    }
+    // Comparar argumentos (lo que sobra después del comando)
+    //compare the arguments (the rest after the comand)
+    String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());
+    if (compareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfArg, true) != 0) {
+        return -1;
+    }
+
+    return 0;
+}
+//-------------------------------------------------------
+public int orchestratorForFlexibleFormat(String line,String nLine, CommandArgRule ArgsInputRule, int sensibleToUppercase, Parser.MutableTypeData<Integer>LengthOfCommand, Parser.MutableTypeData<Integer>LengthOfArg, MutableTypeData<Boolean>coincidence, ArrayList<Integer>indexSpecialChars) {
+    //Check the inputs
+    //Revisar las entradas
+    if (line == null) {
+        System.err.println("Error in the parameters, need put the line to check in 'line' parameter\n");
+        return -1;
+    }
+    if (ArgsInputRule == null) {
+        System.err.println("Error in the parameter, need put something in the 'ArgsInputRule'\n");
+        return -1;
+    }
+    if(ArgsInputRule.formatPatternFlexible == null && ArgsInputRule.multiplesFlexiblesFormatsPatterns == null){
+        System.err.println("Error in the parameter, need put something in the 'formatPatternFlexible' or 'multiplesFlexiblesFormatsPatterns'\n");
         return -1;
     }
     //Validacion para formatos flexibles
@@ -448,52 +540,10 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
         return -1;
     }
 
+    String temp = "";
 
     Parser p = new Parser();
-    Parser.MutableTypeData<Boolean>coincidence = p.new MutableTypeData<>(false);
-    String temp = "";
-    //validar si es un tipo especial de comando sin formato
-    //Check if its a comand withouth format
-    boolean isWithoutPattern = false;
-    if(ArgsInputRule.commandsWithoutPatterns != null){
-        String line2 = line.trim();
-        CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
-        if(ArgsInputRule.commandsWithoutPatterns.contains(line2.substring(0, LengthOfCommand.getValor()))) isWithoutPattern = true;
-    }
-    //validar si es un tipo especial de comando con formato flexible
-    //check if its a speacial command with flexible format
-    boolean isFlexiblePattern = false;
-    if(ArgsInputRule.commandsWithFlexiblePattern != null && !isWithoutPattern){
-        String line2 = line.trim();
-        CompareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
-        if(ArgsInputRule.commandsWithFlexiblePattern.contains(line2.substring(0, LengthOfCommand.getValor()))) isFlexiblePattern = true;
-    }
-    if(isFlexiblePattern && isWithoutPattern){
-        String line2 = line.trim();
-        temp = line2.substring(0, LengthOfCommand.getValor());
-        System.err.printf("Error in the command %s\nDETAILS:The command can't match in both types of commands 'commandsWithoutPatterns' and 'commandsWithFlexiblePattern'\n",temp);
-        return -1;
-    }
-    // Si hay múltiples formatos, validar si la línea entra en alguno
-    //Check for multiples formats the line
-    if(!isFlexiblePattern && !isWithoutPattern && ArgsInputRule.multipleFormatsPatterns != null){
-         if(checkStrictFormat(line, ArgsInputRule.multipleFormatsPatterns, null, null, null, coincidence, sensibleToUppercase) != 0) return -1;
-       if(!coincidence.getValor()){
-        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s'\n", nLine, ArgsInputRule.multipleFormatsPatterns);
-        return -1;
-     }
-    }
-    // Validar con formato único
-    //Check for singular format the line
-    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null && !isWithoutPattern && !isFlexiblePattern){
-         if(checkStrictFormat(line, null, ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong, coincidence, null, sensibleToUppercase) != 0) return -1;
-     if(!coincidence.getValor()){
-        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s' and '%s'\n", nLine, ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
-        return -1;
-     }
-    }
-    ArrayList<Integer>indexSpecialChars = new ArrayList<>();
-    if(ArgsInputRule.formatPatternFlexible != null && isFlexiblePattern){
+    if(ArgsInputRule.formatPatternFlexible != null){
         Parser.MutableTypeData<String> formatOfline = p.new MutableTypeData<>("");
         Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>(ArgsInputRule.formatPatternFlexible);
        if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat,ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, ArgsInputRule.theLineAreInTheFormatExpected) != 0) return -1;
@@ -514,53 +564,83 @@ public int CompareCommandsWithArg(String line, String nLine, CommandArgRule Args
         return -1;
        }
     }
-    boolean without = false;
-    boolean flexible = false;
-    //check if are an exception (ilegal instruction)
-    //revisar si es una exepción(instrucción no perimitda)
-    if(ArgsInputRule.exceptions != null){
-        int r = checkExcep(line, ArgsInputRule.exceptions);
-        if(r == -1) return -1;
-      if(r == 1){
-        System.out.printf("Error in the line %s\nThe instruction is an ilegal instruction find in this list %s\n", nLine, ArgsInputRule.exceptions);
+    else if(ArgsInputRule.multiplesFlexiblesFormatsPatterns!= null){
+        Parser.MutableTypeData<String> formatOfline = p.new MutableTypeData<>("");
+        Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>("");
+        if(checkFlexibleFormat(line, formatOfline, formatOfPattern, ArgsInputRule.multiplesFlexiblesFormatsPatterns, null, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, ArgsInputRule.theLineAreInTheFormatExpected) != 0) return -1;
+        temp = line.substring(0, LengthOfCommand.getValor());
+       if(!coincidence.getValor() && ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){
+        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.mapForFlexible, ArgsInputRule.stopForFlexibleForConflicts, ArgsInputRule.ORgateForFlexible)!= 0) return -1;
+       else{
+       if(checkFlexibleFormat(formatOfline.getValor(), formatOfline, formatOfPattern, ArgsInputRule.multiplesFlexiblesFormatsPatterns, null, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars,true) != 0) return -1;
+       if(!coincidence.getValor()){
+       System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
         return -1;
-      }
+          }
+       } 
     }
-    String newLine = line;
-    // Eliminar delimitadores
-    //Delete delimiters
-    if(Delimiters != null){
-    StringBuilder WithoutDel = new StringBuilder();
-    for (char c : line.toCharArray()) {
-        if (!Delimiters.contains(c)) WithoutDel.append(c);
+    else if(!coincidence.getValor()&& !ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){
+       System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
+        return -1;
+       }
     }
-    newLine = WithoutDel.toString();
+    
+    return 0;
 }
-    // Comparar comando
-    // Compare the comand
+//-------------------------------------------------------
+public int orchestratorForStrictFormat(String line, String nLine, CommandArgRule ArgsInputRule, int sensibleToUppercase, Parser.MutableTypeData<Integer>LengthOfCommand, Parser.MutableTypeData<Integer>LengthOfArg, MutableTypeData<Boolean>coincidence) {
+    // This method is used to orchestrate the strict format checking
+    // Este método se utiliza para orquestar la verificación del formato estricto
 
-    LengthOfCommand.setValor(0);
-    if (CompareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true) != 0)  return -1;
-    if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
-    if(ArgsInputRule.commandsWithFlexiblePattern.contains(newLine.substring(0, LengthOfCommand.getValor()))) flexible = true;
-    if(without){
-
-            LengthOfArg.setValor(0);
-            return 2;
-
-    }
-    if(flexible){
-       if(!indexSpecialChars.isEmpty())LengthOfArg.setValor(newLine.substring(LengthOfCommand.getValor(), indexSpecialChars.get(indexSpecialChars.size()-1)).length());
-       else LengthOfArg.setValor(0); 
-       return 3;
-    }
-    // Comparar argumentos (lo que sobra después del comando)
-    //compare the arguments (the rest after the comand)
-    String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());
-    if (CompareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfArg, true) != 0) {
+    // Check the inputs
+    if (line == null) {
+        System.err.println("Error in the parameters, need put the line to check in 'line' parameter");
         return -1;
     }
-
+    //Verifica que no se usen ambos tipos de formato al mismo tiempo
+    //Check if is use both types of format to the same time
+    if (ArgsInputRule.multipleFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null || (ArgsInputRule.multipleFormatsPatterns == null && ArgsInputRule.formatPatternMostLong == null)) {
+        System.err.println("Error\nDETAILS: You can only select one: 'multipleFormatsPatterns' or 'formatPatternMostLong' && 'formatPatternLessLong'\n");
+        return -1;
+    }
+    // Validación para múltiples formatos
+    //If select multiples format, check this
+    if (ArgsInputRule.multipleFormatsPatterns != null) {
+        for (HashMap.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
+            String lessLong = entry.getKey();
+            String mostLong = entry.getValue();
+            if (lessLong == null || mostLong == null) {
+                System.err.printf("Error in format pattern: formatPatternMostLong: %s, formatPatternLessLong: %s\nDETAILS: All formats must define both a most long and less long pattern.\n", mostLong, lessLong);
+                return -1;
+            }
+        }
+    }
+    // Validación para formato único
+    //Check if is just one format
+    if ((ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null) ||
+        (ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null)) {
+        System.err.printf("Error in format pattern:\nMost long: %s\nLess long: %s\nDETAILS: Both formatPatternMostLong and formatPatternLessLong must be defined.\n",
+                          ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
+        return -1;
+    }
+    // Si hay múltiples formatos, validar si la línea entra en alguno
+    //Check for multiples formats the line
+    if(ArgsInputRule.multipleFormatsPatterns != null){
+         if(checkStrictFormat(line, ArgsInputRule.multipleFormatsPatterns, null, null, null, coincidence, sensibleToUppercase) != 0) return -1;
+       if(!coincidence.getValor()){
+        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s'\n", nLine, ArgsInputRule.multipleFormatsPatterns);
+        return -1;
+     }
+    }
+    // Validar con formato único
+    //Check for singular format the line
+    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null){
+         if(checkStrictFormat(line, null, ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong, coincidence, null, sensibleToUppercase) != 0) return -1;
+     if(!coincidence.getValor()){
+        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s' and '%s'\n", nLine, ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
+        return -1;
+     }
+    }
     return 0;
 }
 //-------------------------------------------------------
@@ -577,10 +657,10 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
     //Check for multiples formats the line
     boolean coincidence = false;
     if (multiplesPatterns != null) {
-        double linePattern= identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
+        int linePattern= identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
         for (HashMap.Entry<String, String> entry : multiplesPatterns.entrySet()) {
-            double mostLong = identifyTheStrictFormat(entry.getKey(), sensibleToUppercase);
-            double lessLong = identifyTheStrictFormat(entry.getValue(), sensibleToUppercase);
+            int mostLong = identifyTheStrictFormat(entry.getKey(), sensibleToUppercase);
+            int lessLong = identifyTheStrictFormat(entry.getValue(), sensibleToUppercase);
             if (linePattern >= lessLong && linePattern <= mostLong) {
                 coincidence = true;
                 if(matchWithMultiples != null) matchWithMultiples.setValor(true);
@@ -590,9 +670,9 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
         if(!coincidence) if(matchWithMultiples != null) matchWithMultiples.setValor(false);
     }
     if(singlePatternMostLong != null && singlePatternLessLong != null){
-        double mostLong = identifyTheStrictFormat(singlePatternMostLong, sensibleToUppercase);
-        double lessLong= identifyTheStrictFormat(singlePatternLessLong, sensibleToUppercase);
-        double linePattern = identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
+        int mostLong = identifyTheStrictFormat(singlePatternMostLong, sensibleToUppercase);
+        int lessLong= identifyTheStrictFormat(singlePatternLessLong, sensibleToUppercase);
+        int linePattern = identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
 
         if (!(linePattern >= lessLong && linePattern <= mostLong)) {
             if(matchWithSingle != null)matchWithSingle.setValor(false);
@@ -757,7 +837,7 @@ public int checkExcep(String lineToCheck, ArrayList<String>exceptions){
       for(String excep : exceptions){
             int siz = excep.length();
             String forComprobate = lineToCheck;
-             forComprobate = GetNchars(forComprobate, siz);
+             forComprobate = getNchars(forComprobate, siz);
             if(exceptions.contains(forComprobate)){
                 return 1;
             }
@@ -966,22 +1046,20 @@ public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, A
     formatForIdentify.setValor(sb.toString());
 }
 //-------------------------------------------------------
-private double identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
-double n = 0; //Get the format in a integer number
+private int identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
+ int n = 0; //Get the format in a integer number
             //Obtener el formato en un número entero
 
-//iterate until the end of the FormatExample
-//Recorrer la cadena FormatExample
-int characterValueBefore = 0;
+ //iterate until the end of the FormatExample
+ //Recorrer la cadena FormatExample
+ int characterValueBefore = 0;
+
         for (int i = 0; i < FormatExample.length(); i++) {
         char actualChar = FormatExample.charAt(i);
             int characterValue = identifyTypeIntOrChar(actualChar, sensibleToUppercase);
-            double merchCharacter = i/((i*2)+1); //para dividir el caracter actual por su indice multiplicado por 2, +1
-            double x = (i+((characterValue*2)+characterValueBefore))*merchCharacter;
-            //in both operations sum +1 because this function for convert pairs nums to inpairs nums, and inpairs nums to pairs nums, and the multiply help, because if the num are pairs or inpairs affected, because pair*pair=pair
-            //en ambas operaciones suma +1 porque esto funciona para convertir numeros pares a impares y viceversa, y la multiplicacion ayuda, porque si el numero es par o no par afecta, porque par*par=par
-             if(characterValue == 1 || characterValue == 2 || characterValue == 3 || characterValue == 4)n+= ((((i+1)*i+x)*merchCharacter)*characterValue)+1; 
-             else n += (((i+1)*i+x)*merchCharacter)+1;//integral f(x)*dx == ((i+1)*i+x)*dx)
+            // sum +1 because this function for convert pairs nums to inpairs nums, and inpairs nums to pairs nums, and the multiply help, because if the num are pairs or inpairs affected, because pair*pair=pair
+            // suma +1 porque esto funciona para convertir numeros pares a impares y viceversa, y la multiplicacion ayuda, porque si el numero es par o no par afecta, porque par*par=par
+             n+= ((characterValue+characterValueBefore)*i+1)%Integer.MAX_VALUE;
             characterValueBefore = characterValue;
             }
  return n;

@@ -894,7 +894,7 @@ public int trateSpecialsStrings(ArrayList<String> lineToidentify, String inputFi
             if (lineToidentify.contains(withoutSpaces.toString())) {
                 int indexOfSpace = newLine.indexOf(" ");
                 if (indexOfSpace != -1) {
-                    newLine.setCharAt(indexOfSpace, '^');
+                    newLine.setCharAt(indexOfSpace, '~');
                 }
             }
 

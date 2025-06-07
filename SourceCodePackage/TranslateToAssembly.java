@@ -184,28 +184,30 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         //identify the type of command
         //identificar el tipo de comando
         sintaxParsing n  = new sintaxParsing();
-        n.HashTablePreDet();
+        n.hashTablePreDet();
         boolean withoutPattern = false;
         if(argCommand != null) argCommand.setValor(false);
-        if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Booleans, false, lengthofCommand) != 0){
+        if(n.compareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Booleans, false, lengthofCommand) != 0){
             if(BoolCommand != null)BoolCommand.setValor(false);
             //if has been commands with args
             //si tiene comandos con argumetos
-            if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && withArgsCommands){
+            if(n.compareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && withArgsCommands){
                 ArrayList<String>commandswithoutFormat = new ArrayList<>();
                 commandswithoutFormat.add("label");
                 commandswithoutFormat.add("goto");
                 commandswithoutFormat.add("if-goto");
+                commandswithoutFormat.add("call");
+                commandswithoutFormat.add("function");
                    int f = 0;
                 CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 7, 8, "pushconstant-32768", "popthis0", null, null, commandswithoutFormat);
-                if((f = n.CompareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg)) != 0 && f != 2) return null;
+                if((f = n.compareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg)) != 0 && f != 2) return null;
                 else if(argCommand != null)argCommand.setValor(true);
                 if(f == 2) withoutPattern = true;
                 
             }
-            else if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && !withArgsCommands) return null;
+            else if(n.compareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Arithmetics, false, lengthofCommand) != 0 && !withArgsCommands) return null;
         }
-        else if(n.CompareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Booleans, true, lengthofCommand) == 0 && BoolCommand != null) BoolCommand.setValor(true);
+        else if(n.compareWithHashTable(line, nLine, 4, null, sintaxParsing.TableHash.Booleans, true, lengthofCommand) == 0 && BoolCommand != null) BoolCommand.setValor(true);
         //return the value of command in the hash map
         //devolver el valor de el comando en la tabla hash
         String command = line;
