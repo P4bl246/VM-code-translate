@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.*;
 
+
 public class sintaxParsing {
 // This class is used to parse the file and check the syntax
 // Esta clase se utiliza para analizar el archivo y verificar la sintaxis
@@ -67,6 +68,7 @@ public int parser_Sintaxis(String File_in) {
     ArrayList<String>withoutPatternButWithivalue = new ArrayList<>();
     withoutPatternButWithivalue.add("function");
     withoutPatternButWithivalue.add("call");
+    
     ArrayList<Character>specials = new ArrayList<>();
     specials.add('~');
     Map<Character, Integer> removeAllAppearsOfThisChars = new HashMap<>();
@@ -74,9 +76,7 @@ public int parser_Sintaxis(String File_in) {
         removeAllAppearsOfThisChars.put('L', 0);
         removeAllAppearsOfThisChars.put('P', 0);
         removeAllAppearsOfThisChars.put('W', 0);
-        /*hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, 
-        withoutPatternButWithivalue, "W|N|L|PSN", null, 
-     specials, true, withoutPatternButWithivalue, '|', '~', removeAllAppearsOfThisChars, 'S', false*/
+        
     CommandArgRule argsCommands = new CommandArgRule.Builder()
     .setCommandTable(hashTablePOP_PUSH)
     .setArgTable(argsTable)
@@ -102,13 +102,26 @@ public int parser_Sintaxis(String File_in) {
 
     hashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
+    int function = 0; // Variable to check if the command is a function
+                              // Variable para verificar si el comando es una función
+    HashMap<String, Integer> others = new HashMap<>();
+    createHashTable("function", 0, null, others, null);
+
     while(true) {
         nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null);
         if(nLine.equals(""))break;
         Parser.MutableTypeData<Boolean> contains = parserf.new MutableTypeData<>(false);
         line = parserf.get(readFilein, Parser.Readmode.CompletelyLine, '0', null, contains);
         if(line.equals("") && !contains.getValor()) break;
+        
         Parser.MutableTypeData<Integer> i =  parserf.new MutableTypeData<>(0);
+        if(function != 0){
+            n = compareWithHashTable(line, nLine, 8, others, null, false, i);
+            if(n == 0){
+                function--;
+                continue;
+            }
+        }
         n = compareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false, i);
         if (n != 0){
           n= compareWithHashTable(line, nLine, 3, null, TableHash.Booleans, false, i);
@@ -141,6 +154,7 @@ public int parser_Sintaxis(String File_in) {
                 System.err.printf("Error in the line %s\nDETAILS: The command '%s' must have arguments\n", nLine, line.substring(0, LengthOfCommand.getValor()));
                 return -1;
             }
+            if(line.substring(0, LengthOfCommand.getValor()).equals("function")) function++;
           } 
             continue;
           }
@@ -148,7 +162,10 @@ public int parser_Sintaxis(String File_in) {
           }
           continue;
      }
-     
+     if(function != 0){
+        System.err.printf("Error in the line %s\nDETAILS:Arrive to the EOF and not found the key word 'return' for function %i\n", nLine, function);
+        return -1;
+    }
     }
     catch (FileNotFoundException e) {
         System.out.println("File not found: " + File_in);
@@ -161,6 +178,7 @@ public int parser_Sintaxis(String File_in) {
         System.out.println("Error details: " + e.getMessage());
         return -1;
     }
+    
     try{parserf.removeNLine(File_in, ' ');}
     catch (ParsingException e){
         System.out.println("Error removing line numbers from file: " + File_in);
@@ -181,6 +199,7 @@ public HashMap<String, Integer> hashTableBool = new HashMap<>(); // Create a has
 
 public HashMap<String, Integer> hashTablePOP_PUSH = new HashMap<>(); // Create a hash table for functions
                                                                     // Crear una tabla hash para funciones
+                
 //constructor function for create the PreDeterminate hash tables
 // función constructora para crear las tablas hash predefinidas
   public void hashTablePreDet(){

@@ -403,7 +403,7 @@ public int removeBlockComments(ReadmodeBlock mode, String Read_File_in, String D
    }
   if (delimiterEnd == null) {
     throw new ParsingException("Error: The 'delimiterEnd' parameter is null, need be a String with the end of block comment");
-}
+  }
     line5.setValor(null);
     String nLine = null;
     try (BufferedReader ReadFile = new BufferedReader(new FileReader(Read_File_in));

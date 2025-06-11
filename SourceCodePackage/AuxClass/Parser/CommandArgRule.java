@@ -137,6 +137,7 @@ public static class Builder{
     private boolean theLineAreInTheFormatExpected = false;
 
     //setters for the builder
+
     public Builder setFormatPatternMostLong(String formatPatternMostLong){
                 this.formatPatternMostLong = formatPatternMostLong;
                 return this;
