@@ -6,7 +6,7 @@ public class TranslateToAssembly {
 public int transalte(String file_in){
     System.out.println("\nGENERATING ASSEMBLY FILE...\n");
     Parser function = new Parser();
-    function.RemoveVoidChars(file_in, null);
+    function.removeVoidChars(file_in, null);
     int n;
     ArrayList<String>commands = new ArrayList<>();
     ArrayList<String>representationAssembly = new ArrayList<>();
@@ -123,8 +123,16 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("goto");
     representationAssembly.add("\n//goto command\n@LBL\n0;JMP\n");
     commands.add("if-goto");
-    representationAssembly.add("\n//if-goto command\n@SP\nA=M-1\nD=M\n@LBL\nD;JGT\n");
+    representationAssembly.add("\n//if-goto command\n@SP\nA=M-1\nD=M-1\n@LBL\nD;JEQ\n");
+    commands.add("call");
+    representationAssembly.add("\n/*push return address\n*code after the 'call'*/\n@RLBe\nD=A\n@SP\nA=M\nA=D\n@SP\nM=M+1\n"+
+                    "//push LCL pointer value\n@LCL\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
+                    "//push ARG pointer value\n@ARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
+                    "//push THIS pointer value\n@THIS\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
+                    "//push THAT pointer value\n@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n(NAME_F$ret.numberI)\n@RPCFN\n0;JMP\n");
     
+    commands.add("function");
+    representationAssembly.add("\n//FCM\n(RNMF)\n");
     //constant code
     //codigo constante
     constantsC.add("\nt\n@SP\nA=M-1\nA=A-1\nM=1\n@SP\nM=M-1\n@SP\nA=M\nM=0\n/\nf\n@SP\nA=M\nM=0\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");
@@ -199,7 +207,15 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
                 commandswithoutFormat.add("call");
                 commandswithoutFormat.add("function");
                    int f = 0;
-                CommandArgRule argsCommands = new CommandArgRule(n.hashTablePOP_PUSH, n.argsTable, 7, 8, "pushconstant-32768", "popthis0", null, null, commandswithoutFormat);
+            //n.hashTablePOP_PUSH, n.argsTable, 7, 8, "pushconstant-32768", "popthis0", null, null, commandswithoutFormat
+                CommandArgRule argsCommands = new CommandArgRule.Builder()
+                .setCommandTable(n.hashTablePOP_PUSH)
+                .setArgTable(n.argsTable)
+                .setLengthOfCommand(7)
+                .setLengthOfArg(8)
+                .setCommandWithArgs("pushconstant-32768")
+                .setPopCommand("popthis0")
+                .setCommandsWithoutFormat(commandswithoutFormat);
                 if((f = n.compareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg)) != 0 && f != 2) return null;
                 else if(argCommand != null)argCommand.setValor(true);
                 if(f == 2) withoutPattern = true;

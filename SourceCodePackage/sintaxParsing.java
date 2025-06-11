@@ -1,7 +1,6 @@
 
 import AuxClass.Parser.*; // Import the Parser class from the AuxCLass.Parser package
-                            // Importar la clase Parser del paquete AuxCLass.Parser
-                            import AuxClass.Parser.Parser.MutableTypeData;
+import AuxClass.Parser.Parser.MutableTypeData;
 
 import java.util.ArrayList; // Import the ArrayList class from the java.util package
                            // Importar la clase ArrayList del paquete java.util
@@ -52,8 +51,9 @@ public int parser_Sintaxis(String File_in) {
     System.out.println("\nSTARTS THE SINTAX PARSING PROCESS\n");
     int n;
     Parser parserf = new Parser();
-    parserf.NumLines(File_in);
+    
     try(BufferedReader readFilein = new BufferedReader(new FileReader(File_in))) {
+    parserf.numLines(File_in);
     String line;
     String nLine;
     //Starts the sintx parsing
@@ -74,11 +74,31 @@ public int parser_Sintaxis(String File_in) {
         removeAllAppearsOfThisChars.put('L', 0);
         removeAllAppearsOfThisChars.put('P', 0);
         removeAllAppearsOfThisChars.put('W', 0);
-
-    CommandArgRule argsCommands = new CommandArgRule(hashTablePOP_PUSH, argsTable, 8, 8, 
-    "pushconstant-32768", "popthis0", null, excep, withouthPattern, 
-    withoutPatternButWithivalue, "W|N|L|PSN", null, 
-    specials, true, withoutPatternButWithivalue, '|', '~', removeAllAppearsOfThisChars, 'S', false);
+        /*hashTablePOP_PUSH, argsTable, 8, 8, "pushconstant-32768", "popthis0", null, excep, withouthPattern, 
+        withoutPatternButWithivalue, "W|N|L|PSN", null, 
+     specials, true, withoutPatternButWithivalue, '|', '~', removeAllAppearsOfThisChars, 'S', false*/
+    CommandArgRule argsCommands = new CommandArgRule.Builder()
+    .setCommandTable(hashTablePOP_PUSH)
+    .setArgTable(argsTable)
+    .setCommandLength(8)
+    .setArgLength(8)
+    .setFormatPatternMostLong("pushconstant-32768")
+    .setFormatPatternLessLong("popthis0")
+    .setExceptions(excep)
+    .setCommandsWithoutPatterns(withouthPattern)
+    .setCommandsWithFlexiblePattern(withoutPatternButWithivalue)
+    .setFormatPatternFlexible("W|N|L|PSN")
+    .setMultiplesFlexiblesFormatsPatterns(null) // Set to null if not using multiple flexible formats
+    .setSpecialCharsForIdentifyInTheFlexibleFormat(specials)
+    .setORgateForFlexible('|')
+    .setThePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns(true)
+    .setTheLineAreInTheFormatExpected(false)
+    .setMapForFlexible(removeAllAppearsOfThisChars)
+    .setStopForFlexibleForConflicts('S')
+    .setStopForFlexible('~')
+    .setCommandsWithFlexiblePatternForResultConflicts(withoutPatternButWithivalue)
+    .build(); // Create the command argument rule with the specified parameters
+              // Crear la regla de argumentos de comando con los parámetros especificados
 
     hashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
@@ -136,8 +156,17 @@ public int parser_Sintaxis(String File_in) {
     } catch (IOException e) {
         System.out.println("Error reading file: " + File_in);
         return -1;
+    } catch(ParsingException e){
+        System.out.println("Parsing error in file: " + File_in);
+        System.out.println("Error details: " + e.getMessage());
+        return -1;
     }
-    parserf.RemoveNLine(File_in, ' ');
+    try{parserf.removeNLine(File_in, ' ');}
+    catch (ParsingException e){
+        System.out.println("Error removing line numbers from file: " + File_in);
+        System.out.println("Error details: " + e.getMessage());
+        return -1;
+    }
     System.out.println("\nSINTAX PARSING COMPLETELY WITHOUT ERRORS\n");
     return 0;
 }
@@ -431,11 +460,11 @@ public int compareCommandsWithArg(String line, String nLine, CommandArgRule Args
     }
     //check if are an exception (ilegal instruction)
     //revisar si es una exepción(instrucción no perimitda)
-    if(ArgsInputRule.exceptions != null){
-        int r = checkExcep(line, ArgsInputRule.exceptions);
+    if(ArgsInputRule.getExceptions() != null){
+        int r = checkExcep(line, ArgsInputRule.getExceptions());
         if(r == -1) return -1;
       if(r == 1){
-        System.out.printf("Error in the line %s\nThe instruction is an ilegal instruction find in this list %s\n", nLine, ArgsInputRule.exceptions);
+        System.out.printf("Error in the line %s\nThe instruction is an ilegal instruction find in this list %s\n", nLine, ArgsInputRule.getExceptions());
         return -1;
       }
     }
@@ -446,18 +475,18 @@ public int compareCommandsWithArg(String line, String nLine, CommandArgRule Args
     //validar si es un tipo especial de comando sin formato
     //Check if its a comand withouth format
     boolean isWithoutPattern = false;
-    if(ArgsInputRule.commandsWithoutPatterns != null){
+    if(ArgsInputRule.getCommandsWithoutPatterns() != null){
         String line2 = line.trim();
-        compareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
-        if(ArgsInputRule.commandsWithoutPatterns.contains(line2.substring(0, LengthOfCommand.getValor()))) isWithoutPattern = true;
+        compareTableImplement(line2, nLine, ArgsInputRule.getCommandLength(), ArgsInputRule.getCommandTable(), LengthOfCommand, true);
+        if(ArgsInputRule.getCommandsWithoutPatterns().contains(line2.substring(0, LengthOfCommand.getValor()))) isWithoutPattern = true;
     }
     //validar si es un tipo especial de comando con formato flexible
     //check if its a speacial command with flexible format
     boolean isFlexiblePattern = false;
-    if(ArgsInputRule.commandsWithFlexiblePattern != null && !isWithoutPattern){
+    if(ArgsInputRule.getCommandsWithFlexiblePattern() != null && !isWithoutPattern){
         String line2 = line.trim();
-        compareTableImplement(line2, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true);
-        if(ArgsInputRule.commandsWithFlexiblePattern.contains(line2.substring(0, LengthOfCommand.getValor()))) isFlexiblePattern = true;
+        compareTableImplement(line2, nLine, ArgsInputRule.getCommandLength(), ArgsInputRule.getCommandTable(), LengthOfCommand, true);
+        if(ArgsInputRule.getCommandsWithFlexiblePattern().contains(line2.substring(0, LengthOfCommand.getValor()))) isFlexiblePattern = true;
     }
     //if its a flexible pattern and without pattern, print an error
     //Si es un patrón flexible y sin patrón, imprimir un error
@@ -492,9 +521,9 @@ public int compareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Compare the comand
 
     LengthOfCommand.setValor(0);
-    if (compareTableImplement(newLine, nLine, ArgsInputRule.commandLength, ArgsInputRule.commandTable, LengthOfCommand, true) != 0)  return -1;
-    if(ArgsInputRule.commandsWithoutPatterns.contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
-    if(ArgsInputRule.commandsWithFlexiblePattern.contains(newLine.substring(0, LengthOfCommand.getValor()))) flexible = true;
+    if (compareTableImplement(newLine, nLine, ArgsInputRule.getCommandLength(), ArgsInputRule.getCommandTable(), LengthOfCommand, true) != 0)  return -1;
+    if(ArgsInputRule.getCommandsWithoutPatterns().contains(newLine.substring(0, LengthOfCommand.getValor()))) without = true;
+    if(ArgsInputRule.getCommandsWithFlexiblePattern().contains(newLine.substring(0, LengthOfCommand.getValor()))) flexible = true;
     if(without){
             LengthOfArg.setValor(0);
             return 2;
@@ -507,7 +536,7 @@ public int compareCommandsWithArg(String line, String nLine, CommandArgRule Args
     // Comparar argumentos (lo que sobra después del comando)
     //compare the arguments (the rest after the comand)
     String remainingNewLine = newLine.substring(LengthOfCommand.getValor(), newLine.length());
-    if (compareTableImplement(remainingNewLine, nLine, ArgsInputRule.argLength, ArgsInputRule.argTable, LengthOfArg, true) != 0) {
+    if (compareTableImplement(remainingNewLine, nLine, ArgsInputRule.getArgLength(), ArgsInputRule.getArgTable(), LengthOfArg, true) != 0) {
         return -1;
     }
 
@@ -525,17 +554,17 @@ public int orchestratorForFlexibleFormat(String line,String nLine, CommandArgRul
         System.err.println("Error in the parameter, need put something in the 'ArgsInputRule'\n");
         return -1;
     }
-    if(ArgsInputRule.formatPatternFlexible == null && ArgsInputRule.multiplesFlexiblesFormatsPatterns == null){
+    if(ArgsInputRule.getFormatPatternFlexible() == null && ArgsInputRule.getMultiplesFlexiblesFormatsPatterns() == null){
         System.err.println("Error in the parameter, need put something in the 'formatPatternFlexible' or 'multiplesFlexiblesFormatsPatterns'\n");
         return -1;
     }
     //Validacion para formatos flexibles
     //Check for flexibles formats patterns
-    if(ArgsInputRule.commandsWithFlexiblePattern != null && (ArgsInputRule.formatPatternFlexible == null && ArgsInputRule.multiplesFlexiblesFormatsPatterns == null)){
+    if(ArgsInputRule.getCommandsWithFlexiblePattern() != null && (ArgsInputRule.getFormatPatternFlexible() == null && ArgsInputRule.getMultiplesFlexiblesFormatsPatterns() == null)){
         System.err.println("Error in the format flexible commands arguments\nDETAILS: If you have commands with flexible patterns, need put something in 'formatpatternflexible' or 'multiplesFlexiblesFormatsPatterns'\n");
         return -1;
     }
-    if(ArgsInputRule.commandsWithFlexiblePattern != null && (ArgsInputRule.commandsWithFlexiblePattern != null && ArgsInputRule.multiplesFlexiblesFormatsPatterns != null)){
+    if(ArgsInputRule.getCommandsWithFlexiblePattern() != null && (ArgsInputRule.getCommandsWithFlexiblePattern() != null && ArgsInputRule.getMultiplesFlexiblesFormatsPatterns() != null)){
         System.err.println("Error in the flexibles formats patterns arguments\nDETAILS: Just can select one theme for use\n");
         return -1;
     }
@@ -543,43 +572,43 @@ public int orchestratorForFlexibleFormat(String line,String nLine, CommandArgRul
     String temp = "";
 
     Parser p = new Parser();
-    if(ArgsInputRule.formatPatternFlexible != null){
+    if(ArgsInputRule.getFormatPatternFlexible() != null){
         Parser.MutableTypeData<String> formatOfline = p.new MutableTypeData<>("");
-        Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>(ArgsInputRule.formatPatternFlexible);
-       if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat,ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, ArgsInputRule.theLineAreInTheFormatExpected) != 0) return -1;
+        Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>(ArgsInputRule.getFormatPatternFlexible());
+       if(checkFlexibleFormat(line, formatOfline, formatOfPattern, null, ArgsInputRule.getFormatPatternFlexible(), ArgsInputRule.getSpecialCharsForIdentifyInTheFlexibleFormat(),ArgsInputRule.getORgateForFlexible(), coincidence, null, sensibleToUppercase, ArgsInputRule.getThePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns(), indexSpecialChars, ArgsInputRule.getTheLineAreInTheFormatExpected()) != 0) return -1;
         temp = line.substring(0, LengthOfCommand.getValor());
-       if(!coincidence.getValor() && ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){ 
+       if(!coincidence.getValor() && ArgsInputRule.getCommandsWithFlexiblePatternForResultConflicts().contains(temp)){ 
         
-        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.mapForFlexible, ArgsInputRule.stopForFlexibleForConflicts, ArgsInputRule.ORgateForFlexible)!= 0) return -1;
+        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.getMapForFlexible(), ArgsInputRule.getStopForFlexibleForConflicts(), ArgsInputRule.getORgateForFlexible())!= 0) return -1;
        else{
-       if(checkFlexibleFormat(formatOfline.getValor(), formatOfline, formatOfPattern, null, ArgsInputRule.formatPatternFlexible, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, true) != 0) return -1;
+       if(checkFlexibleFormat(formatOfline.getValor(), formatOfline, formatOfPattern, null, ArgsInputRule.getFormatPatternFlexible(), ArgsInputRule.getSpecialCharsForIdentifyInTheFlexibleFormat(), ArgsInputRule.getORgateForFlexible(), coincidence, null, sensibleToUppercase, ArgsInputRule.getThePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns(), indexSpecialChars, true) != 0) return -1;
        if(!coincidence.getValor()){
        System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
         return -1;
           }
        } 
     }
-    else if(!coincidence.getValor()&& !ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){
+    else if(!coincidence.getValor()&& !ArgsInputRule.getCommandsWithFlexiblePatternForResultConflicts().contains(temp)){
        System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
         return -1;
        }
     }
-    else if(ArgsInputRule.multiplesFlexiblesFormatsPatterns!= null){
+    else if(ArgsInputRule.getMultiplesFlexiblesFormatsPatterns()!= null){
         Parser.MutableTypeData<String> formatOfline = p.new MutableTypeData<>("");
         Parser.MutableTypeData<String> formatOfPattern = p.new MutableTypeData<>("");
-        if(checkFlexibleFormat(line, formatOfline, formatOfPattern, ArgsInputRule.multiplesFlexiblesFormatsPatterns, null, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars, ArgsInputRule.theLineAreInTheFormatExpected) != 0) return -1;
+        if(checkFlexibleFormat(line, formatOfline, formatOfPattern, ArgsInputRule.getMultiplesFlexiblesFormatsPatterns(), null, ArgsInputRule.getSpecialCharsForIdentifyInTheFlexibleFormat(), ArgsInputRule.getORgateForFlexible(), coincidence, null, sensibleToUppercase, ArgsInputRule.getThePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns(), indexSpecialChars, ArgsInputRule.getTheLineAreInTheFormatExpected()) != 0) return -1;
         temp = line.substring(0, LengthOfCommand.getValor());
-       if(!coincidence.getValor() && ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){
-        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.mapForFlexible, ArgsInputRule.stopForFlexibleForConflicts, ArgsInputRule.ORgateForFlexible)!= 0) return -1;
+       if(!coincidence.getValor() && ArgsInputRule.getCommandsWithFlexiblePatternForResultConflicts().contains(temp)){
+        if(resolveConflicts(formatOfline, formatOfPattern.getValor(),ArgsInputRule.getMapForFlexible(), ArgsInputRule.getStopForFlexibleForConflicts(), ArgsInputRule.getORgateForFlexible())!= 0) return -1;
        else{
-       if(checkFlexibleFormat(formatOfline.getValor(), formatOfline, formatOfPattern, ArgsInputRule.multiplesFlexiblesFormatsPatterns, null, ArgsInputRule.specialCharsForIdentifyInTheFlexibleFormat, ArgsInputRule.ORgateForFlexible, coincidence, null, sensibleToUppercase, ArgsInputRule.thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns, indexSpecialChars,true) != 0) return -1;
+       if(checkFlexibleFormat(formatOfline.getValor(), formatOfline, formatOfPattern, ArgsInputRule.getMultiplesFlexiblesFormatsPatterns(), null, ArgsInputRule.getSpecialCharsForIdentifyInTheFlexibleFormat(), ArgsInputRule.getORgateForFlexible(), coincidence, null, sensibleToUppercase, ArgsInputRule.getThePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns(), indexSpecialChars,true) != 0) return -1;
        if(!coincidence.getValor()){
        System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
         return -1;
           }
        } 
     }
-    else if(!coincidence.getValor()&& !ArgsInputRule.commandsWithFlexiblePatternForResultConflicts.contains(temp)){
+    else if(!coincidence.getValor()&& !ArgsInputRule.getCommandsWithFlexiblePatternForResultConflicts().contains(temp)){
        System.err.printf("Error in the line %s\nDETAILS:Error in the format not pass the check for flexibles formats\nFormat of Line: %s\nFormat expected: %s\n", nLine, formatOfline.getValor(), formatOfPattern.getValor());
         return -1;
        }
@@ -599,14 +628,14 @@ public int orchestratorForStrictFormat(String line, String nLine, CommandArgRule
     }
     //Verifica que no se usen ambos tipos de formato al mismo tiempo
     //Check if is use both types of format to the same time
-    if (ArgsInputRule.multipleFormatsPatterns != null && ArgsInputRule.formatPatternMostLong != null || (ArgsInputRule.multipleFormatsPatterns == null && ArgsInputRule.formatPatternMostLong == null)) {
+    if (ArgsInputRule.getMultipleFormatsPatterns() != null && ArgsInputRule.getFormatPatternMostLong() != null || (ArgsInputRule.getMultipleFormatsPatterns() == null && ArgsInputRule.getFormatPatternMostLong() == null)) {
         System.err.println("Error\nDETAILS: You can only select one: 'multipleFormatsPatterns' or 'formatPatternMostLong' && 'formatPatternLessLong'\n");
         return -1;
     }
     // Validación para múltiples formatos
     //If select multiples format, check this
-    if (ArgsInputRule.multipleFormatsPatterns != null) {
-        for (HashMap.Entry<String, String> entry : ArgsInputRule.multipleFormatsPatterns.entrySet()) {
+    if (ArgsInputRule.getMultipleFormatsPatterns() != null) {
+        for (HashMap.Entry<String, String> entry : ArgsInputRule.getMultipleFormatsPatterns().entrySet()) {
             String lessLong = entry.getKey();
             String mostLong = entry.getValue();
             if (lessLong == null || mostLong == null) {
@@ -617,27 +646,27 @@ public int orchestratorForStrictFormat(String line, String nLine, CommandArgRule
     }
     // Validación para formato único
     //Check if is just one format
-    if ((ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong == null) ||
-        (ArgsInputRule.formatPatternLessLong != null && ArgsInputRule.formatPatternMostLong == null)) {
+    if ((ArgsInputRule.getFormatPatternMostLong() != null && ArgsInputRule.getFormatPatternLessLong() == null) ||
+        (ArgsInputRule.getFormatPatternLessLong() != null && ArgsInputRule.getFormatPatternMostLong() == null)) {
         System.err.printf("Error in format pattern:\nMost long: %s\nLess long: %s\nDETAILS: Both formatPatternMostLong and formatPatternLessLong must be defined.\n",
-                          ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
+                          ArgsInputRule.getFormatPatternMostLong(), ArgsInputRule.getFormatPatternLessLong());
         return -1;
     }
     // Si hay múltiples formatos, validar si la línea entra en alguno
     //Check for multiples formats the line
-    if(ArgsInputRule.multipleFormatsPatterns != null){
-         if(checkStrictFormat(line, ArgsInputRule.multipleFormatsPatterns, null, null, null, coincidence, sensibleToUppercase) != 0) return -1;
+    if(ArgsInputRule.getMultipleFormatsPatterns() != null){
+         if(checkStrictFormat(line, ArgsInputRule.getMultipleFormatsPatterns(), null, null, null, coincidence, sensibleToUppercase) != 0) return -1;
        if(!coincidence.getValor()){
-        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s'\n", nLine, ArgsInputRule.multipleFormatsPatterns);
+        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s'\n", nLine, ArgsInputRule.getMultipleFormatsPatterns());
         return -1;
      }
     }
     // Validar con formato único
     //Check for singular format the line
-    if (ArgsInputRule.formatPatternMostLong != null && ArgsInputRule.formatPatternLessLong != null){
-         if(checkStrictFormat(line, null, ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong, coincidence, null, sensibleToUppercase) != 0) return -1;
+    if (ArgsInputRule.getFormatPatternMostLong() != null && ArgsInputRule.getFormatPatternLessLong() != null){
+         if(checkStrictFormat(line, null, ArgsInputRule.getFormatPatternMostLong(), ArgsInputRule.getFormatPatternLessLong(), coincidence, null, sensibleToUppercase) != 0) return -1;
      if(!coincidence.getValor()){
-        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s' and '%s'\n", nLine, ArgsInputRule.formatPatternMostLong, ArgsInputRule.formatPatternLessLong);
+        System.err.printf("Error in the line %s\nDETAILS:Error in the format of line not match in the range of formats '%s' and '%s'\n", nLine, ArgsInputRule.getFormatPatternMostLong(), ArgsInputRule.getFormatPatternLessLong());
         return -1;
      }
     }
@@ -657,10 +686,15 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
     //Check for multiples formats the line
     boolean coincidence = false;
     if (multiplesPatterns != null) {
-        int linePattern= identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
+        double linePattern= identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
         for (HashMap.Entry<String, String> entry : multiplesPatterns.entrySet()) {
-            int mostLong = identifyTheStrictFormat(entry.getKey(), sensibleToUppercase);
-            int lessLong = identifyTheStrictFormat(entry.getValue(), sensibleToUppercase);
+            double mostLong = identifyTheStrictFormat(entry.getKey(), sensibleToUppercase);
+            double lessLong = identifyTheStrictFormat(entry.getValue(), sensibleToUppercase);
+            if(mostLong < lessLong){
+                 double newMostLong = lessLong;
+                lessLong = mostLong;
+                mostLong = newMostLong;
+            }
             if (linePattern >= lessLong && linePattern <= mostLong) {
                 coincidence = true;
                 if(matchWithMultiples != null) matchWithMultiples.setValor(true);
@@ -670,10 +704,14 @@ public int checkStrictFormat(String lineToCheck, Map<String, String>multiplesPat
         if(!coincidence) if(matchWithMultiples != null) matchWithMultiples.setValor(false);
     }
     if(singlePatternMostLong != null && singlePatternLessLong != null){
-        int mostLong = identifyTheStrictFormat(singlePatternMostLong, sensibleToUppercase);
-        int lessLong= identifyTheStrictFormat(singlePatternLessLong, sensibleToUppercase);
-        int linePattern = identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
-
+        double mostLong = identifyTheStrictFormat(singlePatternMostLong, sensibleToUppercase);
+        double lessLong= identifyTheStrictFormat(singlePatternLessLong, sensibleToUppercase);
+        double linePattern = identifyTheStrictFormat(lineToCheck, sensibleToUppercase);
+        if(mostLong < lessLong){
+                 double newMostLong = lessLong;
+                lessLong = mostLong;
+                mostLong = newMostLong;
+            }
         if (!(linePattern >= lessLong && linePattern <= mostLong)) {
             if(matchWithSingle != null)matchWithSingle.setValor(false);
         }
@@ -1046,23 +1084,28 @@ public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, A
     formatForIdentify.setValor(sb.toString());
 }
 //-------------------------------------------------------
-private int identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
- int n = 0; //Get the format in a integer number
+private double identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
+ double n = 0; //Get the format in a integer number
             //Obtener el formato en un número entero
 
  //iterate until the end of the FormatExample
  //Recorrer la cadena FormatExample
- int characterValueBefore = 0;
+ int characterValueBefore = 1;
 
         for (int i = 0; i < FormatExample.length(); i++) {
         char actualChar = FormatExample.charAt(i);
             int characterValue = identifyTypeIntOrChar(actualChar, sensibleToUppercase);
-            // sum +1 because this function for convert pairs nums to inpairs nums, and inpairs nums to pairs nums, and the multiply help, because if the num are pairs or inpairs affected, because pair*pair=pair
-            // suma +1 porque esto funciona para convertir numeros pares a impares y viceversa, y la multiplicacion ayuda, porque si el numero es par o no par afecta, porque par*par=par
-             n+= ((characterValue+characterValueBefore)*i+1)%Integer.MAX_VALUE;
+            // sum +1 because this function for convert pairs nums to inpairs nums, and inpairs nums to pairs nums, and the multiply help, because if the num are pairs or inpairs affected, because pair*pair=pair and disapper log(1)=0
+            // suma +1 porque esto funciona para convertir numeros pares a impares y viceversa, y la multiplicacion ayuda, porque si el numero es par o no par afecta, porque par*par=par, y eevita log(1)=0
+            if(i == 0) n+=log2(characterValue+1); 
+            else n+= ((log2(characterValue + 1) / log2(characterValueBefore+(characterValue+1))) * i) + log2(characterValue + 1);//f(x,y) where x = i and y = characterValue f(x,y)= ((log(Y+1)/log(Y(X-1)+(Y+1))*X)+log(Y+1) 
             characterValueBefore = characterValue;
             }
  return n;
+}
+//-------------------------------------------------------
+public double log2(int getLogOf){
+    return Math.log(getLogOf)/Math.log(2);
 }
 //-------------------------------------------------------
 public int identifyTypeIntOrChar(Character actual, int sensibleToUppercase){

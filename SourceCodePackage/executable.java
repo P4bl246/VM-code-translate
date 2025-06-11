@@ -7,10 +7,10 @@ public class executable {
 
          int n;
          String copy = "fileCopy.txt";
-         n= parseF.File_to("Archivo.vm", copy); 
+         n= parseF.fileTo("Archivo.vm", copy); 
          if(n != 0) return;
     
-         n = parseF.CleanFile(copy);
+         n = parseF.cleanFile(copy);
          if(n != 0) return;
          
        sintaxParsing sintax = new sintaxParsing();

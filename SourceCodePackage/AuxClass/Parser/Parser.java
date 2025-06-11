@@ -1,58 +1,73 @@
 package AuxClass.Parser;
+
 //****Call classes individuals not is necesary because we call java.io.*, this import all classes from this package
 //****Llamadas a clases individuales no son necesarias porque llamamos a java.io.*, esto importa todas las clases de este paquete
 
-//import java.io.File; 
-//import java.io.IOException;
-//import java.io.Reader;
-//import java.io.Writer;
 import java.io.*;
-//import java.io.FileReader;
-//import java.io.FileWriter;
+
 import java.util.ArrayList;
 
-/**
-<p><b>FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)</b>---------------------------------------------------------------------------------</p>
+/*
+FUNCTIONS FOR PREPARE FILES (FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 
-<b>IMPORTANT:</b>All market like a label 'internal method' refer this function are used for the principal(CleanFile) o other functions
-<p><b>*************************************************------------------------------------------------*******************************-------------------------------</b></p>
-    <p><b>public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages);</b>//method for search a string in a line
-                                                                                                                                         //método para buscar una cadena en una linea</p>
+IMPORTANT:All market like a label 'internal method' refer this function are used for the principal(CleanFile) o other functions
+*************************************************------------------------------------------------*******************************-------------------------------
+    public int searchString(boolean searchAll, String line, String searchThis, int startIndex, Character delimiter, boolean WatchMessages);//method for search a string in a line
+                                                                                                                                         //método para buscar una cadena en una linea
 
-    <p><b>public int RemoveString(String Read_File_In, String Delimiter);</b>// This method is used to remove spaces from the input file(internal method)<br>
-                                                            // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)</p>
+    public int removeString(String Read_File_In, String Delimiter);// This method is used to remove spaces from the input file(internal method)<br>
+                                                            // Este método se utiliza para eliminar espacios del archivo de entrada(Método interno)
 
-    <p><b>public int RemoveSimpleComments(String Read_File_In, String Delmiter);</b>// This method is used to remove simple comments from the input file(internal method)<br>
-                                                                           // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)</p>
+    public int removeSimpleComments(String Read_File_In, String Delmiter);// This method is used to remove simple comments from the input file(internal method)<br>
+                                                                           // Este método se utiliza para eliminar comentarios simples del archivo de entrada(Método interno)
 
-    <p><b>public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException;</b>// This method is used to obtain the line number or completely line from the input file(internal method)<br>
-                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)</p>
+    public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException;// This method is used to obtain the line number or completely line from the input file(internal method)<br>
+                                                            // Este método se utiliza para obtener el número de línea del archivo de entrada o su linea completa(Método interno)
 
-    <p><b>public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);</b>// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
-                                                                                                     // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)</p>
+    public int removeBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine);// This method is used to remove block comments from the input file, and can obtanin the number line if you want(internal method)
+                                                                                                     // Este método se utiliza para eliminar comentarios de bloque del archivo de entrada, y puede obtener el numero de linea si lo desea(Método interno)
 
-    <p><b>public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException;</b>// This method is used to remove nested block comments from the input file(internal method)<br>
-                                                                                                        // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)</p>
+    public int removeNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException;// This method is used to remove nested block comments from the input file(internal method)<br>
+                                                                                                        // Este método se utiliza para eliminar comentarios de bloque anidados del archivo de entrada(Método interno)
     
-    <p><b>public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart);</b>// This method is used to remove void lines or characters from the input file(internal method)<br>
-                                                        // Este método se utiliza para eliminar líneas vacías o caracteres del archivo de entrada(Método interno)</p>
+    public int removeVoidChars(String Read_File_In, Character VoidCharacterStart);// This method is used to remove void lines or characters from the input file(internal method)<br>
+                                                        // Este método se utiliza para eliminar líneas vacías o caracteres del archivo de entrada(Método interno)
 
-    <p><b>public int RemoveNLine(String file_in);</b>// This method is used to remove the number line from the input file(internal method)<br>
-                                                // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)</p>
+    public int removeNLine(String file_in);// This method is used to remove the number line from the input file(internal method)<br>
+                                                // Este método se utiliza para eliminar el número de línea del archivo de entrada(Método interno)
 
-    <p><b>public int CleanFile(String file_in);</b>// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'<br>
-                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'</p>
+    public int cleanFile(String file_in);// Clean the file of the spaces and void lines and comments,integrat the above functions, and 'NumLines'<br>
+                                         // Limpiar el archivo de espacios y líneas vacías y comentarios integrando las funciones anteriores y 'NumLines'
 
-<p><b>*************************************************------------------------------------------------*******************************------------------------------</b></p>
-    <p><b>public int NumLines(File Read_File_in, File Writte_File_out);</b>// This method is used to add the line number to the input file(internal method)<br>
-                                                            // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)</p>
+*************************************************------------------------------------------------*******************************------------------------------
+    public int numLines(File Read_File_in, File Writte_File_out);// This method is used to add the line number to the input file(internal method)<br>
+                                                            // Este método se utiliza para agregar el número de línea al archivo de entrada(Método interno)
 ------------------------------------------------------------------------------------------------------------------------------
-    <p><b>public int File_to(String file_In, String nameOfNewFileWithFormat);</b>// This method is used to convert the file to other format(internal method)<br>
-                                             // Este método se utiliza para convertir el archivo a otro formato(Método interno)</p>
-<p>------------------------------------------------------------------------------------------------------------------------------</p>
-<p>
-<b>END OF FUCNTION TO PREPARE FILES(FIN DE LAS FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)</b>---------------------------------------------------------------------------------</p>
+    public int fileTo(String file_In, String nameOfNewFileWithFormat);// This method is used to convert the file to other format(internal method)<br>
+                                             // Este método se utiliza para convertir el archivo a otro formato(Método interno)
+------------------------------------------------------------------------------------------------------------------------------
+
+END OF FUCNTION TO PREPARE FILES(FIN DE LAS FUNCIONES PARA LA PREPARACIÓN DE ARCHIVOS)---------------------------------------------------------------------------------
 */
+/** 
+ * @author <p>Pablo Riveros Perea</p>
+ * The class <code>Parser</code> contains functions thinked for pre-process of files, "normalize it" and "cleaning it" 
+ * <p>Methods and classes inside this are:</p>
+ * <p><code>fileTo</code></p>
+ * <p><code>removeSimpleComments</code></p>
+ * <p><code>removeBlockComments</code></p>
+ * <p><code>removeNestedBlockCommets</code></p>
+ * <p><code>removeVoidChars</code></p>
+ * <p><code>numLines</code></p>
+ * <p><code>removeNLine</code></p>
+ * <p><code>get</code></p>
+ * <p><code>removeString</code></p>
+ * <p><code>searchString</code></p>
+ * <p><code>trateSpecialsStrings</code></p>
+ * <p>Son class: <code>MutableTypeData</code></p>
+ * 
+*/
+
 public class Parser {
 //STARTS THE PROCESS OF PREPARE FILES (INICIA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)----------------------------------------------------------------- 
 //Enum for return 
@@ -71,12 +86,21 @@ public enum Return {
     }
 }
 /**
- * This function pass content of a file to other
+ * This method <code>fileTo</code> copy content from a file to other
  * @param file_In File to convert or pass, path or name(if are in the same path of the class)
- * @param nameOfNewFileWithFormat The file where you want to convert or pass
+ * @param nameOfNewFileWithFormat The file where you want to convert or pass with the format
+ * <p><b>Example:</b></p>
+ * <pre>
+ * <code>
+ * String myFile = "example.txt";
+ * String fileCopy = "exampleCpy.asm";
+ * Parser method = new Parser();
+ * method.fileTo(myFile, fileCopy);//This make a copy from a file .txt to file .asm
+ * </code>
+ * </pre>
  * @return 0 = SUCCESS,  -1 = ERROR
  */
-public int File_to(String file_In, String nameOfNewFileWithFormat) {  
+public int fileTo(String file_In, String nameOfNewFileWithFormat) {  
     // Open the file_In in reading and create a temporary file for writing
     // Abrir el archivo de entrada en modo lectura y el archivo temporal en modo escritura
     try (FileReader fileP = new FileReader(file_In); Writer tempFile = new FileWriter(nameOfNewFileWithFormat)) {
@@ -97,79 +121,108 @@ public int File_to(String file_In, String nameOfNewFileWithFormat) {
   }
 //--------------------------------------------------------------
 /**
- * This function are an orchestrator of other functions, creating a cleaner
- * @param file_in File to clean
+ * This function are an orchestrator of other functions, creating a cleaner with a predefinde proccess
+ * <p><b>Inside method:</b></p>
+ * <pre>
+ * <code>
+ *  
+ * </pre>
+ * </code>
+ * @param file_In File to clean, path or name(if are in the same path of the class)
  * @return 0 = SUCCESS, -1 = ERROR
  */
-public int CleanFile(String file_in){
-    System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_in);
+public int cleanFile(String file_In){
+    System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_In);
     int n;
     ArrayList<String> specialsForIdentify = new ArrayList<>();
     specialsForIdentify.add("function");
     specialsForIdentify.add("call");
-    n = trateSpecialsStrings(specialsForIdentify, file_in);
-    if(n!= 0) return n;
+    try{
+    trateSpecialsStrings(specialsForIdentify, file_In);
+    
 
-    n = RemoveVoidChars(file_in, null);
+    removeVoidChars(file_In, null);
+    
+    
+     numLines(file_In);
+     
+
+    n = removeBlockComments(ReadmodeBlock.NestedEnd, file_In, "/*", "*/", ' ');
     if(n != 0) return n;
     
-    n = NumLines(file_in);
-    if(n != 0) return n;
-
-    n = RemoveBlockComments(ReadmodeBlock.NestedEnd, file_in, "/*", "*/", ' ');
-    if(n != 0) return n;
+     removeSimpleComments(file_In, "//");
+   
     
-    n = RemoveSimpleComments(file_in, "//");
-    if(n != 0) return n;
+     removeNLine(file_In, ' ');
     
-    n = RemoveNLine(file_in, ' ');
-    if(n != 0) return n;
 
-    n = RemoveVoidChars(file_in, null);
-    if(n != 0) return n;
-
-    System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_in);
+      removeVoidChars(file_In, null);
+    
+    }
+    catch(IOException e){
+        System.err.println("Error in the reading or writing file: " + e.getMessage());
+        return Return.ERROR.getValue();
+    }
+    catch(ParsingException e){
+        System.err.println("Error in the parsing: " + e.getMessage());
+        return Return.ERROR.getValue();
+    }
+    System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_In);
     return Return.SUCCESS.getValue();
 }
 //--------------------------------------------------------------
 /**
- * Remove all the appears of a String in a file
- * @param Read_File_In File to clean of Strings
- * @param Delimiter String to remove from the file
- * @return 0 = SUCCESS, -1 = ERROR
+ * The method <code>removeString</code> remove all the appears of a String in a file
+ * @param readFileIn File to clean of Strings
+ * @param delimiter String to remove from the file
+ * <p><b>Example:</b></p>
+ * <pre>
+ * <code>
+ * //my file contains "Hello, this is a example /¨djsi";
+ * //if i want remove from my file the string "/¨djsi"
+ * Parser method = new Parser();
+ * method.removeString("myFile.txt", "/¨djsi");
+ * //result are "Hello, this is a example" in my file
+ * </code>
+ * </pre>
+ * @return void
+ * @throws ParsingException If the parameters are null or empty or success some error in the reading or writing file
  */
-public int RemoveString(String Read_File_In, String Delimiter) {
-    System.out.printf("\nREMOVING STRING '%s' FROM THE FILE: '%s'...\n\n", Delimiter, Read_File_In);
+public void removeString(String readFileIn, String delimiter) throws ParsingException {
+    if(readFileIn == null){
+        throw new ParsingException("Error: The 'readFileIn' parameter is null, need be a String with the file to proccess");
+    }
+    if(readFileIn.isEmpty()){
+        throw new ParsingException("Error: The 'readFileIn' parameter is empty, need be a String with the file to proccess");
+    }
+    System.out.printf("\nREMOVING STRING '%s' FROM THE FILE: '%s'...\n\n", delimiter, readFileIn);
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(Read_File_In));
+    try (BufferedReader reader = new BufferedReader(new FileReader(readFileIn));
          BufferedWriter writer = new BufferedWriter(new FileWriter("tempWithoutString.txt"))) {
 
         String line;
         while ((line = reader.readLine()) != null) {
-            String cleanedLine = line.replace(Delimiter, "");
+            String cleanedLine = line.replace(delimiter, "");
             writer.write(cleanedLine);
             writer.newLine();
         }
 
     } catch (IOException e) {
-        System.out.println("Error: " + e.getMessage());
-        return Return.ERROR.getValue();
+        throw new ParsingException("Error in the reading or writing file: " + e.getMessage(), e);
     }
 
-    File originalFile = new File(Read_File_In);
+    File originalFile = new File(readFileIn);
     File tempFile = new File("tempWithoutString.txt");
 
     if (originalFile.delete()) {
         if (tempFile.renameTo(originalFile)) {
-            System.out.printf("The file was cleaned and renamed to '%s'\n", Read_File_In);
-            return Return.SUCCESS.getValue();
+            System.out.printf("The file was cleaned and renamed to '%s'\n", readFileIn);
+            return;
         } else {
-            System.out.println("Error renaming temp file.");
-            return Return.ERROR.getValue();
+           throw new ParsingException(String.format("Error trying to rename file 'tempWithoutString.txt' to '%s'", readFileIn));
         }
     } else {
-        System.out.println("Error deleting original file.");
-        return Return.ERROR.getValue();
+        throw new ParsingException(String.format("Error trying to delete the file '%s'", readFileIn));
     }
 }
 //--------------------------------------------------------------
@@ -224,12 +277,24 @@ public int searchString(boolean searchAll, String line, String searchThis, int s
  * Remove simple comments from a file. Delete all before delimiter and the delimiter (not delete after)
  * @param Read_File_In File to check
  * @param SimpleCommentIdent Idetinficator for Simple comments start
- * @return 0 = SUCCESS, -1 = ERROR 
+ * @return void
+ * @throws ParsingException If the parameters are null or empty or success some error in the reading or writing file
  */
-public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) {
+public void removeSimpleComments(String Read_File_In, String SimpleCommentIdent) throws ParsingException {
     
     System.out.printf("\nREMOVING SIMPLE COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_In);
-
+     if(SimpleCommentIdent == null){
+        throw new ParsingException("Error: The 'SimpleCommentIdent' parameter is null, need be a String with the start of simple comment");
+    }
+    if(Read_File_In == null){
+        throw new ParsingException("Error: The 'Read_File_In' parameter is null, need be a String with the file to proccess");
+    }
+    if(SimpleCommentIdent.isEmpty()){
+        throw new ParsingException("Error: The 'SimpleCommentIdent' parameter is empty, need be a String with the start of simple comment");
+    }
+    if(Read_File_In.isEmpty()){
+        throw new ParsingException("Error: The 'Read_File_In' parameter is empty, need be a String with the file to proccess");
+    }
      try (BufferedReader ReadFile = new BufferedReader(new FileReader(Read_File_In));
          BufferedWriter WritteFile = new BufferedWriter(new FileWriter("tempwithoutSimpleComments.txt"))) {
         
@@ -260,8 +325,7 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
         ReadFile.close();
 
     } catch (IOException e) {
-        System.out.println("Error: " + e.getMessage());
-        return Return.ERROR.getValue(); // Error
+        throw new ParsingException("Error in the reading or writing file: " + e.getMessage(), e);
     }
      //Upload the input file
     // Actualizar el archivo de entrada
@@ -271,19 +335,30 @@ public int RemoveSimpleComments(String Read_File_In, String SimpleCommentIdent) 
         if (temp.renameTo(infile)) {
             System.out.printf("The file 'tempwithoutSimpleComments.txt' is renamed to '%s'\n", Read_File_In);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF SIMPLE COMMENTS\n", Read_File_In);
-            return Return.SUCCESS.getValue();
+            return;
         }
-        System.out.printf("Error trying to rename file 'tempwithoutSimpleComments.txt' to '%s'\n", Read_File_In);
-        return Return.ERROR.getValue();
+        throw new ParsingException(String.format("Error trying to rename file 'tempwithoutSimpleComments.txt' to '%s'", Read_File_In));
     }
-    System.out.printf("Error trying to delete the file '%s'\n", Read_File_In);
-    return Return.ERROR.getValue();
+    throw new ParsingException(String.format("Error trying to delete the file '%s'", Read_File_In));
 }
 //--------------------------------------------------------------
 //class for simulate the pass for reference
 //clase para simular el paso por referencia
 /**
  * Class for simulate the 'pass for reference'
+ * <p>This have 3 methods</p>
+ * <pre>
+ * <code>
+ * Parser p = new Parser();
+ * Parser.MutableTypeData<Integer> example = p.new MutableTypeData<>(0);
+ * //first method get the value of the variable
+ * example.getValor();
+ * //second method set the value of th variable
+ * example.setValor(55); //now example.getValor()=55
+ * //third method get the type of the variable
+ * example.getTipo(); //return the type of the variable, in this case are "Integer";
+ * </code>
+ * </pre>
  */
 public class MutableTypeData<T> {
     private T valor;
@@ -314,20 +389,20 @@ public class MutableTypeData<T> {
  * @param delimiterEnd Delimiter or Identificator to indicate the End of a Block Comment
  * @param DelimiterNumLine Optional parameter for ignore or get some String before delimiter and not proccess this(thinked for somethings like the numberofLine)
  * @return 0 = SUCCESS, -1 = ERROR
+ * @throws IOException If an I/O error occurs
+ * @throws ParsingException If the Delimiter or delimiterEnd is null, or if an error occurs during parsing
  */
-public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine) {
+public int removeBlockComments(ReadmodeBlock mode, String Read_File_in, String Delimiter, String delimiterEnd, Character DelimiterNumLine) throws IOException, ParsingException {
 
   MutableTypeData<String>line5 = new MutableTypeData<>("");
   // variable to store the actual character and line (utlized just in the methods RemoveBlockComments and RemoveNestedBlockComments)
   //Variable para almacenar el carácter actual y linea (utilizado solo en los métodos RemoveBlockComments y RemoveNestedBlockComments)
    System.out.printf("\nREMOVING BLOCK COMMENTS FROM THE FILE: '%s'...\n\n", Read_File_in);
    if(Delimiter == null){
-     System.err.println("Error: Need put a delimiter\n");
-     return Return.ERROR.getValue();
+     throw new ParsingException("Error: The 'Delimiter' parameter is null, need be a String with the start of block comment");
    }
   if (delimiterEnd == null) {
-    System.err.println("Error: delimiterEnd is required.\n");
-    return Return.ERROR.getValue();
+    throw new ParsingException("Error: The 'delimiterEnd' parameter is null, need be a String with the end of block comment");
 }
     line5.setValor(null);
     String nLine = null;
@@ -363,7 +438,7 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                         MutableTypeData<Integer>last = new MutableTypeData<>(0);
                         MutableTypeData<Boolean>lastCallFlag = new MutableTypeData<>(false);
                         ProccessBlockComments data = new ProccessBlockComments(mode, line5, ReadFile, nLine, Delimiter, delimiterEnd, DelimiterNumLine, index, LinesJump, false, between, last, false, lastCallFlag);
-                        if(RemoveNestedBlockComments(data) != 0) return Return.ERROR.getValue();
+                        if(removeNestedBlockComments(data) != Return.SUCCESS.getValue()) return Return.ERROR.getValue();
                                
                             //conseverd the structure of the file including the prosecced lines
                             //conservar la estructure de el archivo incluyendo las lineas procesadas                        
@@ -396,8 +471,10 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
                 
             }
     } catch (IOException e) {
-        System.out.println("Error: " + e.getMessage());
-        return Return.ERROR.getValue(); // Error
+        throw new ParsingException("Error in the reading or writing file: " + e.getMessage(), e);
+    }
+    catch (ParsingException e) {
+        throw new ParsingException("Error in the parsing: " + e.getMessage(), e);
     }
 
     // Actualizar el archivo de entrada
@@ -410,11 +487,9 @@ public int RemoveBlockComments(ReadmodeBlock mode, String Read_File_in, String D
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF BLOCK COMMENTS\n", Read_File_in);
             return Return.SUCCESS.getValue();
         }
-        System.out.printf("Error trying to rename file 'tempWithoutBlockComments.txt' to '%s'\n", Read_File_in);
-        return Return.ERROR.getValue();
+       throw new ParsingException(String.format("Error trying to rename file 'tempWithoutBlockComments.txt' to '%s'", Read_File_in));
     }
-    System.out.printf("Error trying to delete the file '%s'\n", Read_File_in);
-    return Return.ERROR.getValue();
+    throw new ParsingException(String.format("Error trying to delete the file '%s'", Read_File_in));
 }
 //--------------------------------------------------------------
 /*mode for know how proccess the block comments
@@ -434,15 +509,24 @@ public enum ReadmodeBlock{
  * This function remove the block comments and nested block comments if are setup for make this, this change his configuratino depende of the mode proporcionated flexibility and adaptability
  * @param dataForProccess Datas for porccess the block comments thats are wrapper in the class 'ProccessBlockComments'
  * @return 0 = SUCCES, -1 = ERROR
+ * @throws IOException If an I/O error occurs
+ * @throws ParsingException If the lastRecursiveCallFlag is null or a call method is not correct
  */
 //All in this function are a proccess you can divide that in aux functions but not is necesary because just reduce a little bit the number of lines, but not is necesary, and this in this implementation are used aux functions too
-public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException{ 
-    if(dataForProccess.lastRecursiveCallFlag == null){
-        System.err.println("Error: Need put a parameter 'lastCallFlag'\n");
-        return Return.ERROR.getValue();
+public int removeNestedBlockComments(ProccessBlockComments dataForProccess) throws IOException, ParsingException { 
+    if(dataForProccess == null){
+        throw new ParsingException("Error: The parameter 'dataForProccess' is null, need be a ProccessBlockComments object");
     }
+    if(dataForProccess.line == null){
+        throw new ParsingException("Error: The parameter 'line' is null, need be a MutableTypeData<String> object");
+    }
+    if(dataForProccess.lastRecursiveCallFlag == null){
+        throw new ParsingException("Error: The parameter 'lastRecursiveCallFlag' is null, need be a MutableTypeData<Boolean> object");
+    }
+
     dataForProccess.lastRecursiveCallFlag.setValor(true);//initialize always in true //incializar siempre en verdadero
     MutableTypeData<Integer> actual = new MutableTypeData<>(0);
+    try{
     //Read until the end of comment
     //Leer hasta el final del comentario
     while(true){
@@ -527,7 +611,7 @@ public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) thro
             dataForProccess.BetweenComments.add(newl);
             }
             dataForProccess.recursiveCall = true;
-         if(RemoveNestedBlockComments(dataForProccess) != 0) return Return.ERROR.getValue();
+         if(removeNestedBlockComments(dataForProccess) != 0) return Return.ERROR.getValue();
          break;
           case SingleEnd: 
           //if has code between comments get it
@@ -567,7 +651,7 @@ public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) thro
                 }
         }
         dataForProccess.recursiveCall = true;
-          if(RemoveNestedBlockComments(dataForProccess) != 0 ) return Return.ERROR.getValue();
+          if(removeNestedBlockComments(dataForProccess) != 0 ) return Return.ERROR.getValue();
           break;
           default:
           System.err.println("Error in the argument 'mode'\n");
@@ -587,6 +671,12 @@ public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) thro
         return Return.SUCCESS.getValue();
       } 
     }
+  } catch (IOException e) {
+    throw new ParsingException("Error: " + e.getMessage());
+  }
+  catch(ParsingException e1){
+    throw new ParsingException("Error: "+e1.getMessage());
+  }
       // If find the end of file without closing the comment
     // Si encuentra el final del archivo sin cerrar el comentario
             System.err.println("Error in the line: "+ dataForProccess.NumberOfLine +"\nDETAILS:Find the 'End of file' and don't closing a comment block\n");
@@ -597,9 +687,16 @@ public int RemoveNestedBlockComments(ProccessBlockComments dataForProccess) thro
  * Remove chars considerateds 'void' in a file like tabs and others
  * @param Read_File_In, File to search and remove void characters
  * @param VoidCharacterStart Remove a character considerated 'void'
- * @return 0 = SUCCESS, -1 = ERROR
+ * @return void
+ * @throws ParsingException if the file is null or empty, or if an error occurs during file processing
  */
-public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
+public void removeVoidChars(String Read_File_In, Character VoidCharacterStart) throws ParsingException {
+    if(Read_File_In == null){
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
+    }
+    if(Read_File_In.isEmpty()){
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
+    }
     System.out.printf("\nREMOVING VOID CHARS FROM THE FILE: '%s'...\n\n", Read_File_In);
     // Open the file for reading
     // Abrir el archivo para lectura y el archivo de escritura
@@ -646,8 +743,7 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
     }
  }
  catch(IOException e){
-        System.out.println("Error: " + e.getMessage());
-        return Return.ERROR.getValue(); // Error
+        throw new ParsingException("Error: " + e.getMessage());
     }
     //Upload the input file
     //Actualizar el archivo de entrada
@@ -657,21 +753,26 @@ public int RemoveVoidChars(String Read_File_In, Character VoidCharacterStart){
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempWithoutVoidLines.txt' is rename to '%s'\n", Read_File_In);
             System.out.printf("\nTHE FILE '%s' IS CLEAN OF VOID CHARS\n", Read_File_In);
-            return Return.SUCCESS.getValue();
+            return;
         }
-        System.out.printf("Error to try rename file 'tempWithoutVoidLines.txt' to '%s'\n", Read_File_In);
-        return Return.ERROR.getValue();
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
     }
-    System.out.printf("Error to try delte the file '%s'\n", Read_File_In);
-    return Return.ERROR.getValue();
+    throw new ParsingException("Error: The file to proccess is empty or not exist");
 }
 //--------------------------------------------------------------
 /**
  * Numerate lines from 1-n (where n are the num of lines in the file)
  * @param Read_File_in File to numerate his lines
- * @return 0 = SUCCESS, -1 = ERROR
+ * @return void
+ * @throws ParsingException if the file is null or empty, or if an error occurs during file processing
  */
-public int NumLines(String Read_File_in) {
+public void numLines(String Read_File_in) throws ParsingException {
+    if(Read_File_in == null){
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
+    }
+    if(Read_File_in.isEmpty()){
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
+    }
     System.out.printf("\nADDING LINE NUMBERS TO THE FILE: '%s'...\n\n", Read_File_in);
     // Open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
@@ -706,8 +807,7 @@ public int NumLines(String Read_File_in) {
         }
 
     } catch (IOException e) {
-        System.out.println("Error: " + e.getMessage());
-        return Return.ERROR.getValue();
+        throw new ParsingException("Error: " + e.getMessage());
     }
     // Upload the input file
     // Actualizar el archivo de entrada
@@ -718,13 +818,11 @@ public int NumLines(String Read_File_in) {
         if (temp.renameTo(infile)) {
             System.out.printf("The file 'fileWithNumLines.txt' is rename to '%s'\n", Read_File_in);
             System.out.printf("\nTHE FILE '%s' ARE NUMERATED\n", Read_File_in);
-            return Return.SUCCESS.getValue();
+            return;
         }
-        System.out.printf("Error to try rename file 'fileWithNumLines.txt' to '%s'\n", Read_File_in);
-        return Return.ERROR.getValue();
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
     }
-    System.out.printf("Error to try delte the file '%s'\n", Read_File_in);
-    return Return.ERROR.getValue();
+    throw new ParsingException("Error: The file to proccess is empty or not exist");
 }
 //--------------------------------------------------------------
 //This enum is used to define the read mode of the file for the method get
@@ -742,14 +840,13 @@ public enum Readmode{
  * @param forNumberLine_Delimiter If select the mode 'NumberLine' need put this parameter, else don't put
  * @param actual If you want get and mantain informated about the index in the file cand put a actual parameter to upload this in real time
  * @param containsBeforeEOForEndLine If you want know if before EOF(End of File) or End of Line have characters 
- * @return NULL = VOID LINE, ERROR = ERROR IN THE PARAMETERS
+ * @return NULL = VOID LINE, Or a String with the content of the line or number line
+ * @throws ParsingException,IOException if the fileIn is null or an error occurs during file processing
  */
-public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws IOException {
+public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimiter, MutableTypeData<Integer> actual, MutableTypeData<Boolean> containsBeforeEOForEndLine) throws ParsingException,IOException {
     if(fileIn == null){ 
-        System.err.println("Error: Need put a argument in parameter 'fileIn'\n");
-        return "ERROR";
+        throw new ParsingException("Error: Need put a file to proccess");
     }
-    
     int c = 0;
     if(actual != null) {
         c = actual.getValor();
@@ -805,9 +902,16 @@ public String get(Reader fileIn, Readmode mode, Character forNumberLine_Delimite
  * Remove a String before the delimiter, and the delimimter, thinked for remove numberofLines, but can use for remove a string before a delimiter
  * @param file_in File to clear 
  * @param delimiter Delimiter that indicate the start of writte in the temp file, for last rename or upload the input file
- * @return 0 = SUCCESS, -1 = ERROR
+ * @return void
+ * @throws ParsingException if the file_in is null or empty, or if an error occurs during file processing
  */
-public int RemoveNLine(String file_in, Character delimiter){
+public void removeNLine(String file_in, Character delimiter) throws ParsingException {
+    if(file_in == null){
+        throw new ParsingException("Error: Need put a file to proccess");
+    }
+    if(file_in.isEmpty()){
+        throw new ParsingException("Error: The file to proccess is empty");
+    }
     System.out.printf("\nFINAL CLEANING THE FILE: '%s'...\n\n", file_in);
     // open the file for reading and the file for writing
     // Abrir el archivo para lectura y el archivo de escritura
@@ -843,8 +947,7 @@ public int RemoveNLine(String file_in, Character delimiter){
        } 
     }
     catch(IOException e){
-        System.out.println("Error: " + e.getMessage());
-        return Return.ERROR.getValue(); // Error
+       throw new ParsingException("Error while processing the file: " + e.getMessage());
     }
     //Upload the input file
     //Actualizar el archivo de entrada
@@ -854,19 +957,38 @@ public int RemoveNLine(String file_in, Character delimiter){
         if(temp.renameTo(infile)){
             System.out.printf("The file 'tempFinalClean.txt' is rename to '%s'\n", file_in);
             System.out.printf("\nTHE FILE '%s' IS CLEAN TO THE VOID LINES AND NUMBER LINE\n", file_in);
-            return Return.SUCCESS.getValue();
+            return;
         }
-        System.out.printf("Error to try rename file 'tempFinalClean.txt' to '%s'\n", file_in);
-        return Return.ERROR.getValue();
+       else throw new ParsingException("Error to try rename the file: " + file_in);
     }
-    System.out.printf("Error to try delte the file '%s'\n", file_in);
-    return Return.ERROR.getValue();
+    else throw new ParsingException("Error to try delte the file: " + file_in);
 }
 //--------------------------------------------------------------
-public int trateSpecialsStrings(ArrayList<String> lineToidentify, String inputFile) {
+/**
+ * trate a special type of strings of a file, search the first appears of this while remove voidChars to the same time, and when find this, search the first space appear after this, an put a character '~' for separe this
+ * @param lineToidentify lines for special trate
+ * @param inputFile file for 
+ * <pre>
+ * <code>
+ * //if i want serach a string some "function" in my file and trate this can be use this
+ * //my file contains "HI\nthi s is a function 123\nfuncti on hello 123"
+ * Parser n = new Parser();
+ * ArrayList<String> specials = new ArrayList<>();
+ * specials.add("function");
+ * n.trateSpecialsStrings(specials, "myFile.txt");
+ * //So the result are "HI\nthisisafunction1234\nfunctionhello~123"
+ * //This occurs because inside the funtion while remove "voidChars" like spaces and tabs and others, the method compares continously when are in the line, and verify if this are contains in the arrayList, and this need be exactly
+ * //for this reason in the before example the line "this is a function 123" and dont conicide for exactly string "fuction" in the arrayList, because before to te string "function" are others characters and don't concide
+ * //but in the next line "functi on hello 123" the string "functi on" concide exactly with the string in the arrayList, so the method put a '~' after the "hello" part because the function when find this ignore or jump(but if are a void char remove it) the next character and after this search the first space, and remove all spaces and tabs and others void characters
+ * </code>
+ * </pre>
+ * @return void
+ * @throws ParsingException if the inputFile is null or empty, or if an error occurs during file processing
+ */
+public void trateSpecialsStrings(ArrayList<String> lineToidentify, String inputFile) throws ParsingException {
+    System.out.printf("\nTRATE SPECIALS STRINGS FROM THE FILE: '%s'...\n\n", inputFile);
     if (lineToidentify == null || lineToidentify.isEmpty()) {
-        System.err.println("Error: Need put some value in the string of input.");
-        return -1;
+       throw new ParsingException("Error: Need put some value in the string of input.");
     }
     String tempFile = "tempSpecialsStrings.txt";
 
@@ -912,8 +1034,7 @@ public int trateSpecialsStrings(ArrayList<String> lineToidentify, String inputFi
         }
 
     } catch (IOException e) {
-        System.out.println("Error: " + e.getMessage());
-        return -1;
+        throw new ParsingException("Error while processing the file: " + e.getMessage());
     }
 
     // Reemplaza el archivo original por el temporal
@@ -923,17 +1044,13 @@ public int trateSpecialsStrings(ArrayList<String> lineToidentify, String inputFi
     if (original.delete()) {
         if (temporal.renameTo(original)) {
             System.out.printf("THE FILE '%s' ARE BE CLEANING AND UPLOAD.\n", inputFile);
-            return 0;
+            return;
         } else {
-            System.out.println("Error to try rename the file.");
-            return -1;
+            throw new ParsingException("Error to try rename the file: " + inputFile);
         }
     } else {
-        System.out.println("Error to try remove the original file.");
-        return -1;
+        throw new ParsingException("Error to try remove the original file: " + inputFile);
     }
 }
 //END THE PROCCES TO PREPARE FILES(TERMINA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)--------------------------------------------------------------
-
 }
-
