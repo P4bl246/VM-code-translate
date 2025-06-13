@@ -822,7 +822,7 @@ public void numLines(String Read_File_in) throws ParsingException {
         }
         throw new ParsingException("Error: The file to proccess is empty or not exist");
     }
-    throw new ParsingException("Error: The file to proccess is empty or not exist");
+    throw new ParsingException("Error: To try to delete de file '" +Read_File_in+"'");
 }
 //--------------------------------------------------------------
 //This enum is used to define the read mode of the file for the method get
@@ -1052,5 +1052,6 @@ public void trateSpecialsStrings(ArrayList<String> lineToidentify, String inputF
         throw new ParsingException("Error to try remove the original file: " + inputFile);
     }
 }
+
 //END THE PROCCES TO PREPARE FILES(TERMINA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)--------------------------------------------------------------
 }

@@ -52,9 +52,14 @@ public int parser_Sintaxis(String File_in) {
     System.out.println("\nSTARTS THE SINTAX PARSING PROCESS\n");
     int n;
     Parser parserf = new Parser();
-    
+    try{parserf.numLines(File_in);}
+    catch (ParsingException e) {
+        System.out.println("Error reading file: " + File_in);
+        System.out.println("Error details: " + e.getMessage());
+        return -1;
+    }
     try(BufferedReader readFilein = new BufferedReader(new FileReader(File_in))) {
-    parserf.numLines(File_in);
+    
     String line;
     String nLine;
     //Starts the sintx parsing
@@ -85,9 +90,10 @@ public int parser_Sintaxis(String File_in) {
     .setFormatPatternMostLong("pushconstant-32768")
     .setFormatPatternLessLong("popthis0")
     .setExceptions(excep)
+    .setMultipleFormatsPatterns(null)
     .setCommandsWithoutPatterns(withouthPattern)
     .setCommandsWithFlexiblePattern(withoutPatternButWithivalue)
-    .setFormatPatternFlexible("W|N|L|PSN")
+    .setFormatPatternFlexible("W|N|L|PSN")//format expected for flexible because fleible are the format 'command-name-nVars or Args' tranlate to 'W|N|L|PSN' where W is the command, N is the number of arguments, because the name and the command are letters or nums or cahracters of a name, and the 'nArgs or Vars' is the unique like just expected nums
     .setMultiplesFlexiblesFormatsPatterns(null) // Set to null if not using multiple flexible formats
     .setSpecialCharsForIdentifyInTheFlexibleFormat(specials)
     .setORgateForFlexible('|')
@@ -105,7 +111,7 @@ public int parser_Sintaxis(String File_in) {
     int function = 0; // Variable to check if the command is a function
                               // Variable para verificar si el comando es una función
     HashMap<String, Integer> others = new HashMap<>();
-    createHashTable("function", 0, null, others, null);
+    createHashTable("return", 0, null, others, null);
 
     while(true) {
         nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null);
@@ -115,8 +121,8 @@ public int parser_Sintaxis(String File_in) {
         if(line.equals("") && !contains.getValor()) break;
         
         Parser.MutableTypeData<Integer> i =  parserf.new MutableTypeData<>(0);
-        if(function != 0){
-            n = compareWithHashTable(line, nLine, 8, others, null, false, i);
+        if(function != 0 && line.length() >= 6){
+            n = compareWithHashTable(line, nLine, 6, others, null, false, i);
             if(n == 0){
                 function--;
                 continue;
@@ -162,10 +168,16 @@ public int parser_Sintaxis(String File_in) {
           }
           continue;
      }
-     if(function != 0){
-        System.err.printf("Error in the line %s\nDETAILS:Arrive to the EOF and not found the key word 'return' for function %i\n", nLine, function);
+     if(function != 0 ){
+        if(function >0){
+        System.out.printf("Error in the line %s\nDETAILS:Arrive to the EOF and not found the key word 'return' for function %s\n",nLine, Integer.toString(function));
         return -1;
-    }
+     }
+     if(function < 0){
+        System.out.printf("Error in the line %s\nDETAILS:Can't put 'return' if not definded before a 'function'\n", nLine);
+        return -1;
+     }
+     }
     }
     catch (FileNotFoundException e) {
         System.out.println("File not found: " + File_in);
@@ -326,7 +338,7 @@ public void createHashTable(String element, int SimpleOrMultiples, ArrayList<Str
     return;
 }
 //-------------------------------------------------------
-public String getNchars(String input, int n) {
+public String getNchars(String input, int n, boolean watchMessages) {
     if (input == null) {
         System.out.println("Error: input string is null");
         return null;
@@ -338,7 +350,7 @@ public String getNchars(String input, int n) {
     }
 
     if (n > input.length()) {
-        System.out.println("The number of characters to get is greater than the length of the input string\nThe code will be executed with the length of the input string\n");
+       if(watchMessages) System.out.println("The number of characters to get is greater than the length of the input string\nThe code will be executed with the length of the input string\n");
         n = input.length();
     }
 
@@ -409,7 +421,7 @@ public int compareTableImplement(String line, String nLine, int CharsNumToCompar
     if(line != null){
     // Get the first N characters of the input string
         // Obtener los primeros N caracteres de la cadena de entrada
-        String element = getNchars(line, CharsNumToCompare_SRING_MORE_LONG);
+        String element = getNchars(line, CharsNumToCompare_SRING_MORE_LONG, false);
         if(element == null) return -1;
         if (hashTableForCompare.containsKey(element) && !withArgumets) {
             // Verificar que no haya caracteres inesperados después del  carácter
@@ -432,7 +444,7 @@ public int compareTableImplement(String line, String nLine, int CharsNumToCompar
             //Iterar hasta encontrar una conincidencia
             while(!(hashTableForCompare.containsKey(element)) && i <= CharsNumToCompare_SRING_MORE_LONG){
                  sub= CharsNumToCompare_SRING_MORE_LONG-i;
-                element = getNchars(element, sub);             
+                element = getNchars(element, sub, false);             
                 if(iEspecial != null) iEspecial.setValor(sub);
                 i++;
             }
@@ -894,7 +906,7 @@ public int checkExcep(String lineToCheck, ArrayList<String>exceptions){
       for(String excep : exceptions){
             int siz = excep.length();
             String forComprobate = lineToCheck;
-             forComprobate = getNchars(forComprobate, siz);
+             forComprobate = getNchars(forComprobate, siz, false);
             if(exceptions.contains(forComprobate)){
                 return 1;
             }
@@ -908,11 +920,23 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
         System.err.println("Error in the parameters, need put 'foramtForResolve' and 'formatToResolve'\n");
         return -1;
     }
+    Parser p = new Parser();
+    ArrayList<ArrayList<Character>> ORgatesOptionsAppears = new ArrayList<>();
+    int n2;
+    ArrayList<Integer>indexOfORgatesStart = new ArrayList<>();
+    while((n2 = p.searchString(false, formatForResolve, indicateORgateInFormatForResolve.toString(), 0, stopToAnalizeWhenFindThis, false))!=-1){
+        Parser.MutableTypeData<String> formatForResolve2 = p.new MutableTypeData<>(formatForResolve);
+        ArrayList<Character> ORoptions = new ArrayList<>();
+        createArrayForORLetters(formatForResolve2, ORoptions, stopToAnalizeWhenFindThis, indicateORgateInFormatForResolve);
+        ORgatesOptionsAppears.add(ORoptions);
+        formatForResolve = formatForResolve2.getValor();
+        indexOfORgatesStart.add(n2);
+    }
     if(formatToResolve.getValor().length() <= formatForResolve.length()){
-        System.err.println("Error in the parameters, can't proccess if the formatForResolve is equal or greather than the formatToResolve\nDETAILS:Because that reomve characters for the formatToResolve\n");
+        System.err.println("Error in the parameters, can't proccess if the formatForResolve is equal or less than the formatToResolve\nDETAILS:Because that reomve characters for the formatToResolve\n");
         return -1;
     }
-    Parser p = new Parser();
+    
     //verified the character for mantain in the end of format are less or equal like the actuals find or put in the formatToResolve
     if(forReomveAndStayInTheEndOfFormatForTheFinalResult != null && !forReomveAndStayInTheEndOfFormatForTheFinalResult.isEmpty()){
         boolean error = false;
@@ -927,17 +951,6 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
     }
     if(error) return -1;
   }
-    ArrayList<ArrayList<Character>> ORgatesOptionsAppears = new ArrayList<>();
-    int n2;
-    ArrayList<Integer>indexOfORgatesStart = new ArrayList<>();
-    while((n2 = p.searchString(false, formatForResolve, indicateORgateInFormatForResolve.toString(), 0, stopToAnalizeWhenFindThis, false))!=-1){
-        Parser.MutableTypeData<String> formatForResolve2 = p.new MutableTypeData<>(formatForResolve);
-        ArrayList<Character> ORoptions = new ArrayList<>();
-        createArrayForORLetters(formatForResolve2, ORoptions, stopToAnalizeWhenFindThis, indicateORgateInFormatForResolve);
-        ORgatesOptionsAppears.add(ORoptions);
-        formatForResolve = formatForResolve2.getValor();
-        indexOfORgatesStart.add(n2);
-    }
           
      StringBuilder newFormatToR = new StringBuilder(formatToResolve.getValor());
      int index2 = 0;

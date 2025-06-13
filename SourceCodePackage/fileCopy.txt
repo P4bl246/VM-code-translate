@@ -1,9 +1,10 @@
-1 function12h132llo23Panda~123sdflgjk
-2 if-gotohola1234
-3 labelhola1234
-4 add
-5 poplocal10
-6 pushconstant5
-7 sub
-8 gt
-9 eq
+function12h132llo23Panda~123
+if-gotohola1234
+labelhola1234
+add
+poplocal10
+pushconstant5
+sub
+gt
+eq
+return

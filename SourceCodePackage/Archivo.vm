@@ -7,3 +7,4 @@ push constant 5
 sub
 gt
 eq
+return
