@@ -112,6 +112,7 @@ public int parser_Sintaxis(String File_in) {
                               // Variable para verificar si el comando es una función
     HashMap<String, Integer> others = new HashMap<>();
     createHashTable("return", 0, null, others, null);
+    HashMap<String, Integer> memoryOfFunctions = new HashMap<>();
 
     while(true) {
         nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null);
@@ -160,7 +161,16 @@ public int parser_Sintaxis(String File_in) {
                 System.err.printf("Error in the line %s\nDETAILS: The command '%s' must have arguments\n", nLine, line.substring(0, LengthOfCommand.getValor()));
                 return -1;
             }
-            if(line.substring(0, LengthOfCommand.getValor()).equals("function")) function++;
+            if(line.substring(0, LengthOfCommand.getValor()).equals("function")){ 
+                function++;
+                StringBuilder functionNameAndLocalVariables = new StringBuilder(line.substring(LengthOfCommand.getValor(), line.length()));
+                functionNameAndLocalVariables.delete(LengthOfCommand.getValor()+LengthOfArg.getValor(), LengthOfCommand.getValor()+LengthOfArg.getValor()+1);
+                if(!memoryOfFunctions.containsKey(functionNameAndLocalVariables.toString())) createHashTable(functionNameAndLocalVariables.toString(), 0, null, memoryOfFunctions, null);//add to functions creates
+                else{
+                    System.out.printf("Error in the line %s\nDETAILS: The function '%s' are created before\n", nLine, functionNameAndLocalVariables.toString());
+                    return -1;
+                }
+            }
           } 
             continue;
           }
