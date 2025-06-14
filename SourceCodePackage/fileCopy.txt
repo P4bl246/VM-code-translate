@@ -1,10 +1,10 @@
-function12h132llo23Panda~123
-if-gotohola1234
-labelhola1234
+functionSimpleFunction.test~2
+pushlocal0
+pushlocal1
 add
-poplocal10
-pushconstant5
+not
+pushargument0
+add
+pushargument1
 sub
-gt
-eq
 return

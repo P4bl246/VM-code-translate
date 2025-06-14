@@ -780,7 +780,7 @@ public void numLines(String Read_File_in) throws ParsingException {
          Writer writterFile = new FileWriter("fileWithNumLines.txt")) {
        
         int c = ReadFile.read();
-        int line = 1;
+        int line = 0;
         // Read the file character by character
         // Leer el archivo carácter por carácter
         while (c != -1) {
@@ -997,6 +997,7 @@ public void trateSpecialsStrings(ArrayList<String> lineToidentify, String inputF
 
         String line;
         while ((line = reader.readLine()) != null) {
+            line = line.trim();
             StringBuilder newLine = new StringBuilder(line);
 
             // Construir la línea sin espacios ni caracteres vacíos
@@ -1007,13 +1008,17 @@ public void trateSpecialsStrings(ArrayList<String> lineToidentify, String inputF
                     withoutSpaces.append(c);
                 }
                 else{
-                    if(c == ' ' || c == '\t' || c == '\r') newLine.deleteCharAt(i);
-                    break;
+                    if(c == ' ' || c == '\t' || c == '\r'){
+                         newLine.deleteCharAt(i);
+                         i=0;
+                         }
+                    if(!withoutSpaces.isEmpty())break;
                 }
             }
 
             // Si la línea sin espacios es igual a la cadena de entrada
-            if (lineToidentify.contains(withoutSpaces.toString())) {
+            String forCompare = withoutSpaces.toString().trim();
+            if (lineToidentify.contains(forCompare)) {
                 int indexOfSpace = newLine.indexOf(" ");
                 if (indexOfSpace != -1) {
                     newLine.setCharAt(indexOfSpace, '~');
@@ -1052,6 +1057,47 @@ public void trateSpecialsStrings(ArrayList<String> lineToidentify, String inputF
         throw new ParsingException("Error to try remove the original file: " + inputFile);
     }
 }
+//--------------------------------------------------------------
+/** 
+ * Remove void lines in a file, this function read the file line by line and remove all lines that are empty or contain only whitespace characters
+ * @param Read_File_in File to remove void lines
+ * @return void
+ * @throws ParsingException if the file is null or empty, or if an error occurs during file processing
+*/
+public void removeVoidLines(String Read_File_in) throws ParsingException {
+    if(Read_File_in == null){
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
+    }
+    if(Read_File_in.isEmpty()){
+        throw new ParsingException("Error: The file to proccess is empty or not exist");
+    }
+    System.out.printf("\nREMOVING VOID LINES FROM THE FILE: '%s'...\n\n", Read_File_in);
+    // Open the file for reading and the file for writing
+    // Abrir el archivo para lectura y el archivo de escritura
+    try(BufferedReader ReadFile = new BufferedReader(new FileReader(Read_File_in)); BufferedWriter WritteFile = new BufferedWriter(new FileWriter("tempWithoutVoidLines.txt"))){
+        String line;
+        while((line = ReadFile.readLine()) != null){
+            if(line.trim().isEmpty()) continue; // Skip empty lines
+            WritteFile.write(line);
+            WritteFile.newLine();
+        }
+    } catch (IOException e) {
+        throw new ParsingException("Error in the reading or writing file: " + e.getMessage(), e);
+    }
+    // Reemplaza el archivo original por el temporal
+    File original = new File(Read_File_in);
+    File temporal = new File("tempWithoutVoidLines.txt");
 
+    if (original.delete()) {
+        if (temporal.renameTo(original)) {
+            System.out.printf("THE FILE '%s' ARE BE CLEANING AND UPLOAD.\n", Read_File_in);
+            return;
+        } else {
+            throw new ParsingException("Error to try rename the file: " + Read_File_in);
+        }
+    } else {
+        throw new ParsingException("Error to try remove the original file: " + Read_File_in);
+    }
+}
 //END THE PROCCES TO PREPARE FILES(TERMINA EL PROCESO DE PREPARACIÓN DE ARCHIVOS)--------------------------------------------------------------
 }

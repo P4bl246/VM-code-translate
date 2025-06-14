@@ -14,6 +14,7 @@ public int transalte(String file_in){
     CreatePredefindArrays(commands, representationAssembly, state, repeatCode);
     n= CreateHash(commands, representationAssembly, predet);
     try{
+         function.removeVoidLines(file_in);
          function.removeVoidChars(file_in, null);
     } catch (ParsingException e) {
         System.out.println("Error parsing file: " + file_in);}
@@ -55,15 +56,14 @@ public int transalte(String file_in){
        segments.put("static", "@"+nameOfFile+"."+Integer.toString(staticlabel.getValor()));
        segments.put("this", "@THIS");
        segments.put("that", "@THAT");
-       segments.put("pointer0", "@THIS");
-       segments.put("pointer1", "@THAT");
-       segments.put("temp", "@temp");
+       segments.put("pointer1", "@THIS");
+       segments.put("pointer0", "@THAT");
+       segments.put("temp", "@5");
        ArrayList<String>excep = new ArrayList<>();
        excep.add("pointer");
        int i = 0, c = 0, localPut = 0;
        int functionsCalls = 0;
        String functionName = "";
-       String returnAddress = "";
       while((line = file.readLine()) != null){
       isBoolCommand.setValor(false);
       flag.setValor(false);
@@ -115,23 +115,35 @@ public int transalte(String file_in){
            if(line.substring(0, lengthCommand.getValor()).equals("call")){
             assembly = assembly.replace("NAME_F", arg.getValor());
             assembly = assembly.replace("numberI", Integer.toString(functionsCalls));
-            returnAddress = arg.getValor()+"$ret."+Integer.toString(functionsCalls);
             assembly = assembly.replace("ArgPos", valueArg.getValor());
             assembly = assembly.replace("RPCFN", arg.getValor());
             functionsCalls++;
            }
            else{
+            if(arg.getValor().equals("constant")){
+                assembly = "\n//push constant\n@"+valueArg.getValor()+"\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+            }
+            else{
+                if(arg.getValor().equals("pointer1")|| arg.getValor().equals("pointer0")){
+                    if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//pop pointer command\nD=M\n@SP\nA=M-1\nD=M\nRARG\nM=D\n@SP\nM=M-1\n";
+                        else assembly = "\n//push pointer command\nRARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+                        assembly = assembly.replace("RARG", segments.get("pointer"+valueArg.getValor()));  
+                }
+                else{
+                    if(arg.getValor().equals("temp")){
+                        if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//pop temp command\nRPI\nD=A\nRARG\nD=A+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n";
+                    }
+                 
           assembly = assembly.replace("RPI", "@"+valueArg.getValor());
           assembly = assembly.replace("RARG", segments.get(arg.getValor()));
           if(arg.getValor() == "static") staticlabel.setValor(staticlabel.getValor()+1);//incremet the static label value for generete a new label
-             
+    
+                }
+            }
            }
           }
          }
         }
-        if(line.substring(0, lengthCommand.getValor()).equals("return")){
-            assembly = assembly.replace("RFRNAD", returnAddress);
-           }
        writteFile.write(assembly);
        writteFile.newLine();
         }
@@ -150,7 +162,12 @@ public int transalte(String file_in){
             System.out.println("Error deleting the copy file: " + fileEdit);
             return -1;
         }
-    } 
+    }
+    try{function.removeVoidLines("Assembly.asm");
+    } catch (ParsingException e) {
+        System.out.println("Error parsing Assembly file: " + e.getMessage());
+        return -1;
+    }
     System.out.println("\nASSEMBLY FILE GENERATE\n");
     return 0;
 }
@@ -158,9 +175,9 @@ public HashMap<String, String>predet = new HashMap<>();
 //------------------------------------------------------------------------
 public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>representationAssembly, ArrayList<Boolean>state, ArrayList<String>constantsC){
     commands.add("add");
-    representationAssembly.add("\n//add command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M+D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");
+    representationAssembly.add("\n//add command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M+D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1");
     commands.add("sub");
-    representationAssembly.add("\n//sub command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1\n@SP\nA=M\nM=0");
+    representationAssembly.add("\n//sub command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1"); 
     commands.add("neg");
     representationAssembly.add("\n//neg command\n@SP\nA=M-1\nM=!M\n");
     commands.add("lt");
@@ -170,9 +187,9 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("eq");
     representationAssembly.add("\n//eq command\n@SP\nA=M-1\nA=A-1\nD=M-D\nct\nD;JEQ\ncf\nD;JNE\n");
     commands.add("pop");
-    representationAssembly.add("\n//pop command\nRPI\nD=A\nRARG\nD=M+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\nM=0\n@SP\nM=M-1\n");
+    representationAssembly.add("\n//pop command\nRPI\nD=A\nRARG\nD=M+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n");
     commands.add("push");
-    representationAssembly.add("\n//push command\nRPI\nD=A\nRARG\nA=M+D\nD=M\nM=0\n@SP\nA=M\nM=D\n@SP\nM=M+1\n@SP\nA=M\nM=0\n");
+    representationAssembly.add("\n//push command\nRPI\nD=A\nRARG\nA=M+D\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n@SP\nA=M\n");
     commands.add("and");
     representationAssembly.add("\n//and command\n@SP\nA=M-1\nA=A-1\nD=M\n@SP\nA=M-1\nD=M-D\nct\nD;JEQ\ncf\nD;JGL\n");
     commands.add("or");
@@ -184,14 +201,14 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("goto");
     representationAssembly.add("\n//goto command\n@LBL\n0;JMP\n");
     commands.add("if-goto");
-    representationAssembly.add("\n//if-goto command\n@SP\nA=M-1\nD=M-1\n@LBL\nD;JEQ\n");
+    representationAssembly.add("\n//if-goto command\n@SP\nA=M-1\nD=M\n@SP\nM=M-1\n@LBL\nD;JGT\n");
     commands.add("call");
     representationAssembly.add("\n/*push return address\n*code after the 'call' or the next line*/\n@NAME_F$ret.numberI\nD=A\n@SP\nA=M\nA=D\n@SP\nM=M+1\n"+
                     "//push LCL pointer value\n@LCL\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//push ARG pointer value\n@ARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//push THIS pointer value\n@THIS\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
-                    "//push THAT pointer value\n@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n@SP\nA=M\nM=0\n"+
-                    "//reposition ARG pointer value\n@SP\nD=M\n@5\nD=D-A\n@ArgPos\nA=A-1\nD=D-A\n@ARG\nM=D\n"+
+                    "//push THAT pointer value\n@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n@SP\nA=M\n"+
+                    "//reposition ARG pointer value\n@SP\nD=M\n@5\nD=D-A\n@ArgPos\nD=D-A\n@ARG\nM=D\n"+
                     "//repostion LCL pointer value\n@SP\nD=M\n@LCL\nM=D\n//goto RPCFN\n@RPCFN\n0;JMP\n(NAME_F$ret.numberI)\n");
     
     commands.add("function");
@@ -202,8 +219,9 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     "//restore THAT\n@LCL\nA=M-1\nD=M\n@THAT\nM=D\n"+
     "//restore THIS\n@2\nD=A\n@LCL\nA=M-D\nD=M\n@THIS\nM=D\n"+
     "//restore ARG\n@3\nD=A\n@LCL\nA=M-D\nD=M\n@ARG\nM=D\n"+
+    "//retore ReturnAddress\n@5\nD=A\n@LCL\nA=M-D\nD=M\n@RFRNAD~\nM=D\n"+
     "//restore LCL\n@4\nD=A\n@LCL\nA=M-D\nD=M\n@LCL\nM=D\n"+
-    "@RFRNAD\n0;JMP\n");
+    "@RFRNAD~\nA=M\n0;JMP\n");
     //constant code
     //codigo constante
     constantsC.add("\nt\n@SP\nA=M-1\nA=A-1\nM=1\n@SP\nM=M-1\n@SP\nA=M\nM=0\n/\nf\n@SP\nA=M-1\nA=A-1\nM=0\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");

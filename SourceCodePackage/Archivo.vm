@@ -1,10 +1,18 @@
-function 12h132llo23Panda 123
-if-goto hola1234
-label hola1234
-add
-p/*this is a pop operations/*not are puhs*/NO*/op local 10
-push constant 5
-sub
-gt
-eq
-return
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/8/FunctionCalls/SimpleFunction/SimpleFunction.vm
+
+// Performs a simple calculation and returns the result.
+// argument[0] and argument[1] must be set by the caller.
+
+function SimpleFunction.test 2
+	push local 0
+	push local 1
+	add
+	not
+	push argument 0
+	add
+	push argument 1
+	sub
+	return

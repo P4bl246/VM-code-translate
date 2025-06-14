@@ -27,7 +27,7 @@ public class executable {
 
         if (fileOrDir.isDirectory()) {
             // Unir todos los archivos .vm en uno solo
-            File[] files = fileOrDir.listFiles((dir, name) -> name.endsWith(".vm"));
+            File[] files = fileOrDir.listFiles((file) -> file.getName().endsWith(".vm"));
             if (files != null && files.length > 0) {
                 String mergedFile = "merged.vm";
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(mergedFile))) {
