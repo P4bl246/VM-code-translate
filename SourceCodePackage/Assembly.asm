@@ -1,70 +1,3 @@
-//Bootstrap code
-//Iinitialize SP
-@256
-D=M
-@SP
-M=D
-/*push return address
-*code after the 'call' or the next line*/
-@Sys.init$ret.0
-D=A
-@SP
-A=M
-A=D
-@SP
-M=M+1
-//push LCL pointer value
-@LCL
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//push ARG pointer value
-@ARG
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//push THIS pointer value
-@THIS
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//push THAT pointer value
-@THAT
-D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-@SP
-A=M
-//reposition ARG pointer value
-@SP
-D=M
-@5
-D=D-A
-@0
-D=D-A
-@ARG
-M=D
-//repostion LCL pointer value
-@SP
-D=M
-@LCL
-M=D
-//goto Sys.init
-@Sys.init
-0;JMP
-(Sys.init$ret.0)
 //functionSimpleFunction.test~2
 (SimpleFunction.test)
 @2
@@ -119,6 +52,11 @@ A=A-1
 M=D
 @SP
 M=M-1
+//not command
+@SP
+A=M-1
+M=M+1
+M=!M
 //push command
 @0
 D=A
