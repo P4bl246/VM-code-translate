@@ -195,7 +195,7 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("or");
     representationAssembly.add("\n//or command\n@2\nD=A\n@SP\nA=M-1\nA=A-1\nD=D-M\n@SP\nA=M-1\nD=M-D\nD=D-1\nct\nD;JLE\ncf\nD;JGT\n");
     commands.add("not");
-    representationAssembly.add("\n//not command\n@SP\nA=M-1\nD=!M\nct\nD;JEQ\ncf\nD;JNE\n");
+    representationAssembly.add("\n//not command\n@SP\nA=M-1\nA=A-1\nD=!M\nct\nD;JLT\ncf\nD;JEQ\n");
     commands.add("label");
     representationAssembly.add("\n//label command\n(LBL)\n");
     commands.add("goto");
