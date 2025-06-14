@@ -322,7 +322,7 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
     .setArgTable(n.argsTable)
     .setCommandLength(8)
     .setArgLength(8)
-    .setFormatPatternMostLong("pushconstant-32768")
+    .setFormatPatternMostLong("pushconstant32768")
     .setFormatPatternLessLong("popthis0")
     .setCommandsWithoutPatterns(commandswithoutFormat)
     .setCommandsWithFlexiblePattern(withoutPatternButWithivalue)

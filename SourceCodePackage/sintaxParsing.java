@@ -87,7 +87,7 @@ public int parser_Sintaxis(String File_in) {
     .setArgTable(argsTable)
     .setCommandLength(8)
     .setArgLength(8)
-    .setFormatPatternMostLong("pushconstant-32768")
+    .setFormatPatternMostLong("pushconstant32768")
     .setFormatPatternLessLong("popthis0")
     .setExceptions(excep)
     .setMultipleFormatsPatterns(null)
