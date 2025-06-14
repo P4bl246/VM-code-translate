@@ -64,6 +64,7 @@ public int transalte(String file_in){
        int i = 0, c = 0, localPut = 0;
        int functionsCalls = 0;
        String functionName = "";
+       boolean beforeIsBool = false;
       while((line = file.readLine()) != null){
       isBoolCommand.setValor(false);
       flag.setValor(false);
@@ -80,6 +81,10 @@ public int transalte(String file_in){
             return -1;
         }
         if(isBoolCommand.getValor()){
+            if(line.substring(0, lengthCommand.getValor()).equals("not")&& !beforeIsBool){
+               assembly = "\n//not command\n@SP\nA=M-1\nM=M+1\nM=!M\n";
+            }
+            else{
         assembly = assembly.replace("ct", trCall);
         assembly = assembly.replace("cf", fsCall);
            String trueandfalse= repeatCode.get(0);
@@ -88,13 +93,16 @@ public int transalte(String file_in){
            trueandfalse = trueandfalse.replace("/", continueHCall);
            i++;
            c++;
+           beforeIsBool=true;
            writteFile.write(assembly+trueandfalse);
            writteFile.newLine();
            writteFile.write(continueH);
            writteFile.newLine();
+           }
            continue;
         }
        else if(isArgCommand.getValor()){
+        beforeIsBool = false;
           if(flag.getValor()){
              arg.setValor(arg.getValor()+valueArg.getValor());
               valueArg.setValor("0");
@@ -193,7 +201,7 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("and");
     representationAssembly.add("\n//and command\n@SP\nA=M-1\nA=A-1\nD=M\n@SP\nA=M-1\nD=M-D\nct\nD;JEQ\ncf\nD;JNE\n");
     commands.add("or");
-    representationAssembly.add("\n//or command\n@2\nD=A\n@SP\nA=M-1\nA=A-1\nD=D-M\n@SP\nA=M-1\nD=M-D\nD=D-1\nct\nD;JLE\ncf\nD;JGT\n");
+    representationAssembly.add("\n//or command\n@2\nD=A\n@SP\nA=M-1\nA=A-1\nM=!M\nD=D-M\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=!M\n@SP\nA=M\nD=D-M\nD=D-1\nct\nD;JLE\ncf\nD;JGT\n");
     commands.add("not");
     representationAssembly.add("\n//not command\n@SP\nA=M-1\nD=!M\nct\nD;JLT\ncf\nD;JEQ\n");
     commands.add("label");
@@ -224,7 +232,7 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     "@RFRNAD~\nA=M\n0;JMP\n");
     //constant code
     //codigo constante
-    constantsC.add("\nt\n@SP\nA=M-1\nA=A-1\nM=1\n@SP\nM=M-1\n@SP\nA=M\nM=0\n/\nf\n@SP\nA=M-1\nA=A-1\nM=0\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");
+    constantsC.add("\nt\n@SP\nA=M-1\nA=A-1\nM=-1\n@SP\nM=M-1\n@SP\nA=M\nM=0\n/\nf\n@SP\nA=M-1\nA=A-1\nM=0\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");
 }
 //------------------------------------------------------------------------
 public int CreateHash(ArrayList<String>keys, ArrayList<String>values, HashMap<String, String>hashT){
