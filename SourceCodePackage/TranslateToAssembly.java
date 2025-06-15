@@ -56,8 +56,8 @@ public int transalte(String file_in){
        segments.put("static", "@"+nameOfFile+"."+Integer.toString(staticlabel.getValor()));
        segments.put("this", "@THIS");
        segments.put("that", "@THAT");
-       segments.put("pointer1", "@THIS");
-       segments.put("pointer0", "@THAT");
+       segments.put("pointer0", "@THIS");
+       segments.put("pointer1", "@THAT");
        segments.put("temp", "@5");
        ArrayList<String>excep = new ArrayList<>();
        excep.add("pointer");
@@ -103,19 +103,23 @@ public int transalte(String file_in){
               valueArg.setValor("0");
             }
            if(line.substring(0, lengthCommand.getValor()).equals("label") || line.substring(0, lengthCommand.getValor()).equals("goto") ||
-           line.substring(0, lengthCommand.getValor()).equals("if-goto")) assembly = assembly.replace("LBL", functionName+"$"+arg.getValor());
+           line.substring(0, lengthCommand.getValor()).equals("if-goto")){
+             assembly = assembly.replace("LBL", functionName+"$"+arg.getValor());
+             assembly = assembly.replace("comment", line);
+             }
            else{
            if(line.substring(0, lengthCommand.getValor()).equals("function")){
             functionName = arg.getValor();
-            assembly = assembly.replace("FCM", line);
+            assembly = assembly.replace("FCM", "function "+functionName+" "+valueArg.getValor());
             assembly = assembly.replace("RNMF", arg.getValor());
             assembly = assembly.replace("nArgs", valueArg.getValor());
             assembly = assembly.replace("ñ", "ñ"+Integer.toString(localPut));
-            assembly = assembly.replace("continueH", "inyectLocal-ñ-~♫"+Integer.toString(localPut));
+            assembly = assembly.replace("continueH", "inyectLocal-ñ-~♫"+Integer.toString(localPut)); 
             localPut++;
            }
            else{
            if(line.substring(0, lengthCommand.getValor()).equals("call")){
+            assembly = assembly.replace("comment", "call "+arg.getValor()+" "+valueArg.getValor());
             assembly = assembly.replace("NAME_F", arg.getValor());
             assembly = assembly.replace("numberI", Integer.toString(functionsCalls));
             assembly = assembly.replace("ArgPos", valueArg.getValor());
@@ -124,19 +128,23 @@ public int transalte(String file_in){
            }
            else{
             if(arg.getValor().equals("constant")){
-                assembly = "\n//push constant\n@"+valueArg.getValor()+"\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+                assembly = "\n//comment\n@"+valueArg.getValor()+"\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+                assembly = assembly.replace("comment", line);
             }
             else{
                 if(arg.getValor().equals("pointer1")|| arg.getValor().equals("pointer0")){
-                    if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//pop pointer command\nD=M\n@SP\nA=M-1\nD=M\nRARG\nM=D\n@SP\nM=M-1\n";
-                        else assembly = "\n//push pointer command\nRARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
-                        assembly = assembly.replace("RARG", segments.get("pointer"+valueArg.getValor()));  
+                    if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//comment\n@SP\nA=M-1\nD=M\nRARG\nM=D\n@SP\nM=M-1\n";
+                        else assembly = "\n//comment\nRARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+                        assembly = assembly.replace("RARG", segments.get(arg.getValor()));  
+                        assembly = assembly.replace("comment", line);
                 }
                 else{
                     if(arg.getValor().equals("temp")){
-                        if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//pop temp command\nRPI\nD=A\nRARG\nD=A+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n";
+                        if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//comment\nRPI\nD=A\nRARG\nD=A+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n";
+                      else assembly = "\n//comment\nRPI\nD=A\nRARG\nA=A+D\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+                      
                     }
-                 
+                 assembly = assembly.replace("comment", line);
           assembly = assembly.replace("RPI", "@"+valueArg.getValor());
           assembly = assembly.replace("RARG", segments.get(arg.getValor()));
           if(arg.getValor() == "static") staticlabel.setValor(staticlabel.getValor()+1);//incremet the static label value for generete a new label
@@ -178,53 +186,55 @@ public HashMap<String, String>predet = new HashMap<>();
 //------------------------------------------------------------------------
 public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>representationAssembly, ArrayList<Boolean>state, ArrayList<String>constantsC){
     commands.add("add");
-    representationAssembly.add("\n//add command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M+D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1");
+    representationAssembly.add("\n//'add' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=D+M\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1");
     commands.add("sub");
-    representationAssembly.add("\n//sub command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1"); 
+    representationAssembly.add("\n//'sub' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=D-M\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1"); 
     commands.add("neg");
-    representationAssembly.add("\n//neg command\n@SP\nA=M-1\nM=-M\n");
+    representationAssembly.add("\n//'neg' command\n@SP\nA=M-1\nM=-M\n");
     commands.add("lt");
-    representationAssembly.add("\n//lt command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\nct\nD;JLT\ncf\nD;JGE\n");
+    representationAssembly.add("\n//'lt' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\nct\nD;JLT\ncf\nD;JGE\n");
     commands.add("gt");
-    representationAssembly.add("\n//gt command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\nct\nD;JGT\ncf\nD;JLE\n");
+    representationAssembly.add("\n//'gt' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\nct\nD;JGT\ncf\nD;JLE\n");
     commands.add("eq");
-    representationAssembly.add("\n//eq command\n@SP\nA=M-1\nA=A-1\nD=M-D\nct\nD;JEQ\ncf\nD;JNE\n");
+    representationAssembly.add("\n//'eq' command\n@SP\nA=M-1\nA=A-1\nD=M-D\nct\nD;JEQ\ncf\nD;JNE\n");
     commands.add("pop");
-    representationAssembly.add("\n//pop command\nRPI\nD=A\nRARG\nD=M+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n");
+    representationAssembly.add("\n//comment\nRPI\nD=A\nRARG\nD=M+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n");
     commands.add("push");
-    representationAssembly.add("\n//push command\nRPI\nD=A\nRARG\nA=M+D\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n@SP\nA=M\n");
+    representationAssembly.add("\n//comment\nRPI\nD=A\nRARG\nA=M+D\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n");
     commands.add("and");
-    representationAssembly.add("\n//and command\n@SP\nA=M-1\nA=A-1\nD=M\n@SP\nA=M-1\nD=M-D\nct\nD;JEQ\ncf\nD;JNE\n");
+    representationAssembly.add("\n//'and' command\n@SP\nA=M-1\nA=A-1\nD=M\n@SP\nA=M-1\nD=M-D\nct\nD;JEQ\ncf\nD;JNE\n");
     commands.add("or");
-    representationAssembly.add("\n//or command\n@2\nD=A\n@SP\nA=M-1\nA=A-1\nM=-M\nD=D-M\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=-M\n@SP\nA=M\nD=D-M\nD=D-1\nct\nD;JLE\ncf\nD;JGT\n");
+    representationAssembly.add("\n//'or' command\n@2\nD=A\n@SP\nA=M-1\nA=A-1\nM=-M\nD=D-M\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=-M\n@SP\nA=M\nD=D-M\nD=D-1\nct\nD;JLE\ncf\nD;JGT\n");
     commands.add("not");
-    representationAssembly.add("\n//not command\n@SP\nA=M-1\nM=!M\n");
+    representationAssembly.add("\n//'not' command\n@SP\nA=M-1\nM=!M\n");
     commands.add("label");
-    representationAssembly.add("\n//label command\n(LBL)\n");
+    representationAssembly.add("\n//comment\n(LBL)\n");
     commands.add("goto");
-    representationAssembly.add("\n//goto command\n@LBL\n0;JMP\n");
+    representationAssembly.add("\n//comment\n@LBL\n0;JMP\n");
     commands.add("if-goto");
-    representationAssembly.add("\n//if-goto command\n@SP\nA=M-1\nD=M\n@SP\nM=M-1\n@LBL\nD;JGT\n");
+    representationAssembly.add("\n//comment\n@SP\nA=M-1\nD=M\n@SP\nM=M-1\n@LBL\nD;JGT\n");
     commands.add("call");
-    representationAssembly.add("\n/*push return address\n*code after the 'call' or the next line*/\n@NAME_F$ret.numberI\nD=A\n@SP\nA=M\nA=D\n@SP\nM=M+1\n"+
+    representationAssembly.add("\n//comment\n/*push return address\n*code after the 'call' or the next line*/\n@NAME_F$ret.numberI\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//push LCL pointer value\n@LCL\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//push ARG pointer value\n@ARG\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//push THIS pointer value\n@THIS\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
-                    "//push THAT pointer value\n@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n@SP\nA=M\n"+
+                    "//push THAT pointer value\n@THAT\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//reposition ARG pointer value\n@SP\nD=M\n@5\nD=D-A\n@ArgPos\nD=D-A\n@ARG\nM=D\n"+
                     "//repostion LCL pointer value\n@SP\nD=M\n@LCL\nM=D\n//goto RPCFN\n@RPCFN\n0;JMP\n(NAME_F$ret.numberI)\n");
     
     commands.add("function");
     representationAssembly.add("\n//FCM\n(RNMF)\n@nArgs\nD=A\n($Esp_Lo~opñ)\n@continueH\nD;JLE\n@SP\nA=M\nM=0\n@SP\nM=M+1\nD=D-1\n@$Esp_Lo~opñ\n0;JMP\n(continueH)\n");
     commands.add("return");
-    representationAssembly.add("\n@SP\nA=M-1\nD=M\n@ARG\nA=M\nM=D\n"+
-    "\n@ARG\nD=M\n//reposition SP\n@SP\nM=D+1\n/*restore and recuperate the values*/\n"+
+    representationAssembly.add("\n//RETURN\n"+
+    "//get and save the retrun address\n@LCL\nD=M\n@5\nD=D-A\nA=D\nD=M\n@RFRNAD~\nM=D\n"+
+    "//put the value in ARG from the caller\n@SP\nA=M-1\nD=M\n@ARG\nA=M\nM=D"+
+    "//reposition SP\n@ARG\nD=M\n@SP\nM=D+1\n"+
+    "/*\nRestore and recuperate the values\n*THAT\n*THIS\n*ARG\n*LCL\n*/\n"+
     "//restore THAT\n@LCL\nA=M-1\nD=M\n@THAT\nM=D\n"+
     "//restore THIS\n@2\nD=A\n@LCL\nA=M-D\nD=M\n@THIS\nM=D\n"+
     "//restore ARG\n@3\nD=A\n@LCL\nA=M-D\nD=M\n@ARG\nM=D\n"+
-    "//retore ReturnAddress\n@5\nD=A\n@LCL\nA=M-D\nD=M\n@RFRNAD~\nM=D\n"+
     "//restore LCL\n@4\nD=A\n@LCL\nA=M-D\nD=M\n@LCL\nM=D\n"+
-    "@RFRNAD~\nA=M\n0;JMP\n");
+    "//goto Return-Addr\n@RFRNAD~\nA=M\n0;JMP\n");
     //constant code
     //codigo constante
     constantsC.add("\nt\n@SP\nA=M-1\nA=A-1\nM=-1\n@SP\nM=M-1\n@SP\nA=M\nM=0\n/\nf\n@SP\nA=M-1\nA=A-1\nM=0\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");

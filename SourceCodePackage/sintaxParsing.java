@@ -1054,23 +1054,23 @@ public String identifyTheFlexibleFormat(String forGetTheFormat, int sensibleToUp
         else{
             //if the character actual are in the list of special characters
             if(specialCharsForIdentify != null){
-                for(Character charActual : specialCharsForIdentify){
-                    if(actualCharType == identifyTypeIntOrChar(charActual, sensibleToUppercase)){
-                        format.append("S");//add EL for SpecialLetter
+                if(specialCharsForIdentify.contains(forGetTheFormat.charAt(i))){
+                        format.append("S");//add S for SpecialLetter
                         if(indexWhereFindTheSpecialCharsInTheLine != null) indexWhereFindTheSpecialCharsInTheLine.add(i);
-                        break;
+                        
                     }
-                }
-            }
-            //if not have special character identify like other letter
-            else{
+                    //if not have special character identify like other letter
+                 else{
                      if((char)actualCharType != 'L') format.append("L");
                  }
+                    
+                }
+            }
+        before = actualCharType;
          continue;
         }
         before = actualCharType;
     }
-  }
   return format.toString();
 }
 //-------------------------------------------------------
