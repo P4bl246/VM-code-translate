@@ -3,8 +3,22 @@ import java.util.*;
 import java.io.*;
 import AuxClass.Parser.*;
 public class TranslateToAssembly {
-public int transalte(String file_in){
+public int translate(String file_in, String nameOfAssemblyFileGenerate, Parser.MutableTypeData<Boolean> indicatePutBootStrap, boolean itsPartOfFolder, Counters counterForFolders){
     System.out.println("\nGENERATING ASSEMBLY FILE...\n");
+    if(nameOfAssemblyFileGenerate == null || file_in == null){
+        System.err.println("Error: Need puth both parameters\n");
+        return -1;
+    }
+    if(nameOfAssemblyFileGenerate.isEmpty() || file_in.isEmpty()){
+        System.err.println("Error: Need puth something in the parameters\n");
+        return -1;
+    }
+    if(itsPartOfFolder){
+        if(counterForFolders == null){
+            System.err.println("Error: if its a file from a folder need put the counters\n");
+            return -1;
+        } 
+    }
     Parser function = new Parser();
     int n;
     ArrayList<String>commands = new ArrayList<>();
@@ -19,26 +33,33 @@ public int transalte(String file_in){
     } catch (ParsingException e) {
         System.out.println("Error parsing file: " + file_in);}
     if(n != 0) return -1;
-    String fileEdit = "COPY♫file_in";
+    String fileEdit = "COPY♫file_in.txt";
     //Bootstrap code insert one time
     //Bootstrap code\n@SP\nM=256\n//call Sys.init 0\n
+    
     try(BufferedReader file = new BufferedReader(new FileReader(file_in));
     BufferedWriter writteFile = new BufferedWriter(new FileWriter(fileEdit))){
         String line2 = null;
-        writteFile.write("callSys.init~0\n");
+        if(!indicatePutBootStrap.getValor()) writteFile.write("callSys.init~0\n");
+            
         while((line2 = file.readLine()) != null){
             writteFile.write(line2);
             writteFile.newLine();
         }
+        
     } catch (IOException e) {
         System.out.println("Error creating COPY file: " + e.getMessage());
         return -1;
     }
+  
     try(BufferedReader file = new BufferedReader( new FileReader(fileEdit));
-    BufferedWriter writteFile = new BufferedWriter(new FileWriter("Assembly.asm"))){
+    BufferedWriter writteFile = new BufferedWriter(new FileWriter(nameOfAssemblyFileGenerate))){
         //put one time the bootstrap code
         //poner una vez el codigo de bootstrap
-        writteFile.write("//Bootstrap code\n//Iinitialize SP\n@256\nD=M\n@SP\nM=D\n");
+        if(!indicatePutBootStrap.getValor()){
+            writteFile.write("//Bootstrap code\n//Iinitialize SP\n@256\nD=A\n@SP\nM=D\n");
+            indicatePutBootStrap.setValor(true);
+        }
         String line;
         Parser.MutableTypeData<String> valueArg = function.new MutableTypeData<>("");
         Parser.MutableTypeData<Boolean> isBoolCommand = function.new MutableTypeData<>(false);
@@ -61,9 +82,15 @@ public int transalte(String file_in){
        segments.put("temp", "@5");
        ArrayList<String>excep = new ArrayList<>();
        excep.add("pointer");
-       int i = 0, c = 0, localPut = 0;
-       int functionsCalls = 0;
+       int i = 0, c = 0, localPut = 0, functionsCalls = 0;
+       if(itsPartOfFolder){
+        i = counterForFolders.counter1.getValor();
+        c = counterForFolders.counter2.getValor();
+        localPut = counterForFolders.counter3.getValor();
+        functionsCalls = counterForFolders.counter4.getValor();
+       } 
        String functionName = "";
+       boolean beforeIsBoolCommand = false;
       while((line = file.readLine()) != null){
       flag.setValor(false);
        String  nLine = null;
@@ -79,6 +106,7 @@ public int transalte(String file_in){
             return -1;
         }
         if(isBoolCommand.getValor()){
+            beforeIsBoolCommand = true;
             if(assembly.contains("ct") || assembly.contains("cf")){
         assembly = assembly.replace("ct", trCall);
         assembly = assembly.replace("cf", fsCall);
@@ -95,6 +123,7 @@ public int transalte(String file_in){
            writteFile.newLine();
            }
            else writteFile.write(assembly);
+           beforeIsBoolCommand = true;
            continue;
            }
        else if(isArgCommand.getValor()){
@@ -104,6 +133,7 @@ public int transalte(String file_in){
             }
            if(line.substring(0, lengthCommand.getValor()).equals("label") || line.substring(0, lengthCommand.getValor()).equals("goto") ||
            line.substring(0, lengthCommand.getValor()).equals("if-goto")){
+            if(!beforeIsBoolCommand && line.substring(0, lengthCommand.getValor()).equals("if-goto"))assembly = "\n//comment\n@SP\nA=M-1\nD=M\n@SP\nM=M-1\n@LBL\nD;JGT\n";
              assembly = assembly.replace("LBL", functionName+"$"+arg.getValor());
              assembly = assembly.replace("comment", line);
              }
@@ -139,21 +169,40 @@ public int transalte(String file_in){
                         assembly = assembly.replace("comment", line);
                 }
                 else{
+                    if(arg.getValor().equals("static")){
+                        if(line.substring(0, lengthCommand.getValor()).equals("pop")){
+                            assembly = "\n//comment\n@SP\nA=M-1\nD=M\n@staticBase\nM=D\n@SP\nM=M-1\n";
+                        }
+                        else assembly = "\n//comment\n@staticBase\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
+                        assembly = assembly.replace("comment", line);
+                        assembly = assembly.replace("staticBase", nameOfFile+"."+valueArg.getValor());
+                        staticlabel.setValor(staticlabel.getValor()+1);//increment the static label value for generate a new label
+                    }
+                    else{
                     if(arg.getValor().equals("temp")){
                         if(line.substring(0, lengthCommand.getValor()).equals("pop"))assembly = "\n//comment\nRPI\nD=A\nRARG\nD=A+D\n@SP\nA=M\nM=D\n@SP\nA=M-1\nD=M\n@SP\nA=M//go to the last value store in the stack\nA=M//go to this value\nM=D\n@SP\nA=M\nM=0\n@SP\nA=M-1\n@SP\nM=M-1\n";
                       else assembly = "\n//comment\nRPI\nD=A\nRARG\nA=A+D\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n";
                       
                     }
+                    
+                    
                  assembly = assembly.replace("comment", line);
           assembly = assembly.replace("RPI", "@"+valueArg.getValor());
-          assembly = assembly.replace("RARG", segments.get(arg.getValor()));
-          if(arg.getValor() == "static") staticlabel.setValor(staticlabel.getValor()+1);//incremet the static label value for generete a new label
-    
+          assembly = assembly.replace("RARG", segments.get(arg.getValor()));    
+                }
+                
                 }
             }
            }
           }
          }
+        beforeIsBoolCommand = false;
+        }
+        if(itsPartOfFolder){
+            counterForFolders.counter1.setValor(i);
+            counterForFolders.counter2.setValor(c);
+            counterForFolders.counter3.setValor(localPut);
+            counterForFolders.counter4.setValor(functionsCalls);
         }
        writteFile.write(assembly);
        writteFile.newLine();
@@ -174,7 +223,7 @@ public int transalte(String file_in){
             return -1;
         }
     }
-    try{function.removeVoidLines("Assembly.asm");
+    try{function.removeVoidLines(nameOfAssemblyFileGenerate);
     } catch (ParsingException e) {
         System.out.println("Error parsing Assembly file: " + e.getMessage());
         return -1;
@@ -188,7 +237,7 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("add");
     representationAssembly.add("\n//'add' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=D+M\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1");
     commands.add("sub");
-    representationAssembly.add("\n//'sub' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=D-M\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1"); 
+    representationAssembly.add("\n//'sub' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=M-D\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1"); 
     commands.add("neg");
     representationAssembly.add("\n//'neg' command\n@SP\nA=M-1\nM=-M\n");
     commands.add("lt");
@@ -212,7 +261,7 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     commands.add("goto");
     representationAssembly.add("\n//comment\n@LBL\n0;JMP\n");
     commands.add("if-goto");
-    representationAssembly.add("\n//comment\n@SP\nA=M-1\nD=M\n@SP\nM=M-1\n@LBL\nD;JGT\n");
+    representationAssembly.add("\n//comment\n@SP\nA=M-1\nD=M\n@SP\nM=M-1\n@LBL\nD;JLT\n");
     commands.add("call");
     representationAssembly.add("\n//comment\n/*push return address\n*code after the 'call' or the next line*/\n@NAME_F$ret.numberI\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+
                     "//push LCL pointer value\n@LCL\nD=M\n@SP\nA=M\nM=D\n@SP\nM=M+1\n"+

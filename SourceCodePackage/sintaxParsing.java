@@ -108,8 +108,6 @@ public int parser_Sintaxis(String File_in) {
 
     hashTablePreDet(); // Create the hash table with the pre-determined elements
                        // Crear la tabla hash con los elementos predefinidos
-    int function = 0; // Variable to check if the command is a function
-                              // Variable para verificar si el comando es una función
     HashMap<String, Integer> others = new HashMap<>();
     createHashTable("return", 0, null, others, null);
     HashMap<String, Integer> memoryOfFunctions = new HashMap<>();
@@ -122,12 +120,9 @@ public int parser_Sintaxis(String File_in) {
         if(line.equals("") && !contains.getValor()) break;
         
         Parser.MutableTypeData<Integer> i =  parserf.new MutableTypeData<>(0);
-        if(function != 0 && line.length() >= 6){
+        if(line.length() >= 6){
             n = compareWithHashTable(line, nLine, 6, others, null, false, i);
-            if(n == 0){
-                function--;
-                continue;
-            }
+            if(n == 0) continue;
         }
         n = compareWithHashTable(line, nLine, 3, null, TableHash.Arithmetics, false, i);
         if (n != 0){
@@ -162,10 +157,9 @@ public int parser_Sintaxis(String File_in) {
                 return -1;
             }
             if(line.substring(0, LengthOfCommand.getValor()).equals("function")){ 
-                function++;
                 StringBuilder functionNameAndLocalVariables = new StringBuilder(line.substring(LengthOfCommand.getValor(), line.length()));
-                functionNameAndLocalVariables.delete(LengthOfCommand.getValor()+LengthOfArg.getValor(), LengthOfCommand.getValor()+LengthOfArg.getValor()+1);
-                if(!memoryOfFunctions.containsKey(functionNameAndLocalVariables.toString())) createHashTable(functionNameAndLocalVariables.toString(), 0, null, memoryOfFunctions, null);//add to functions creates
+                functionNameAndLocalVariables.delete(LengthOfArg.getValor(), LengthOfArg.getValor()+1);
+                if(!memoryOfFunctions.containsKey(functionNameAndLocalVariables.toString())) memoryOfFunctions.put(functionNameAndLocalVariables.toString(), 0);//add to functions creates
                 else{
                     System.out.printf("Error in the line %s\nDETAILS: The function '%s' are created before\n", nLine, functionNameAndLocalVariables.toString());
                     return -1;
@@ -177,16 +171,6 @@ public int parser_Sintaxis(String File_in) {
             continue;
           }
           continue;
-     }
-     if(function != 0 ){
-        if(function >0){
-        System.out.printf("Error in the line %s\nDETAILS:Arrive to the EOF and not found the key word 'return' for function %s\n",nLine, Integer.toString(function));
-        return -1;
-     }
-     if(function < 0){
-        System.out.printf("Error in the line %s\nDETAILS:Can't put 'return' if not definded before a 'function'\n", nLine);
-        return -1;
-     }
      }
     }
     catch (FileNotFoundException e) {
@@ -998,7 +982,7 @@ public int resolveConflicts(Parser.MutableTypeData<String> formatToResolve, Stri
        i++;
     }
    
-    String upload = newFormatToR.toString().replace(stringBetween, newFormatToR2);
+    String upload = newFormatToR.toString().replaceFirst(stringBetween, newFormatToR2.toString());
     newFormatToR.setLength(0);
     newFormatToR.append(upload);
   }
