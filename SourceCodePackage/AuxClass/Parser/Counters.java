@@ -1,4 +1,4 @@
-import AuxClass.Parser.Parser;
+package AuxClass.Parser;
 /**
  * @author Pablo Riveros Perea
  * This is a class creted for the class 'TranslateToAssembly', for mantain a global counters between files form a folder
