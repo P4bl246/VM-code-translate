@@ -64,6 +64,7 @@ END OF FUCNTION TO PREPARE FILES(FIN DE LAS FUNCIONES PARA LA PREPARACIÓN DE AR
  * <p><code>removeString</code></p>
  * <p><code>searchString</code></p>
  * <p><code>trateSpecialsStrings</code></p>
+ * <p><code>removeVoidLines</code></p>
  * <p>Son class: <code>MutableTypeData</code></p>
  * 
 */
@@ -125,9 +126,48 @@ public int fileTo(String file_In, String nameOfNewFileWithFormat) {
  * <p><b>Inside method:</b></p>
  * <pre>
  * <code>
- *  
+ *  public int cleanFile(String file_In){
+    System.out.printf("\nCLEANING THE FILE: '%s'...\n\n", file_In);
+    int n;
+    ArrayList<String> specialsForIdentify = new ArrayList<>();
+    specialsForIdentify.add("function");
+    specialsForIdentify.add("call");
+    try{
+    trateSpecialsStrings(specialsForIdentify, file_In);
+    
+
+    removeVoidChars(file_In, null);
+    
+    
+     numLines(file_In);
+     
+
+    n = removeBlockComments(ReadmodeBlock.NestedEnd, file_In, "/*", "~/", ' ');//put this because this are the normal or standar delimiter of a block comment but i can't put this because close the documentation, so just replace the '~' for a '*'
+    if(n != 0) return n;
+    
+     removeSimpleComments(file_In, "//");
+   
+    
+     removeNLine(file_In, ' ');
+    
+
+      removeVoidChars(file_In, null);
+    
+    }
+    catch(IOException e){
+        System.err.println("Error in the reading or writing file: " + e.getMessage());
+        return Return.ERROR.getValue();
+    }
+    catch(ParsingException e){
+        System.err.println("Error in the parsing: " + e.getMessage());
+        return Return.ERROR.getValue();
+    }
+    System.out.printf("\nTHE FILE '%s' IS CLEAN\n", file_In);
+    return Return.SUCCESS.getValue();
+  }
  * </pre>
  * </code>
+ * <p><b>IMPORTANT:</b>Can see the code are so enlazed and dependet of my personal project, so use this if you can</p>
  * @param file_In File to clean, path or name(if are in the same path of the class)
  * @return 0 = SUCCESS, -1 = ERROR
  */

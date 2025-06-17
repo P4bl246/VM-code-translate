@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.io.*;
 
 /**
+ * @author Pablo Riveros Perea
  * <p>Esta es una clase especial pensada para una función de la clase 'Parser', llamada 'RemoveNestedBlockComments', funciona como un encapsulador de argumentos</p>
  * <p>This class is thinked for the function of the class 'Parser', called 'RemoveNestedBlockComments', this function like a wrapper of arguments</p>
  *<b>This wrapper class are created for abstract the arguments used in the function are a lot,

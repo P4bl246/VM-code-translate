@@ -2,7 +2,7 @@ package AuxClass.Parser;
 
 import java.util.*;
 /**
- * <p>Esta es una clase especial pensada para una función de la clase 'sintaxParsing', llamada 'CompareCommandsWithArgs', funciona como un encapsulador de argumentos</p>
+ * @author Pablo Riveros Perea
  * <p>This class is thinked for the function of the class 'sintxParsing', called 'CompareCommandWithArgs', this function like a wrapper of arguments</p>
  *<b>This wrapper class are created for abstract the arguments used in the function are a lot,
  *and put thats in a individual form are so extended and reduces adaptability, maintainability, and customizability</b>
@@ -28,6 +28,7 @@ public class CommandArgRule {
     
     private ArrayList<String>commandsWithoutPatterns = new ArrayList<>();
     //for flexibles commands
+    //para comandos flexibles
     private ArrayList<String>commandsWithFlexiblePattern = new ArrayList<>();
     private String formatPatternFlexible = null;
     private ArrayList<String>multiplesFlexiblesFormatsPatterns = new ArrayList<>();
@@ -40,48 +41,82 @@ public class CommandArgRule {
     private Character stopForFlexibleForConflicts = null;
     private boolean theLineAreInTheFormatExpected = false;
     //Constructor
-    /**
-     * <p>This is a **constructor** for this class</p>
+       /**
+     * <p>This is the <b>constructor</b> for this class.</p>
+     * <p><code>**</code>This is a <code>simple explanation of what expected each parameter</code>, but if you <code>want know how you can use this and what makes and why this parameters are created</code> <code>go to the class 'sintaxParsing'</code></p>
+     * <p><code>IMPORTANT:</code> I chose these parameter types because they are necessary and I plan to use this in other similar projects. If you don't need all of them, you can customize the implementation (of the function that uses this class) and the class itself.</p>
      * 
-     * <p><b>IMPORTANT:</b> I put this types for the parameters because needly and think use this in other similars projects, but if you don't needly this,you can custom the implementation(of the function like use this class) and this class</p>
-     * 
-     * @param commandTable This is a HashTable (type <String, Integer>), use for 'search the accepted commands'
-     * @param argTable This is a HashTable (type <String, Integer>), use for 'search the accepted arguments'
-     * @param commandLength This is a integer, use for have reference of what is the 'max length for the command part'
-     * @param argLength This is a integer, use for have referece of what is the 'max length for a argument part'
+     * @param commandTable A HashMap (<String, Integer>) used to search for accepted commands.
+     * @param argTable A HashMap (<String, Integer>) used to search for accepted arguments.
+     * @param commandLength An integer used as a reference for the <code>maximum length of the command part</code>.
+     * @param argLength An integer used as a reference for the <code>maximum length of the argument part</code>.
+     * <p><code>***</code>Parameters for <b>Strict Commands</b></p>
+     * <p><code>***</code>This is a <code>set</code> of parameters ("formatPatternMostLong" and "formatPatternLessLong"); you need to provide both or none.</p>
+     * @param formatPatternMostLong A String used to specify the pattern with the most characters for an instruction (used when instructions have only a single format). This is needed because the format is converted to a number for the function <code>IdentifyTheStrictFormat</code> (in the class 'sintaxParsing'), where the number of characters, their type, and position are considered. Here, <code>provide all the information</code>: a String with the command, argument, and argument value.
+     * @param formatPatternLessLong A String used to specify the pattern with the fewest characters for an instruction (used when instructions have only a single format). This is also needed for <code>IdentifyTheStrictFormat</code>. Here, <code>provide all the information</code>: a String with the command, argument, and argument value.
+     * <p></p>
+     * @param multipleFormatsPatterns A HashMap (<String, String>) where the first String (the <code>key</code>) is used for 'formatPatternMostLong' or 'formatPatternLessLong', and the second String (the <code>value</code>) is for the other pattern. Use this when instructions have multiple strict formats. This is similar to the above set of parameters, but allows you to provide multiple formats or patterns.
+     * <p><code>***</code>Parameter for <b>Exceptions</b></p>
+     * @param exceptions An ArrayList of Strings used to specify <code>exceptions</code>. For example, when an instruction can be written but is illegal, useless, or problematic and you don't want to allow it in the code. These are <code>illegal instructions</code>.
+     * <p><code>***</code>Parameter for <b>Commands without Pattern</b></p>
+     * @param commandsWithoutPatterns An ArrayList of Strings used to specify commands that do not require an expected pattern. In other words, these commands' arguments do not have a strict or flexible format and can contain any characters in any order.
+     * <p><code>***</code>Parameters for <b>Flexible Commands</b></p>    
+     * @param commandsWithFlexiblePattern An ArrayList of Strings used to specify commands with arguments that have a <code>flexible format</code>. In other words, commands whose arguments can have any number of characters but in an expected order.
+     * @param formatPatternFlexible Used to provide an <code>example</code> of the expected flexible format. There are some recommended limitations, such as not using 'OR gates' or the expected format directly. For more information, see the method <b>identifyTheFlexibleFormat</b> in the class <b>sintaxParsing</b>.
+     * @param multiplesFlexiblesFormatsPatterns Used to provide <code>multiple examples</code> or multiple expected flexible formats directly. This is similar to the above but for multiple formats.
+     * @param specialCharsForIdentifyInTheFlexibleFormat An ArrayList of Characters used to identify special characters in a string and represent them in a different or special way, i.e., to flag or mark them.
+     * @param thePatternsAreBeInTheFormatExpectedOrNeedBeConvert_ForFlexiblePatterns A Boolean used to indicate if the 'pattern' String must be converted or if its flexible format must be identified (because it is an example). In other words, the given string is used to compare the line's format or another format with this pattern, representing the expected format.
+     * @param theLineAreInTheFormatExpected A Boolean used for the same purpose as the above parameter, but designed for the line or string to compare.
+     * @param ORgateForFlexible A Character used to identify the character that indicates the OR gate in a given 'formatPattern'. It is recommended to use this only for direct format patterns, not examples.
+     * @param stopForFlexible A Character used to stop analyzing a string when this character is found. In other words, process everything before this character and ignore everything after (including the character itself).
+     * @param mapForFlexible A Map<Character, Integer> where the <code>key</code> indicates the character to remove, and the <code>value</code> indicates how many of these should remain in the file (removes from left to right, keeping those on the right). This is used by the <code>resolveConflicts</code> function. For more details, see the implementation in the class 'sintaxParsing'.
+     * @param stopForFlexibleForConflicts A Character used for the same purpose as 'stopForFlexible', but specifically for the function in charge of <code>resolveConflicts</code>. It is recommended to use a character that appears in an exact format pattern or its conversion, i.e., the flexible format pattern generated or the string's representation in this format.
      *
-     * This are a set of parameters("formatPatternMostLong" and "formatPatternLessLong"), need put both or none
-     * @param formatPatternMostLong This is a String, use for know what is the pattern what have most numbers of characters for an instruction (use this when the instructions have just a single format). That are need because the format is pass to a number for the function 'IdentifyTheFormat'(That are in class 'sintaxParsing')
-     * @param formatPatterLessLong This is a String, use for know what is the patter what have less numbers of characters for an instruction (use this when the instructions have just a single format). That are need because the format is pass to a number for the funciont 'IdentifyTheFormat'(That are in class 'sintaxParsing')
-     *
-     * @param multipleFormatsPatterns This is a HashMap(type <String, String>, when the first String(his "key") is use for put 'formatPatterMostLong', and the second(his "value") put the 'formatPatterLessLong') of Strings, use when the instructions has multiples formats, this is equal to the above set of parameters, just change like in this you can put multiple formats or multiples 'Patterns of formats'
-     * @param exceptions This is a Array of Strings, use for put 'excpetions', this can be used for "example" when the instruction can be writter but are ilegal or useless or problematical and you don't want this type of instructions in the code
-     * <p>Use example:</p>
+     * <p>Usage example:</p>
      * <pre>
      * <code>
-     * Map<String, Integer>acceptedCommands = new Map<>();
+     * Map<String, Integer> acceptedCommands = new HashMap<>();
      * acceptedCommands.put("HI", 1);
-     * acceptedCommand.put("BYE", 2);
-     * Map<String, Integer>acceptedArgs = new Map<>();
+     * acceptedCommands.put("BYE", 2);
+     * Map<String, Integer> acceptedArgs = new HashMap<>();
      * acceptedArgs.put("MARIO", 3);
-     * accptedArgs.put("LUIGI12", 4);
-     * ArrayList<String>excep = new ArrayList<>();
-     * excep.add("BYEMARIO"); //that is possible but I don't want accepted this, want defined like a "ilegal" instruction
-     * //Now create the objetc with this class
-     * CommandArgRule rules = new CommandArgRule(acceptedCommands, acceptedArgs, 3, 7, "BYELUIGI12", "HIMARIO", null, excep);
+     * acceptedArgs.put("LUIGI12", 4);
+     * ArrayList<String> excep = new ArrayList<>();
+     * excep.add("BYEMARIO"); // This is possible but I don't want to accept it, so I define it as an "illegal" instruction
+     * // Now create the object with this class
+     * CommandArgRule rules = new CommandArgRule.Builder()
+     *     .setCommandTable(acceptedCommands)
+     *     .setArgTable(acceptedArgs)
+     *     .setCommandLength(3)
+     *     .setArgLength(7)
+     *     .setFormatPatternMostLong("BYELUIGI12")
+     *     .setFormatPatternLessLong("HIMARIO")
+     *     .setMultipleFormatsPatterns(null)
+     *     .setExceptions(excep)
+     *     .build();
      *
-     * //if you use multiple formats can make something like this. And if you implemtation accpeted both are fine(in my case the function what use this class dont support both "modes"(multples and singles formats))
-     * Map<String, String> patterns = new Map<>();
-     * patterns.("BYELUIGI12HIMARIO", "BYELUIGIMARIO");
-     * patterns.("HIMARIOHILUIGI", "HILUIGI"); //and others if you want
-     * //so now just need put in the constructor in the space for 'multiplesFormatsPatterns' "patterns", and thats it
-     * CommandArgrule rules = new CommandArgRule(...,"BYELUIGI12", "HIMARIO", patterns,...);
-     * //OR
-     * CommandArgRule rules = new CokmmandArgRule(..., null, null, patterns,...);
-     * //AND OTHERS...
+     * // If you use multiple formats, you can do something like this.
+     * Map<String, String> patterns = new HashMap<>();
+     * patterns.put("BYELUIGI12HIMARIO", "BYELUIGIMARIO");
+     * patterns.put("HIMARIOHILUIGI", "HILUIGI"); // and others if you want
+     * // Now just put 'patterns' in the constructor for 'multipleFormatsPatterns', and that's it
+     * CommandArgRule rules = new CommandArgRule.Builder()
+     *     .setFormatPatternMostLong("BYELUIGI12")
+     *     .setFormatPatternLessLong("HIMARIO")
+     *     .setMultipleFormatsPatterns(patterns)
+     *     .build();
+     * // OR
+     * CommandArgRule rules = new CommandArgRule.Builder()
+     *     .setFormatPatternMostLong(null)
+     *     .setFormatPatternLessLong(null)
+     *     .setMultipleFormatsPatterns(patterns)
+     *     .build();
+     * // AND OTHERS...
      * </code>
      * </pre>
+     * 
      */
+    
     private CommandArgRule(Builder builder) {
         this.commandTable = builder.commandTable;
         this.argTable = builder.argTable;
@@ -104,6 +139,8 @@ public class CommandArgRule {
         this.stopForFlexibleForConflicts = builder.stopForFlexibleForConflicts;
         this.theLineAreInTheFormatExpected = builder.theLineAreInTheFormatExpected;
     }
+    //class for build a object use the Builder pattern
+    //clase para crear un objeto usando el patrón Builder
 public static class Builder{
     private HashMap<String, Integer> commandTable = new HashMap<>();
     private HashMap<String, Integer> argTable = new HashMap<>();
@@ -124,6 +161,7 @@ public static class Builder{
     
     private ArrayList<String>commandsWithoutPatterns = new ArrayList<>();
     //for flexibles commands
+    //para comandos flexibles
     private ArrayList<String>commandsWithFlexiblePattern = new ArrayList<>();
     private String formatPatternFlexible = null;
     private ArrayList<String>multiplesFlexiblesFormatsPatterns = new ArrayList<>();

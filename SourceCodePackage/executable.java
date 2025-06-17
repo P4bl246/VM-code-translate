@@ -2,6 +2,10 @@ import AuxClass.Parser.*; // Import the Parser class from the AuxCLass.Parser pa
 import java.io.*;
 import java.lang.System;
 import java.util.Scanner;
+/**
+ * @author Pablo Riveros Perea
+ * this is a class orchestatror specific for the project
+ */
 public class executable {
 
     public static void main (String[] args) {
@@ -71,7 +75,7 @@ public class executable {
             System.out.println("Invalid path.\n");
         }
     }
-
+//---------------------------------------------
 private static int procesarArchivo(String filePath, Parser parseF, sintaxParsing sintax, TranslateToAssembly assembly, boolean isAFolder, String nameOfFolderASM, Parser.MutableTypeData<Boolean> boostrapPutFlag, Counters counters) {
         if(boostrapPutFlag == null){
             System.err.println("Erro: Need put a parameter 'boostrapPutFlag'\n");
@@ -131,6 +135,7 @@ private static int procesarArchivo(String filePath, Parser parseF, sintaxParsing
         }
         return 0;
     }
+//---------------------------------------------------------
 public static void cleanConsole() {
     try {
         String os = System.getProperty("os.name").toLowerCase();
