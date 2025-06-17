@@ -2,7 +2,44 @@
 import java.util.*;
 import java.io.*;
 import AuxClass.Parser.*;
+/**
+ * @author Pablo Riveros Perea
+ * <p><b>Functions and objects within the class</b></p>
+ * <ul>
+ *   <li><code>translate</code> – Main method for translating VM code to Hack assembly.</li>
+ *   <li><code>CreatePredefindArrays</code> – Initializes lists of VM commands and their assembly representations.</li>
+ *   <li><code>CreateHash</code> – Fills a HashMap with command-template pairs.</li>
+ *   <li><code>replace</code> – Replaces a VM command line with its corresponding assembly code template.</li>
+ * </ul>
+ * <p><b>Objects:</b></p>
+ * <ul>
+ *   <li>predet – HashMap containing the mapping of VM commands to assembly templates.</li>
+ * </ul>
+ * <p>
+ * <b>Note:</b> This class and all its methods and objects are tightly coupled to the internal logic and requirements of this specific VM translator project. 
+ * They were designed exclusively for this context and are not intended for general-purpose or external use.
+ * </p>
+ */
 public class TranslateToAssembly {
+/**
+ * Translates a VM code file into Hack assembly code and writes the result to an output file.
+ * <p>
+ * This is the main translation method of the VM-to-assembly translator. It reads the input VM file, processes each command line,
+ * and generates the corresponding Hack assembly code, handling bootstrap code insertion, command parsing, argument extraction,
+ * and special cases such as function calls and boolean logic.
+ * <br>
+ * The method is tightly integrated with the rest of the translator and expects specific mutable parameters for state tracking and folder processing.
+ * <br>
+ * Returns 0 if the translation is successful, or -1 if any error occurs.
+ *
+ * <b>Parameters:</b>
+ * @param file_in The path to the input VM file.
+ * @param nameOfAssemblyFileGenerate The path for the output assembly file to generate.
+ * @param indicatePutBootStrap Mutable flag to indicate if the bootstrap code has already been inserted.
+ * @param itsPartOfFolder True if the file is part of a folder translation (affects label and function naming).
+ * @param counterForFolders Object containing counters for unique label/function generation across multiple files.
+ * @return 0 if translation is successful; -1 if an error occurs.
+ */
 public int translate(String file_in, String nameOfAssemblyFileGenerate, Parser.MutableTypeData<Boolean> indicatePutBootStrap, boolean itsPartOfFolder, Counters counterForFolders){
     System.out.println("\nGENERATING ASSEMBLY FILE...\n");
     if(nameOfAssemblyFileGenerate == null || file_in == null){
@@ -233,6 +270,19 @@ public int translate(String file_in, String nameOfAssemblyFileGenerate, Parser.M
 }
 public HashMap<String, String>predet = new HashMap<>();
 //------------------------------------------------------------------------
+/**
+ * Initializes the lists of VM commands, their corresponding assembly code representations, state flags, and constant code snippets.
+ * <p>
+ * This method fills the provided lists with the predefined VM commands supported by the translator, their associated Hack assembly code templates, and any required state or constant code.
+ * The order of elements in each list corresponds, so the first command matches the first assembly code, and so on.
+ * These arrays are used to build the translation HashMap and to support the translation process.
+ *
+ * <b>Parameters:</b>
+ * @param commands List to be filled with the names of supported VM commands.
+ * @param representationAssembly List to be filled with the corresponding Hack assembly code templates for each command.
+ * @param state List to be filled with boolean flags for each command (usage may vary by implementation).
+ * @param constantsC List to be filled with constant code snippets used in translation (e.g., for boolean logic).
+ */
 public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>representationAssembly, ArrayList<Boolean>state, ArrayList<String>constantsC){
     commands.add("add");
     representationAssembly.add("\n//'add' command\n@SP\nA=M-1\nD=M\nA=A-1\nD=D+M\n@SP\nA=M-1\nA=A-1\nM=D\n@SP\nM=M-1");
@@ -289,6 +339,21 @@ public void CreatePredefindArrays(ArrayList<String>commands, ArrayList<String>re
     constantsC.add("\nt\n@SP\nA=M-1\nA=A-1\nM=-1\n@SP\nM=M-1\n@SP\nA=M\nM=0\n/\nf\n@SP\nA=M-1\nA=A-1\nM=0\n@SP\nM=M-1\n@SP\nA=M\nM=0\n");
 }
 //------------------------------------------------------------------------
+/**
+ * Fills a HashMap with key-value pairs from two lists.
+ * <p>
+ * This method takes two lists, one of keys and one of values, and inserts their pairs into the provided HashMap.
+ * The insertion is done in order, so the first key is paired with the first value, the second key with the second value, and so on.
+ * If any of the parameters are {@code null}, or if the lists are of different sizes, the method prints an error message and returns -1.
+ * <br>
+ * Returns 0 if the operation is successful.
+ *
+ * <b>Parameters:</b>
+ * @param keys List of keys to insert into the HashMap.
+ * @param values List of values to associate with the keys.
+ * @param hashT The HashMap to fill with the key-value pairs.
+ * @return 0 if the HashMap was filled successfully; -1 if an error occurred.
+ */
 public int CreateHash(ArrayList<String>keys, ArrayList<String>values, HashMap<String, String>hashT){
     int i = 0;
     if(keys == null || values == null || hashT == null){
@@ -307,16 +372,29 @@ public int CreateHash(ArrayList<String>keys, ArrayList<String>values, HashMap<St
 }
 //------------------------------------------------------------------------
 /**
- * Replace a line use a HashMap with values and args.
- * @param line Line for proccess.
- * @param RelaseKeyValue The HashMap with values and keys.
- * @param nLine The number of Line.
- * @param lengthofCommand Length of command.
- * @param BoolCommand Flag for indicate if is a boolean command.
- * @param withArgsCommands Indicate if use command with arguments.
- * @param arg Argumento of the command.
- * @param ivalue value of argument.
- * @return The result of the replace or null if appears an error.
+ * Replaces a VM command line with its corresponding assembly code using a HashMap of templates and extracts arguments if needed.
+ * <p>
+ * This method processes a single VM command line, determines its type (arithmetic, boolean, command with arguments, etc.), and replaces it with the appropriate assembly code template from the provided HashMap.
+ * It also extracts and sets argument values, command lengths, and flags for special cases (such as boolean commands or commands with flexible patterns).
+ * <br>
+ * The method is designed to work closely with the rest of the VM translator and expects specific mutable parameters for output and state tracking.
+ * <br>
+ * Returns the generated assembly code as a string, or {@code null} if an error occurs.
+ *
+ * <b>Parameters:</b>
+ * @param line The VM command line to process.
+ * @param RelaseKeyValue The HashMap containing command templates (keys: VM commands, values: assembly code).
+ * @param nLine The line number or identifier (for error messages).
+ * @param lengthofCommand Mutable variable to store the detected command length.
+ * @param arg Mutable variable to store the detected argument.
+ * @param BoolCommand Mutable flag to indicate if the command is a boolean command.
+ * @param withArgsCommands Indicates if the command expects arguments.
+ * @param lengthofarg Mutable variable to store the detected argument length.
+ * @param ivalue Mutable variable to store the value of the argument.
+ * @param argCommand Mutable flag to indicate if the command is an argument command.
+ * @param excpetionsArgs List of argument exceptions (can be null).
+ * @param exceptionFlag Mutable flag to indicate if an exception argument was found (can be null).
+ * @return The resulting assembly code as a string, or {@code null} if an error occurs.
  */
 public String replace(String line, HashMap<String, String> RelaseKeyValue, String nLine, Parser.MutableTypeData<Integer> lengthofCommand, Parser.MutableTypeData<String> arg,  Parser.MutableTypeData<Boolean> BoolCommand, boolean withArgsCommands, Parser.MutableTypeData<Integer> lengthofarg, Parser.MutableTypeData<String> ivalue, Parser.MutableTypeData<Boolean>argCommand, ArrayList<String>excpetionsArgs, Parser.MutableTypeData<Boolean>exceptionFlag){
     //Check the parameters    
@@ -343,6 +421,7 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         //identify the type of command
         //identificar el tipo de comando
         sintaxParsing n  = new sintaxParsing();
+        try{
         n.hashTablePreDet();
         boolean withoutPattern = false, flexibleFormat = false;
         HashMap<String, Integer> others = new HashMap<>();
@@ -393,7 +472,7 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
     .setCommandsWithFlexiblePatternForResultConflicts(withoutPatternButWithivalue)
     .build(); // Create the command argument rule with the specified parameters
               // Crear la regla de argumentos de comando con los parámetros especificados
-                if((f = n.compareCommandsWithArg(line, nLine, argsCommands, 0, null, lengthofCommand, lengthofarg)) < 0 ) return null;
+                if((f = n.compareCommandsWithArg(line, nLine, argsCommands, 0,  lengthofCommand, lengthofarg)) < 0 ) return null;
                else{ 
                 if(argCommand != null)argCommand.setValor(true);
                 if(f == 2) withoutPattern = true;
@@ -434,6 +513,11 @@ public String replace(String line, HashMap<String, String> RelaseKeyValue, Strin
         command = line.substring(0, lengthofCommand.getValor());
         if(excpetionsArgs != null && excpetionsArgs.contains(arg.getValor())) exceptionFlag.setValor(true);
         return RelaseKeyValue.get(command);
-}
+    }catch(ParsingException e){
+        System.err.println(e.getMessage());
+        return null;
+    }
+
+  }
 }
 
