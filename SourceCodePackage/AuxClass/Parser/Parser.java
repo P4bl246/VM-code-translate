@@ -51,7 +51,7 @@ END OF FUCNTION TO PREPARE FILES(FIN DE LAS FUNCIONES PARA LA PREPARACIÓN DE AR
 */
 /** 
  * @author <p>Pablo Riveros Perea</p>
- * The class <code>Parser</code> contains functions thinked for pre-process of files, "normalize it" and "cleaning it" 
+ * The class <code>Parser</code> contains functions thinked for pre-process of files, "normalize it" and "cleaning it", and just 1 function are designed for the project(cleanFile)
  * <p>Methods and classes inside this are:</p>
  * <p><code>fileTo</code></p>
  * <p><code>removeSimpleComments</code></p>

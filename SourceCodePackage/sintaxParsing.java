@@ -10,6 +10,7 @@ import java.io.*;
 
 /**
  * @author Pablo Riveros Perea
+ * <p>This class are created for the sintax-parsing proccess, and the unique function acoplated with the project is 'parser_Sintaxis'
  * <p><b>Functions and global objects inside the class</b>
  * <ul>
  *  <li><code>parser_Sintaxis</code>
@@ -27,7 +28,7 @@ import java.io.*;
  *  <li><code>checkExcep</code>
  *  <li><code>resolveConflicts</code>
  *  <li><code>identifyTheFlexibleFormat</code>
- *  <li><code>identifyTheStrictFormat</code><b>private</b>
+ *  <li><code>identifyTheStrictFormat</code>
  *  <li><code>createArrayForORLetters</code>
  *  <li><code>identifyTypeIntOrChar</code>
  *  <li><code>log2</code>
@@ -1576,7 +1577,7 @@ public void createArrayForORLetters(MutableTypeData<String> formatForIdentify, A
  * @param sensibleToUppercase Flag for indicate if are sensible to uppercase letters or not, when sensibleToUppercase != 0 this are means like are sensible to uppercase
  * @return Double. The fingerprint is a float point number
  */
-private double identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
+public double identifyTheStrictFormat(String FormatExample, int sensibleToUppercase){
  double n = 0; //Get the format in a integer number
             //Obtener el formato en un número entero
 
