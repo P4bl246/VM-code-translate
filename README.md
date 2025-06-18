@@ -12,7 +12,7 @@
 
 
 
-**NOTA:** Si no puedes usar ninguna extensión para traducir en tu IDE, o no tienes un IDE instalado o alguna herramienta de desarrollo que te permita ejecutar este código, puedes *crear un `codespace` en github* copiando este repositorio o el [código fuente](), o clonando el repositorio
+**NOTA:** Si no puedes usar ninguna extensión para traducir en tu IDE, o no tienes un IDE instalado o alguna herramienta de desarrollo que te permita ejecutar este código, puedes *crear un `codespace` en github* copiando este repositorio o el [código fuente](SourceCodePackage), o clonando el repositorio
 
 [***No se crear un `codespace`***](https://docs.github.com/en/codespaces/developing-in-a-codespace/creating-a-codespace-for-a-repository)
 
