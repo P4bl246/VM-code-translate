@@ -161,7 +161,8 @@ public int parser_Sintaxis(String File_in) {
     HashMap<String, Integer> others = new HashMap<>();
     createHashTable("return", 0, null, others, null);
     HashMap<String, Integer> memoryOfFunctions = new HashMap<>();
-
+    HashMap<String, Integer> memoryOfLabels = new HashMap<>();
+    String functionActual = "";
     while(true) {
         nLine = parserf.get(readFilein, Parser.Readmode.NumberLine, ' ', null, null);
         if(nLine.equals(""))break;
@@ -188,8 +189,9 @@ public int parser_Sintaxis(String File_in) {
             System.err.printf("Error in the line %s\nDETAILS: Wrong Sintaxis\n", nLine);
              return -1;
             }
+            String arg = line.substring(LengthOfCommand.getValor(), (LengthOfArg.getValor()+LengthOfCommand.getValor()));
+
              if(n != 2 && n!=3){
-                String arg = line.substring(LengthOfCommand.getValor(), (LengthOfArg.getValor()+LengthOfCommand.getValor()));
             if(arg.equals("pointer")){
              arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
              if(!(arg.equals("0") || arg.equals("1"))){
@@ -197,6 +199,53 @@ public int parser_Sintaxis(String File_in) {
                 return -1;
                }
              
+            }
+            else{
+            arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
+             try{
+                if(Integer.parseInt(arg) > 32767 || Integer.parseInt(arg) < 0){
+                System.err.printf("Error in the line %s\nDETAILS: The value of arg must be a value 0-32767\n", nLine);
+                return -1;
+             }
+             }catch(NumberFormatException e){
+              System.err.printf("Error in the line %s\nDETAILS: The value of arg (%s) can't be convert to integer, because contains some character can't be convert to integer\nException: %s", nLine, arg, e.getMessage());
+              return -1;
+             }
+            }
+            if(arg.equals("static")){
+            arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
+            if(Integer.parseInt(arg) > 239){
+                System.err.printf("Error in the line %s\nDETAILS: The value of a 'static' argument can't be greather than 239\n");
+                return -1;
+             }
+            }
+            if(arg.equals("temp")){
+              arg = line.substring(((LengthOfArg).getValor()+LengthOfCommand.getValor()), line.length());
+            if(Integer.parseInt(arg) > 10){
+                System.err.printf("Error in the line %s\nDETAILS: The value of a 'temp' argument can't be greather than 10\n");
+                return -1;
+             }  
+            }
+          }
+          if(n == 2){
+            String valueArg = line.substring(LengthOfCommand.getValor(), line.length());
+            if(valueArg.charAt(0)>= '0' && valueArg.charAt(0)<='9'){
+                System.err.printf("Error in the line %s\nDETAILS: The value for commands 'label', 'if-goto' or 'goto' can't starts with a digit\n", nLine);
+                return -1;
+                }   
+            if(line.substring(0, LengthOfCommand.getValor()).equals("label")){
+                if(!memoryOfLabels.containsKey(functionActual+"$"+valueArg)) memoryOfLabels.put(functionActual+"$"+valueArg, 0);
+                else{
+                    System.err.printf("Error in the line %s\nDETAILS: The label '%s' are definded before in the actual function %s", nLine, valueArg, functionActual);
+                    return -1;
+                }
+            }
+            else{
+                if(!memoryOfLabels.containsKey(functionActual+"$"+valueArg)){
+                    System.err.printf("Error in the line %s\nDETAILS: The label for the command 'goto' or 'if-goto' not exit in this function (%s)", nLine, functionActual);
+                    return -1;
+                }
+
             }
           }
           if(n == 3){
@@ -206,12 +255,27 @@ public int parser_Sintaxis(String File_in) {
                 System.err.printf("Error in the line %s\nDETAILS: The command '%s' must have arguments\n", nLine, line.substring(0, LengthOfCommand.getValor()));
                 return -1;
             }
+            StringBuilder functionName = new StringBuilder(line.substring(LengthOfCommand.getValor(), line.length()));
+             functionName.delete(LengthOfArg.getValor()+1, line.length());
+            if(functionName.toString().charAt(0)>= '0' && functionName.toString().charAt(0)<='9'){
+                System.err.printf("Error in the line %s\nDETAILS: The argument for commands 'call' or 'function' can't starts with a digit\n", nLine);
+                return -1;
+                }
+            String valueOfArg = line.substring(line.indexOf("~")+1, line.length());
+             try{
+                if(Integer.parseInt(valueOfArg) > 32767 || Integer.parseInt(valueOfArg) < 0){
+                System.err.printf("Error in the line %s\nDETAILS: The value of arg must be a value 0-32767\n", nLine);
+                return -1;
+             }
+             }catch(NumberFormatException e){
+              System.err.printf("Error in the line %s\nDETAILS: The value of arg (%s) can't be convert to integer, because contains some character can't be convert to integer\nException: %s", nLine, valueOfArg, e.getMessage());
+              return -1;
+             }
             if(line.substring(0, LengthOfCommand.getValor()).equals("function")){ 
-                StringBuilder functionNameAndLocalVariables = new StringBuilder(line.substring(LengthOfCommand.getValor(), line.length()));
-                functionNameAndLocalVariables.delete(LengthOfArg.getValor(), LengthOfArg.getValor()+1);
-                if(!memoryOfFunctions.containsKey(functionNameAndLocalVariables.toString())) memoryOfFunctions.put(functionNameAndLocalVariables.toString(), 0);//add to functions creates
+                functionActual = functionName.toString();
+                if(!memoryOfFunctions.containsKey(functionName.toString())) memoryOfFunctions.put(functionName.toString(), 0);//add to functions creates
                 else{
-                    System.out.printf("Error in the line %s\nDETAILS: The function '%s' are created before\n", nLine, functionNameAndLocalVariables.toString());
+                    System.out.printf("Error in the line %s\nDETAILS: The function '%s' are created before\n", nLine, functionName.toString());
                     return -1;
                 }
             }
