@@ -42,6 +42,10 @@
 ------------------------------------------------
 * La documentación en ***JavaDoc*** esta escrita en inglés, pero dentro de las funciones o métodos hay comentarios en inglés y español
 
+* El paquete `SourceCodePackage` contine 2 *archivos de prueba*, estos son:
+   * ***Archivo.vm***
+   * ***VMcodeFolder*** (*carpeta*)
+
 * El codigo compila números sin signo es decir de 0-32767
   
 * Este proyecto fue creado para el proyecto de la creación de el *traductor de código VM a ensamblador* de el curso *Nand2Tetris*, por lo que se creo con un enfoque académico, y no utiliza las mejores prácticas por esta razón
