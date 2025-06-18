@@ -1,17 +1,41 @@
-# Licencia MIT
+Al ejercer los Derechos Licenciados (definidos a continuación), Usted acepta y se compromete a regirse por los términos y condiciones de esta Licencia Pública Internacional Creative Commons Atribución-NoComercial-CompartirIgual 4.0 ("Licencia Pública"). En la medida en que esta Licencia Pública pueda interpretarse como un contrato, se le otorgan los Derechos Licenciados a cambio de su aceptación de estos términos y condiciones, y el Licenciante le otorga dichos derechos a cambio de los beneficios que este recibe al poner a disposición el Material Licenciado bajo estos términos y condiciones.
 
-Copyright (c) 2025 Pablo Riveros Perea
+Sección 1 — Definiciones
+Se entiende por Material Adaptado el material sujeto a Derechos de Autor y Derechos Similares derivado o basado en el Material Licenciado, y en el que este se traduce, altera, organiza, transforma o modifica de cualquier otra manera que requiera autorización en virtud de los Derechos de Autor y Derechos Similares.
 
-Por la presente, se concede permiso gratuito a cualquier persona que obtenga una copia de este software y los archivos de documentación asociados (el "Software") para operar con el Software sin restricciones, incluyendo, entre otros, los derechos de uso, copia, modificación, fusión, publicación, distribución, sublicencia y/o venta de copias del Software, y para permitir que las personas a quienes se les proporciona el Software lo hagan, sujeto a las siguientes condiciones:
+Se entiende por Material Licenciado la obra artística o literaria, base de datos u otro material al que el Licenciante aplicó esta Licencia Pública.
 
-El aviso de derechos de autor anterior y este aviso de permiso se incluirán en todas las copias o partes sustanciales del Software.
+Derechos Licenciados se refiere a los derechos que se le otorgan, sujetos a los términos y condiciones de esta Licencia Pública, que se limitan a todos los Derechos de Autor y Derechos Similares que se aplican a Su uso del Material Licenciado y que el Licenciante tiene la autoridad para licenciar.
 
-EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO, ENTRE OTRAS, LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O TITULARES DE LOS DERECHOS DE AUTOR SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN, DAÑO U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN CONTRACTUAL, EXTRACONTRACTUAL O DE OTRO TIPO, QUE SURJA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U OTRAS RELACIONES CON EL MISMO.
+Licenciante se refiere a la(s) persona(s) o entidad(es) que otorgan derechos bajo esta Licencia Pública.
 
----
+No Comercial significa que no está destinado principalmente a obtener una ventaja comercial o una compensación monetaria.
 
-NOTA:
-Este repositorio está diseñado como un código fuente de solo lectura.
-Tiene la libertad de **bifurcar**, usar, modificar e incluso comercializar el código,
-pero **no envíe solicitudes de extracción ni cambios a este repositorio**.
-Cree su propia bifurcación o versión si desea ampliar el proyecto.
+CompartirIgual significa que el Material Adaptado debe estar licenciado bajo la misma licencia o una licencia compatible que el Material Licenciado.
+
+Usted se refiere al licenciatario que ejerce los Derechos Licenciados bajo esta Licencia Pública.
+
+Sección 2 — Alcance
+Usted puede ejercer los Derechos Licenciados sobre el Material Licenciado para:
+
+Compartir: copiar y redistribuir el material en cualquier medio o formato;
+
+Adaptar: remezclar, transformar y desarrollar a partir del material.
+
+Bajo los siguientes términos:
+
+Sección 3 — Condiciones de la Licencia
+Atribución: Debe otorgar el crédito correspondiente, proporcionar un enlace a la licencia e indicar si se realizaron cambios. Puede hacerlo de cualquier manera razonable, pero no de ninguna manera que sugiera que el Licenciante lo respalda a usted o a su uso.
+
+No comercial: No puede utilizar el material con fines comerciales.
+
+Compartir por igual: Si remezcla, transforma o crea a partir del material, debe distribuir sus contribuciones bajo la misma licencia que el original.
+
+Sección 4 — Sin restricciones adicionales
+No puede aplicar términos legales ni medidas tecnológicas que impidan legalmente que otros hagan lo que permite la licencia.
+
+Descargo de responsabilidad y limitación de responsabilidad
+El Material licenciado se proporciona "tal cual", sin garantías ni condiciones de ningún tipo, ni expresas ni implícitas. El Licenciante se exime de toda responsabilidad por daños derivados del uso del Material licenciado en la máxima medida permitida por la ley.
+
+Código legal completo y detalles:
+https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
