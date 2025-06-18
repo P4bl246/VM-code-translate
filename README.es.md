@@ -8,8 +8,6 @@ README - Java VM Code Translator
 
 ------------------------------------------------------
 
-**[Don't understand ![English](https://flagcdn.com/w40/gb.png)]()**
-
 **NOTE:** If you can't use any extension to translate in your IDE, or you don't have an IDE installed or any development tool that allows you to run this code, you can *create a `codespace` on GitHub* by copying this repository or the [source code](), or cloning the repository.
 
 [***I don't know how to create a `codespace`***]()
