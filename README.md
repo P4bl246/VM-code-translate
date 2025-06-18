@@ -12,28 +12,53 @@
 
 
 
-**NOTA:** Si no puedes usar ninguna extensión para traducir en tu IDE, o no tienes un IDE instalado o alguna herramienta de desarrollo que te permita ejecutar este código, puedes *crear un `codespace` en github* copiando este repositorio o el [código fuente](), o clonanado el repositorio
+**NOTA:** Si no puedes usar ninguna extensión para traducir en tu IDE, o no tienes un IDE instalado o alguna herramienta de desarrollo que te permita ejecutar este código, puedes *crear un `codespace` en github* copiando este repositorio o el [código fuente](), o clonando el repositorio
 
 [***No se crear un `codespace`***]()
 
  ## Dependencias
 
  ------------------------------------------------------
- Debe tener instalado *JDK v.14* o posteriores 
+ * Debe tener instalado *JDK v.9* o posteriores
  
- [Descargue el JDK]()
+ [Descargue el JDK de su preferencia](https://www.oracle.com/java/technologies/downloads/)
+
+ * Un compilador de java *preferiblemente* moderno
 
 ## Instalación 
 
 ------------------------------------------------------
+***NOTA:*** Todos los ejecutables o ***.class*** ya estan incluidos en el paquete `SourceCodePackage` entonces no requiere recompilación. (**NO** nececita proceso de intalación)
 
 ## Uso
 
 ------------------------------------------------------
-
+* Ejecute el `main` que esta en el *archivo* `executable.java`, y tenga lista la ruta o el nombre de el archivo o directiorio que quiere "compilar" o *traducir a lenguaje de máquina **HACK***
+  
+***NOTA:*** Si la ruta esta por fuera de la carpeta actual en la que esta debe poner la ***ruta absoulta***, o en otras palabras, la ruta completa de el archivo o directorio a compilar
+  
 ## Recomendaciones, Observaciones y Consideraciones
 
 ------------------------------------------------
+* La documentación en ***JavaDoc*** esta escrita en inglés, pero dentro de las funciones o métodos hay comentarios en inglés y español
+
+* El codigo compila números sin signo es decir de 0-32767
+  
+* Este proyecto fue creado para el proyecto de la creación de el *traductor de código VM a ensamblador* de el curso *Nand2Tetris*, por lo que se creo con un enfoque académico, y no utiliza las mejores prácticas por esta razón
+
+* Este proyecto se enfoca en la (a ***excepción*** de la clase `TranslateToAssembly`):
+  
+   * ***Funcionalidad***
+   * ***Mantenibilidad***
+   * ***Reusabilidad***
+       
+* El código esta abierto a mejoras, algunas ideas de estas podrian ser:
+  
+   * Dividir de forma mas explicita y organizada las funciones utilitarias, de las que son propias de la clase
+     
+   * Agregar test unitarios y de integración y funcionalidad a cada método y clase
+     
+   * ***Y OTROS...***
 
 -------------------------------------------------
 ## Licencia
