@@ -6,14 +6,14 @@
 
 **Example:**
 ~~~~
-double n = identifyTheStrictFormat("hello1234", 0);//where n = 27.792222734086767
-double h = identifyTheStrictFormat("hellothisislonger", d); //where h =132.96807276933654 
-double s = identifyTheStrictFormat("hello1234this", 0); //where s = 60.95010857443558 
-//any string within the range n-h is accepted 
-if(s <= h && s >= n){ 
-System.out.println("The String are in the range\n"); 
-} 
-else System.out.println("The String are out of the range\n"); 
+double n = identifyTheStrictFormat("hola1234", 0);//donde n = 27.792222734086767
+double h = identifyTheStrictFormat("holaestoesmaslargo", d); //donde h =132.96807276933654
+double s = identifyTheStrictFormat("hola1234esto", 0); //donde s = 60.95010857443558
+//cualquier cadena dentro de el rango de n-h, es aceptada
+if(s <= h && s >= n){
+   System.out.println("The String are in the range\n");
+}
+else System.out.println("The String are out of the range\n");
 ~~~~
 
 In the previous example, we can consider this unwanted collision to be "@@#12", because it falls within the range, even though the structure is different, since its value would be 24.729518880175622
