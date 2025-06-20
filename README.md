@@ -20,9 +20,9 @@
  ## Dependencias
 
  ------------------------------------------------------
- * Debe tener instalado *JDK v.9* o posteriores
+ * Debe tener instalado *JDK 1.8*(Java 8) o posteriores
  
- [Descargue el JDK de su preferencia](https://www.oracle.com/java/technologies/downloads/)
+ [Descargue el JDK 24.0](https://www.oracle.com/java/technologies/downloads/)
 
  * Un compilador de java *preferiblemente* moderno
 
@@ -37,6 +37,8 @@
 * Ejecute el `main` que esta en el *archivo* `executable.java`, y tenga lista la ruta o el nombre de el archivo o directiorio que quiere "compilar" o *traducir a lenguaje de máquina **HACK***
   
 ***NOTA:*** Si la ruta esta por fuera de la carpeta actual en la que esta debe poner la ***ruta absoulta***, o en otras palabras, la ruta completa de el archivo o directorio a compilar
+
+* Despues de obtener su archivo ***.asm*** si quiere ejecutar este en el emulador de Nand2Tetris, debe utilizar el [ensamblador]()
   
 ## Recomendaciones, Observaciones y Consideraciones
 
