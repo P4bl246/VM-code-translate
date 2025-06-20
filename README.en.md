@@ -48,17 +48,19 @@ README - Java VM Code Translator
 
 * This project focuses on (with the ***exception*** of the `TranslateToAssembly` class):
 
-* ***Functionality***
-* ***Maintainability***
-* ***Reusability***
+    * ***Functionality***
+    * ***Maintainability***
+    * ***Reusability***
 
 * The code is open to improvements. Some ideas could include:
 
-* Separating utility functions from those specific to the class in a more explicit and organized way.
+     * Separating utility functions from those specific to the class in a more explicit and organized way.
 
-* Adding unit, integration, and functionality tests to each method and class.
+     * Adding unit, integration, and functionality tests to each method and class.
 
-* ***AND OTHERS...***
+     * ***AND OTHERS...***
+
+* If you want more about [flexibles formats](), or [stricts formats](), go to this.
 
 -------------------------------------------------
 ## License
