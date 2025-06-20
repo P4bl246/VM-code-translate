@@ -39,8 +39,8 @@ README - Java VM Code Translator
 * The documentation in ***JavaDoc*** is written in English, but within the functions or methods there are comments in English and Spanish.
 
 * The `SourceCodePackage` package contains 2 *test files*, these are:
-* ***File.vm***
-* ***VMcodeFolder*** (*folder*)
+   * ***File.vm***
+   * ***VMcodeFolder*** (*folder*)
 
 * The code compiles unsigned numbers. ie 0-32767
 
