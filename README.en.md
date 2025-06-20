@@ -33,7 +33,7 @@ README - Java VM Code Translator
 
 ***NOTE:*** If the path is outside the current folder in which it is located, you must enter the ***absolute path***, or in other words, the full path of the file or directory to be compiled.
 
-* After you get your ***.asm*** file if you want to run it in the Nand2Tetris emulator, you need to use the [assembler]()
+* After you get your ***.asm*** file if you want to run it in the Nand2Tetris emulator, you need to use the [assembler](https://github.com/P4bl246/Ensamblador-Assembler.git)
 
 ## Recommendations, Observations, and Considerations
 
