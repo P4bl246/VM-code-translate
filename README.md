@@ -64,7 +64,7 @@
      
    * ***Y OTROS...***
 
-* Si quiere conocer más sobre los [formatos flexibles](), o [formatos estrictos](), ve a los links
+* Si quiere conocer más sobre los [formatos flexibles](Explain_formatPattern_functions/Patrones_de_Formato_Flexible), o [formatos estrictos](Explain_formatPattern_functions/Patrones_de_Formato_Estricto), ve a estos.
 -------------------------------------------------
 ## Licencia
  Este repositorio y su contenido estan sujetos a la licencia ***Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)*** - Puede ver la [LICENCIA](LICENCIA-LICENSE/LICENCIA) para mas detalles
