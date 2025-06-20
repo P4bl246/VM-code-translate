@@ -38,7 +38,7 @@
   
 ***NOTA:*** Si la ruta esta por fuera de la carpeta actual en la que esta debe poner la ***ruta absoulta***, o en otras palabras, la ruta completa de el archivo o directorio a compilar
 
-* Despues de obtener su archivo ***.asm*** si quiere ejecutar este en el emulador de Nand2Tetris, debe utilizar el [ensamblador]()
+* Despues de obtener su archivo ***.asm*** si quiere ejecutar este en el emulador de Nand2Tetris, debe utilizar el [ensamblador](https://github.com/P4bl246/Ensamblador-Assembler.git)
   
 ## Recomendaciones, Observaciones y Consideraciones
 
