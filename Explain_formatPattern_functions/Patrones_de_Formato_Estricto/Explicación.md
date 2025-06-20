@@ -3,13 +3,13 @@
  ------------------------------------------------
  Un ***patrón de formato estricto***, se refiere a un *formato* que puede utilizarse como un ***patrón*** a seguir.
  
- * Un ***formato estricto*** en este contexto, se define por el ***tipo de caracteres*** de una cadena (**NO** de sus *caracteres literales*) y su posición en la cadena, que *definen el ***formato estricto**** de esta.(Este se obtiene a traves de el método ***identifyTheStrictFormat*** de la clase ***sintaxParsing***)
+ * Un ***formato estricto*** en este contexto, se define por el ***tipo de caracteres*** de una cadena (**NO** de sus *caracteres literales*) y su posición en la cadena, que *definen el ***formato estricto**** de esta.(Este se obtiene a traves de el método `identifyTheStrictFormat` de la clase `sintaxParsing`)
 
  * Un ***patrón*** se reifere a que este *formato* obtenido de una cadena * **puede** ser usado* como un ***patrón*** o **regla** a seguir por el resto de cadenas, es decir que *otras de cadenas* deben tener el ***mismo formato***, o pueden estar en un **rango** entre **formatos**
 
  **Ejemplo:**
 
- Si tenemos una cadena como "HOLA123-1223-1233", podemos obtener el *formato de esta*, pasandolo por la función ***identifyTheStrictFormat***
+ Si tenemos una cadena como "HOLA123-1223-1233", podemos obtener el *formato de esta*, pasandolo por la función `identifyTheStrictFormat`
  ~~~~
  double n;
  try{
@@ -21,7 +21,7 @@
     System.out.println(e.getMessage());
  }
  ~~~~
- Entonces este resultado o el ***formato estricto*** obtenido de la cadena se puede utilizar como un ***patrón a seguir*** por otras cadenas, antes de hacer operaciones más costosas como un ***clasificador*** o ***comprobación previa***, porque si el *patrón de la cadena* ***no coincide con el esperado*** o con un **rango**, entonces simplemente se *puede ignorar o lanzar un error o lo que quieras hacer*, **sin** tener que añadir estas verificaciones en las operaciones mas costosas
+ Entonces este resultado o el ***formato estricto*** obtenido de la cadena se puede utilizar como un ***patrón a seguir*** por otras cadenas, antes de hacer operaciones más costosas, sirviendo como un ***clasificador*** o ***comprobación previa***, porque si el *patrón de la cadena* ***no coincide con el esperado*** o con un **rango**, entonces simplemente se *puede ignorar o lanzar un error o lo que quieras hacer*, **sin** tener que añadir estas verificaciones en las operaciones más costosas
  
  **Ejemplo:**
  ~~~~

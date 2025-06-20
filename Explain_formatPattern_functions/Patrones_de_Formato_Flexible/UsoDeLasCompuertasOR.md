@@ -2,13 +2,13 @@
  
  ---------------------------------------------------------
 
- * Las ***compuertas OR*** en el ***formato flexible*** se toman en cuenta por índices, es decir por caracter no por opciones completas, sino por opciones de el indice específico, en otras palabras, las multiples ***opciones se aplican a el índice***, **no** a opciones de formatos completas
+ * Las ***compuertas OR*** en el ***formato flexible*** se toman en cuenta por índices, es decir por carácter, no por opciones completas, sino por opciones de el indice específico, en otras palabras, las multiples ***opciones se aplican a el índice***, **no** a opciones de formatos completas
 
  **Ejemplo:**
-  Si queremos que la primera parte de una cadena pueda tener multiples opciones podemos usar la compuerta OR (las **funciones** se encutran dentro de la clase ***sintaxParsing***)
+  Si queremos que la primera parte de una cadena pueda tener multiples opciones podemos usar la compuerta OR (las **funciones** se encutran dentro de la clase `sintaxParsing`)
   
   ~~~~
-  String pattern = "N|LSN"; //esto se traduce a que el índice 0 puede ser N(número) o L(letra), pero los demas deben ser iguales, lo que se traduce a crear 2 tipo de patrones dentro de la función, estos serian "NSN" O "LSN"
+  String pattern = "N|LSN"; //esto se traduce a que el índice 0 puede ser N(número) o L(letra), pero los demás deben ser iguales, lo que se traduce a crear 2 tipo de patrones dentro de la función, estos serian "NSN" O "LSN"
 
   String forCompare = "1234-1234";
   ArrayList<Character> specials = new ArrayList<>();
@@ -32,7 +32,7 @@
 
  ---------------------------------------------
 
- * Se recomienda ***no usar repeticiones de caracteres cuando uses compuertas OR***, porque pueden haber **comportamientos no esperados**, es decir ***no poner cosas como `"N|LLN"`*** porque pueden haber problemas, porque si volvemos a la ***explicación de los formatos flexibles y como se generan***, sabemos que eso ***nunca puede suceder***, entonces si quieres separar que deba ser la primera parte un `"N"` pero luego debe seguir un `"L"`, entonces, se ***recomienda usar los caracteres especiales o `"S"`*** para **dividir entre palabras** es decir debe ser `"N|LSLN"` O `"N|LN"`, pero ***nunca debes repetir caracteres consecutivamente***.
+ * Se recomienda ***no usar repeticiones de carácteres cuando uses compuertas OR***, porque pueden haber **comportamientos no esperados**, es decir ***no poner cosas como `"N|LLN"`*** porque pueden haber problemas, porque si volvemos a la ***explicación de los formatos flexibles y como se generan***, sabemos que eso ***nunca puede suceder***, entonces si quieres separar que deba ser la primera parte un `"N"` pero luego debe seguir un `"L"`, entonces, se ***recomienda usar los carácteres especiales o `"S"`*** para **dividir entre palabras** es decir debe ser `"N|LSLN"` O `"N|LN"`, pero ***nunca debes repetir carácteres consecutivamente***.
  
  * **No pongas múltiples compuertas OR consecutivas en diferentes índices sin estar separadas por algún tipo de carácter.**  
   **Ejemplo incorrecto:** `"N|L|P|WL|N"`  

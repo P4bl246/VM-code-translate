@@ -24,6 +24,6 @@
  
  * Los formatos estrictos debido a que son operaciones determinísticas, y que usan logaritmos, puede haber colisiones entre cadenas de diferentes estructuras, pero que generan la misma ***huella***, esto puede suceder principalmente cuando se comparan valores UNICODE muy altos, con caracteres alfa-numéricos, siendo suceptible a *compensaciones*, y causar este tipo de ***colisiones no deseadas*** (aunque estas sean escasas y con cadenas específicas, ya que como vemos en el método, la posicion y el tipo de caracter altera el resultado final, y la cantidad de estos), por esta razón, no asegura una unicidad de el 100%, y tampoco es un algoritmo diseñado para esto, ni para criptografía, además hay que tener en cuenta que por la naturaleza de no observar los caracteres literales, sino sus ***tipos***, por lo que generar valores unicos para ***cadenas con diferentes estructuras*** se complica aun más.
 
- * debido a las colisiones no deseadas son muy frecuentes cuando se usan ***rangos*** se recomienda que si usa rangos, sea sipmlemente una validación superficial, y se recomienda robustecer las operaciones, evitando usar logaritmos, que son la principal causa de estas.
+ * debido a las colisiones no deseadas son muy frecuentes cuando se usan ***rangos*** se recomienda que si usa rangos, sea simplemente una validación superficial, y se recomienda robustecer las operaciones, evitando usar logaritmos, que son la principal causa de estas.
 
  
