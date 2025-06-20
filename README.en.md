@@ -39,8 +39,8 @@ README - Java VM Code Translator
 * The documentation in ***JavaDoc*** is written in English, but within the functions or methods there are comments in English and Spanish.
 
 * The `SourceCodePackage` package contains 2 *test files*, these are:
-* ***File.vm***
-* ***VMcodeFolder*** (*folder*)
+   * ***File.vm***
+   * ***VMcodeFolder*** (*folder*)
 
 * The code compiles unsigned numbers. ie 0-32767
 
@@ -48,17 +48,19 @@ README - Java VM Code Translator
 
 * This project focuses on (with the ***exception*** of the `TranslateToAssembly` class):
 
-* ***Functionality***
-* ***Maintainability***
-* ***Reusability***
+    * ***Functionality***
+    * ***Maintainability***
+    * ***Reusability***
 
 * The code is open to improvements. Some ideas could include:
 
-* Separating utility functions from those specific to the class in a more explicit and organized way.
+     * Separating utility functions from those specific to the class in a more explicit and organized way.
 
-* Adding unit, integration, and functionality tests to each method and class.
+     * Adding unit, integration, and functionality tests to each method and class.
 
-* ***AND OTHERS...***
+     * ***AND OTHERS...***
+
+* If you want know more about [flexibles formats](Explain_formatPattern_functions/Flexible_Format_Pattern), or [stricts formats](Explain_formatPattern_functions/Strict_Format_Patterns), go to this.
 
 -------------------------------------------------
 ## License
