@@ -63,4 +63,4 @@ README - Java VM Code Translator
 -------------------------------------------------
 ## License
 
-The `SourceCodePackage` package and its contents are licensed under a ***Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)*** license - See the [LICENSE](LICENCIA-LICENSE/LICENSE) for more details.
+This repository and its contents are licensed under a ***Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)*** license - See the [LICENSE](LICENCIA-LICENSE/LICENSE) for more details.

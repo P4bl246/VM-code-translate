@@ -66,4 +66,4 @@
 
 -------------------------------------------------
 ## Licencia
- El paquete `SourceCodePackage` y su contenido estan sujetos a la licencia ***Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)*** - Puede ver la [LICENCIA](LICENCIA-LICENSE/LICENCIA) para mas detalles
+ Este repositorio y su contenido estan sujetos a la licencia ***Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)*** - Puede ver la [LICENCIA](LICENCIA-LICENSE/LICENCIA) para mas detalles
