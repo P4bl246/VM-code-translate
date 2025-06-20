@@ -60,7 +60,7 @@ README - Java VM Code Translator
 
      * ***AND OTHERS...***
 
-* If you want more about [flexibles formats](), or [stricts formats](), go to this.
+* If you want more about [flexibles formats](Explain_formatPattern_functions/Flexible_Format_Pattern), or [stricts formats](Explain_formatPattern_functions/Strict_Format_Patterns), go to this.
 
 -------------------------------------------------
 ## License
