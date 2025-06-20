@@ -15,9 +15,9 @@ README - Java VM Code Translator
 ## Dependencies
 
 ------------------------------------------------------
-* You must have *JDK v. 9* or later installed.
+* You must have *JDK 1.8* or later installed.
 
-[Download the JDK from your preference](https://www.oracle.com/java/technologies/downloads/)
+[Download the JDK 24.0](https://www.oracle.com/java/technologies/downloads/)
 
 * A modern Java compiler *preferably*
 
@@ -32,6 +32,8 @@ README - Java VM Code Translator
 * Run `main` in the *file* `executable.java`, and have the path or name of the file or directory you want to compile or translate into machine language ready. **HACK***
 
 ***NOTE:*** If the path is outside the current folder in which it is located, you must enter the ***absolute path***, or in other words, the full path of the file or directory to be compiled.
+
+* After you get your ***.asm*** file if you want to run it in the Nand2Tetris emulator, you need to use the [assembler]()
 
 ## Recommendations, Observations, and Considerations
 
