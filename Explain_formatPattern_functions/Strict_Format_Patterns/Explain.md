@@ -9,12 +9,12 @@ A ***strict formatting pattern*** refers to a *format* that can be used as a ***
 
 **Example:**
 
-If we have a string like "HELLO123-1223-1233", we can obtain its *format* by passing it through the ***identifyTheStrictFormat*** function
+If we have a string like "HOLA123-1223-1233", we can obtain its *format* by passing it through the ***identifyTheStrictFormat*** function
 
 ~~~~
 double n;
 try{
-n = identifyTheStrictFormat("HELLO123-1223-1233", 0);
+n = identifyTheStrictFormat("HOLA123-1223-1233", 0);
 /*
 *The result of this will be 111.41709729841867 (This is because if you look at the inside of the function and its documentation, you can see that the operations ensure that characters with high UNICODE values ​​are exponentially decreased, and their position affects the final result)
 */
